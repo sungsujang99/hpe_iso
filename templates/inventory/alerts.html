@@ -1,0 +1,128 @@
+{% extends "base.html" %}
+
+{% block title %}재고 알림 - HPE System{% endblock %}
+{% block nav_inventory_alerts %}active{% endblock %}
+{% block page_title %}재고 알림{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<a href="/inventory/">재고관리</a>
+<span>›</span>
+<span>재고 알림</span>
+{% endblock %}
+
+{% block content %}
+<div class="card">
+    <div class="card-header">
+        <h3 class="card-title">미해결 알림</h3>
+        <span class="badge badge-danger" id="alert-total">0건</span>
+    </div>
+    <div id="alerts-list">
+        <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+            로딩 중...
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    async function loadAlerts() {
+        try {
+            const response = await apiRequest('/inventory/alerts/?unresolved=true');
+            if (response && response.ok) {
+                const data = await response.json();
+                const alerts = data.results || data;
+                
+                document.getElementById('alert-total').textContent = alerts.length + '건';
+                
+                if (alerts.length === 0) {
+                    document.getElementById('alerts-list').innerHTML = `
+                        <div class="empty-state">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                            </svg>
+                            <p>미해결 알림이 없습니다.</p>
+                        </div>
+                    `;
+                    return;
+                }
+                
+                document.getElementById('alerts-list').innerHTML = alerts.map(alert => `
+                    <div class="low-stock-item" style="margin-bottom: 16px; padding: 20px;">
+                        <div style="flex: 1;">
+                            <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                                ${getAlertBadge(alert.alert_type)}
+                                <span style="font-weight: 600;">${alert.item_name}</span>
+                                <span style="color: var(--text-muted); font-size: 0.85rem;">${alert.item_code}</span>
+                            </div>
+                            <p style="color: var(--text-secondary);">${alert.message}</p>
+                            <div style="margin-top: 8px; font-size: 0.85rem; color: var(--text-muted);">
+                                현재: ${alert.current_quantity} / 기준: ${alert.threshold_quantity}
+                            </div>
+                        </div>
+                        <div style="display: flex; flex-direction: column; gap: 8px;">
+                            <button class="btn btn-success btn-sm" onclick="stockIn('${alert.item}')">입고하기</button>
+                            <button class="btn btn-secondary btn-sm" onclick="resolveAlert(${alert.id})">해결</button>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Failed to load alerts:', error);
+        }
+    }
+    
+    function getAlertBadge(type) {
+        if (type === 'out_of_stock') {
+            return '<span class="badge badge-danger">재고 소진</span>';
+        }
+        return '<span class="badge badge-warning">안전재고 미달</span>';
+    }
+    
+    async function stockIn(itemId) {
+        const qty = prompt('입고 수량을 입력하세요:');
+        if (!qty || isNaN(qty) || parseFloat(qty) <= 0) return;
+        
+        try {
+            const response = await apiRequest('/inventory/stock/in/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    item_id: itemId,
+                    quantity: parseFloat(qty)
+                })
+            });
+            
+            if (response && response.ok) {
+                alert('입고 처리되었습니다.');
+                loadAlerts();
+            } else {
+                const error = await response.json();
+                alert('실패: ' + (error.error || JSON.stringify(error)));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    }
+    
+    async function resolveAlert(alertId) {
+        if (!confirm('이 알림을 해결됨으로 표시하시겠습니까?')) return;
+        
+        try {
+            const response = await apiRequest(`/inventory/alerts/${alertId}/resolve/`, {
+                method: 'POST'
+            });
+            
+            if (response && response.ok) {
+                loadAlerts();
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadAlerts);
+</script>
+{% endblock %}

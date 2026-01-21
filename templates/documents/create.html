@@ -1,0 +1,478 @@
+{% extends "base.html" %}
+
+{% block title %}새 문서 작성 - HPE System{% endblock %}
+{% block nav_documents_new %}active{% endblock %}
+{% block page_title %}새 문서 작성{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<a href="/documents/">문서 목록</a>
+<span>›</span>
+<span>새 문서 작성</span>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 900px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">문서 정보 입력</h3>
+        </div>
+        
+        <form id="document-form">
+            <!-- 카테고리 선택 -->
+            <div class="form-group">
+                <label class="form-label">문서 카테고리 *</label>
+                <select class="form-select" id="category" required>
+                    <option value="">카테고리를 선택하세요</option>
+                </select>
+            </div>
+            
+            <!-- 템플릿 선택 -->
+            <div class="form-group">
+                <label class="form-label">문서 템플릿</label>
+                <select class="form-select" id="template">
+                    <option value="">템플릿을 선택하세요 (선택사항)</option>
+                </select>
+            </div>
+            
+            <!-- 문서 정보 (읽기 전용) -->
+            <div class="card" style="background: var(--primary); border: 1px solid var(--border); margin-bottom: 24px;">
+                <div class="card-header">
+                    <h4 style="font-size: 0.9rem; color: var(--text-muted);">문서 정보 (자동 생성)</h4>
+                </div>
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px; padding: 16px;">
+                    <div>
+                        <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">문서번호</div>
+                        <div id="document-number-preview" style="font-weight: 600; color: var(--accent);">카테고리 선택 시 자동 생성</div>
+                    </div>
+                    <div>
+                        <div style="color: var(--text-muted); font-size: 0.8rem; margin-bottom: 4px;">문서 제목</div>
+                        <div id="document-title-preview" style="font-weight: 500;">카테고리 선택 시 자동 생성</div>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- 관련 문서 데이터 가져오기 버튼 -->
+            <div id="auto-fill-section" style="display: none; margin-bottom: 24px;">
+                <button type="button" class="btn btn-info" onclick="loadRelatedData()" style="width: 100%;">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20" style="margin-right: 8px;">
+                        <polyline points="23 4 23 10 17 10"></polyline>
+                        <polyline points="1 20 1 14 7 14"></polyline>
+                        <path d="M3.51 9a9 9 0 0 1 14.85-3.36L23 10M1 14l4.64 4.36A9 9 0 0 0 20.49 15"></path>
+                    </svg>
+                    관련 문서에서 데이터 자동 채우기 
+                    <span style="font-size: 0.8rem; opacity: 0.8;">(승인된 관련 문서의 내용을 가져옵니다)</span>
+                </button>
+            </div>
+            
+            <!-- 동적 필드 영역 -->
+            <div id="dynamic-fields">
+                <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="margin: 0 auto 16px; opacity: 0.5;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <p>템플릿을 선택하면 입력 양식이 표시됩니다.</p>
+                </div>
+            </div>
+            
+            <!-- 버튼 -->
+            <div style="display: flex; gap: 16px; margin-top: 32px; padding-top: 24px; border-top: 1px solid var(--border);">
+                <button type="submit" class="btn btn-primary" id="btn-save">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                    저장 (임시저장)
+                </button>
+                <button type="button" class="btn btn-success" id="btn-submit">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                        <line x1="22" y1="2" x2="11" y2="13"></line>
+                        <polygon points="22 2 15 22 11 13 2 9 22 2"></polygon>
+                    </svg>
+                    저장 후 승인 요청
+                </button>
+                <a href="/documents/" class="btn btn-secondary">취소</a>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let categories = [];
+    let templates = [];
+    
+    async function loadCategories() {
+        try {
+            const response = await apiRequest('/documents/categories/');
+            if (response && response.ok) {
+                const data = await response.json();
+                // Handle both paginated and non-paginated responses
+                categories = data.results || data;
+                const select = document.getElementById('category');
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = `${cat.code} - ${cat.name}`;
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load categories:', error);
+        }
+    }
+    
+    async function loadTemplates(categoryId) {
+        try {
+            const url = categoryId ? `/documents/templates/?category=${categoryId}` : '/documents/templates/';
+            const response = await apiRequest(url);
+            if (response && response.ok) {
+                const data = await response.json();
+                // Handle both paginated and non-paginated responses
+                templates = data.results || data;
+                const select = document.getElementById('template');
+                select.innerHTML = '<option value="">템플릿을 선택하세요 (선택사항)</option>';
+                templates.forEach(tmpl => {
+                    const option = document.createElement('option');
+                    option.value = tmpl.id;
+                    option.textContent = tmpl.name;
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load templates:', error);
+        }
+    }
+    
+    function renderDynamicFields(template) {
+        const container = document.getElementById('dynamic-fields');
+        
+        if (!template || !template.fields_schema || !template.fields_schema.fields) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="margin: 0 auto 16px; opacity: 0.5;">
+                        <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                        <polyline points="14 2 14 8 20 8"></polyline>
+                        <line x1="12" y1="18" x2="12" y2="12"></line>
+                        <line x1="9" y1="15" x2="15" y2="15"></line>
+                    </svg>
+                    <p>템플릿을 선택하면 입력 양식이 표시됩니다.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        const fields = template.fields_schema.fields;
+        let html = '';
+        
+        fields.forEach(field => {
+            const requiredMark = field.required ? ' *' : '';
+            const requiredAttr = field.required ? 'required' : '';
+            const placeholder = field.placeholder || '';
+            
+            html += `<div class="form-group">`;
+            html += `<label class="form-label">${field.label}${requiredMark}</label>`;
+            
+            switch (field.type) {
+                case 'textarea':
+                    html += `<textarea class="form-input" id="field-${field.name}" rows="6" placeholder="${placeholder}" ${requiredAttr} style="font-family: inherit;"></textarea>`;
+                    break;
+                case 'date':
+                    html += `<input type="date" class="form-input" id="field-${field.name}" ${requiredAttr}>`;
+                    break;
+                case 'datetime':
+                    html += `<input type="datetime-local" class="form-input" id="field-${field.name}" ${requiredAttr}>`;
+                    break;
+                case 'number':
+                    html += `<input type="number" class="form-input" id="field-${field.name}" placeholder="${placeholder}" ${requiredAttr}>`;
+                    break;
+                case 'text':
+                default:
+                    html += `<input type="text" class="form-input" id="field-${field.name}" placeholder="${placeholder}" ${requiredAttr}>`;
+                    break;
+            }
+            
+            html += `</div>`;
+        });
+        
+        container.innerHTML = html;
+    }
+    
+    function getContentData() {
+        const templateSelect = document.getElementById('template');
+        const templateId = templateSelect.value;
+        
+        if (!templateId) {
+            return {};
+        }
+        
+        const selectedTemplate = templates.find(t => t.id == templateId);
+        if (!selectedTemplate || !selectedTemplate.fields_schema || !selectedTemplate.fields_schema.fields) {
+            return {};
+        }
+        
+        const data = {};
+        selectedTemplate.fields_schema.fields.forEach(field => {
+            const el = document.getElementById(`field-${field.name}`);
+            if (el) {
+                const value = el.value.trim();
+                if (value || field.required) {
+                    data[field.name] = value;
+                }
+            }
+        });
+        
+        return data;
+    }
+    
+    async function saveDocument(submit = false) {
+        const category = document.getElementById('category').value;
+        const template = document.getElementById('template').value;
+        
+        if (!category) {
+            alert('카테고리를 선택해주세요.');
+            return;
+        }
+        
+        const body = {
+            category: parseInt(category),
+            content_data: getContentData()
+        };
+        
+        // 제목은 선택사항 (없으면 서버에서 자동 생성)
+        const titlePreview = document.getElementById('document-title-preview').textContent;
+        if (titlePreview && titlePreview !== '카테고리 선택 시 자동 생성') {
+            body.title = titlePreview;
+        }
+        
+        if (template) {
+            body.template = parseInt(template);
+        }
+        
+        try {
+            const response = await apiRequest('/documents/items/', {
+                method: 'POST',
+                body: JSON.stringify(body)
+            });
+            
+            if (response && response.ok) {
+                const doc = await response.json();
+                
+                if (submit) {
+                    // 승인 요청
+                    const submitResponse = await apiRequest(`/documents/items/${doc.id}/submit/`, {
+                        method: 'POST',
+                        body: JSON.stringify({})
+                    });
+                    
+                    if (submitResponse && submitResponse.ok) {
+                        alert('문서가 저장되고 승인 요청되었습니다.');
+                    } else {
+                        alert('문서는 저장되었으나 승인 요청에 실패했습니다.');
+                    }
+                } else {
+                    alert('문서가 저장되었습니다.');
+                }
+                
+                window.location.href = `/documents/${doc.id}/`;
+            } else {
+                const error = await response.json();
+                alert('저장 실패: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            console.error('Failed to save document:', error);
+            alert('저장 중 오류가 발생했습니다.');
+        }
+    }
+    
+    function updateDocumentPreview() {
+        const categorySelect = document.getElementById('category');
+        const templateSelect = document.getElementById('template');
+        const categoryId = categorySelect.value;
+        const templateId = templateSelect.value;
+        
+        if (!categoryId) {
+            document.getElementById('document-number-preview').textContent = '카테고리 선택 시 자동 생성';
+            document.getElementById('document-title-preview').textContent = '카테고리 선택 시 자동 생성';
+            return;
+        }
+        
+        const selectedCategory = categories.find(c => c.id == categoryId);
+        if (!selectedCategory) return;
+        
+        // 문서번호 미리보기 (실제로는 서버에서 생성되지만 형식만 보여줌)
+        const nextNum = selectedCategory.next_number || 1000;
+        document.getElementById('document-number-preview').textContent = `${selectedCategory.prefix}${nextNum}`;
+        
+        // 제목 미리보기
+        if (templateId) {
+            const selectedTemplate = templates.find(t => t.id == templateId);
+            if (selectedTemplate) {
+                document.getElementById('document-title-preview').textContent = `${selectedCategory.name} - ${selectedTemplate.name}`;
+            } else {
+                document.getElementById('document-title-preview').textContent = `${selectedCategory.name} 문서`;
+            }
+        } else {
+            document.getElementById('document-title-preview').textContent = `${selectedCategory.name} 문서`;
+        }
+    }
+    
+    document.getElementById('category').addEventListener('change', (e) => {
+        loadTemplates(e.target.value);
+        updateDocumentPreview();
+    });
+    
+    async function loadRelatedData() {
+        const templateId = document.getElementById('template').value;
+        if (!templateId) {
+            alert('먼저 템플릿을 선택해주세요.');
+            return;
+        }
+        
+        if (!confirm('관련 문서에서 승인된 데이터를 가져와서 양식에 자동으로 채우시겠습니까?\n\n※ 현재 입력된 내용이 있다면 덮어써질 수 있습니다.')) {
+            return;
+        }
+        
+        try {
+            const response = await apiRequest(`/documents/items/extract_shared_data/`, {
+                method: 'POST',
+                body: JSON.stringify({ template: templateId })
+            });
+            
+            if (response && response.ok) {
+                const data = await response.json();
+                const sharedData = data.shared_data;
+                
+                // 공유 데이터를 필드에 채우기
+                let filledCount = 0;
+                
+                // 목적 (purpose) - 여러 문서에서 수집된 경우 합치기
+                if (sharedData.purpose && sharedData.purpose.length > 0) {
+                    const el = document.getElementById('field-purpose');
+                    if (el) {
+                        const combined = sharedData.purpose.map(item => 
+                            `[${item.source}]\n${item.content}`
+                        ).join('\n\n');
+                        el.value = combined;
+                        filledCount++;
+                    }
+                }
+                
+                // 적용범위 (scope)
+                if (sharedData.scope && sharedData.scope.length > 0) {
+                    const el = document.getElementById('field-scope');
+                    if (el) {
+                        const combined = sharedData.scope.map(item => 
+                            `[${item.source}]\n${item.content}`
+                        ).join('\n\n');
+                        el.value = combined;
+                        filledCount++;
+                    }
+                }
+                
+                // 책임과 권한 (responsibility)
+                if (sharedData.responsibility && sharedData.responsibility.length > 0) {
+                    const el = document.getElementById('field-responsibility');
+                    if (el) {
+                        const combined = sharedData.responsibility.map(item => 
+                            `[${item.source}]\n${item.content}`
+                        ).join('\n\n');
+                        el.value = combined;
+                        filledCount++;
+                    }
+                }
+                
+                // 업무절차 (procedure)
+                if (sharedData.procedure && sharedData.procedure.length > 0) {
+                    const el = document.getElementById('field-procedure');
+                    if (el) {
+                        const combined = sharedData.procedure.map(item => 
+                            `[${item.source}]\n${item.content}`
+                        ).join('\n\n');
+                        el.value = combined;
+                        filledCount++;
+                    }
+                }
+                
+                if (filledCount > 0) {
+                    alert(`${filledCount}개의 필드에 관련 문서 데이터가 자동으로 채워졌습니다.\n\n섹션: ${data.section || '알 수 없음'}\n필요에 따라 내용을 수정하세요.`);
+                } else {
+                    alert('관련 문서에서 가져올 수 있는 승인된 데이터가 없습니다.\n\n절차서를 먼저 작성하고 승인받으신 후 매뉴얼을 작성하시거나,\n직접 내용을 입력해주세요.');
+                }
+            } else {
+                alert('관련 문서 데이터를 불러오는데 실패했습니다.');
+            }
+        } catch (error) {
+            console.error('Failed to load related data:', error);
+            alert('관련 문서 데이터를 불러오는 중 오류가 발생했습니다.');
+        }
+    }
+    
+    document.getElementById('template').addEventListener('change', (e) => {
+        const templateId = e.target.value;
+        if (templateId) {
+            const selectedTemplate = templates.find(t => t.id == templateId);
+            renderDynamicFields(selectedTemplate);
+            
+            // 자동 채우기 버튼 표시
+            document.getElementById('auto-fill-section').style.display = 'block';
+        } else {
+            renderDynamicFields(null);
+            document.getElementById('auto-fill-section').style.display = 'none';
+        }
+        updateDocumentPreview();
+    });
+    
+    document.getElementById('document-form').addEventListener('submit', (e) => {
+        e.preventDefault();
+        saveDocument(false);
+    });
+    
+    document.getElementById('btn-submit').addEventListener('click', () => {
+        if (confirm('문서를 저장하고 승인을 요청하시겠습니까?\n승인 요청 후에는 수정할 수 없습니다.')) {
+            saveDocument(true);
+        }
+    });
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadCategories();
+        await loadTemplates();
+        
+        // URL 파라미터에서 카테고리와 매뉴얼 정보 확인
+        const urlParams = new URLSearchParams(window.location.search);
+        const categoryParam = urlParams.get('category');
+        const manualParam = urlParams.get('manual');
+        
+        if (categoryParam) {
+            // 카테고리 자동 선택
+            const categorySelect = document.getElementById('category');
+            const category = categories.find(c => c.code === categoryParam);
+            if (category) {
+                categorySelect.value = category.id;
+                // 카테고리 변경 이벤트 트리거
+                const event = new Event('change');
+                categorySelect.dispatchEvent(event);
+                
+                // 템플릿 로드 후 매뉴얼 템플릿 자동 선택
+                if (manualParam) {
+                    setTimeout(() => {
+                        const templateSelect = document.getElementById('template');
+                        const template = templates.find(t => t.name.includes(manualParam));
+                        if (template) {
+                            templateSelect.value = template.id;
+                            const templateEvent = new Event('change');
+                            templateSelect.dispatchEvent(templateEvent);
+                        }
+                    }, 500);
+                }
+            }
+        }
+    });
+</script>
+{% endblock %}

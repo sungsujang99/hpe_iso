@@ -1,0 +1,572 @@
+{% extends "base.html" %}
+
+{% block title %}입고 처리 - HPE System{% endblock %}
+{% block nav_inventory_in %}active{% endblock %}
+{% block page_title %}입고 처리{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<a href="/inventory/">재고관리</a>
+<span>›</span>
+<span>입고 처리</span>
+{% endblock %}
+
+{% block content %}
+<div style="max-width: 600px; margin: 0 auto;">
+    <div class="card">
+        <div class="card-header">
+            <h3 class="card-title">입고 정보 입력</h3>
+        </div>
+        
+        <!-- 바코드 스캔 영역 -->
+        <div class="card" style="background: linear-gradient(135deg, var(--accent-light) 0%, rgba(139, 92, 246, 0.1) 100%); margin-bottom: 24px;">
+            <div class="form-group">
+                <label class="form-label">바코드 스캔</label>
+                <input type="text" 
+                       class="form-input" 
+                       id="barcode-input" 
+                       placeholder="바코드를 스캔하세요 (여러 번 스캔 가능)" 
+                       autocomplete="off"
+                       style="font-size: 1.1rem; padding: 16px 20px; text-align: center; letter-spacing: 2px;">
+                <div style="text-align: center; margin-top: 8px;">
+                    <span style="color: var(--text-muted); font-size: 0.8rem;">
+                        💡 바코드를 스캔하면 자동으로 목록에 추가됩니다
+                    </span>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 스캔된 품목 목록 -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <h3 class="card-title">입고 품목 목록</h3>
+                <span class="badge badge-info" id="item-count">0개</span>
+            </div>
+            <div id="scanned-items-list" style="min-height: 200px;">
+                <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="margin: 0 auto 16px; opacity: 0.5;">
+                        <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                        <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                        <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                        <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                        <line x1="7" y1="12" x2="17" y2="12"></line>
+                    </svg>
+                    <p>바코드를 스캔하여 품목을 추가하세요</p>
+                </div>
+            </div>
+        </div>
+        
+        <!-- 공통 정보 -->
+        <div class="card" style="margin-bottom: 24px;">
+            <div class="card-header">
+                <h3 class="card-title">공통 정보</h3>
+            </div>
+            <div class="form-group">
+                <label class="form-label">참조번호 (PO번호 등)</label>
+                <input type="text" class="form-input" id="reference" placeholder="참조번호 입력">
+            </div>
+            <div class="form-group">
+                <label class="form-label">비고</label>
+                <textarea class="form-input" id="remarks" rows="3" placeholder="비고 입력"></textarea>
+            </div>
+        </div>
+        
+        <!-- 일괄 입고 처리 버튼 -->
+        <button type="button" class="btn btn-success" id="btn-process-all" style="width: 100%; padding: 16px; font-size: 1.1rem;" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <line x1="12" y1="17" x2="12" y2="11"></line>
+                <polyline points="9 14 12 11 15 14"></polyline>
+            </svg>
+            일괄 입고 처리 (<span id="total-quantity">0</span>개)
+        </button>
+    </div>
+    
+    <!-- 최근 입고 내역 -->
+    <div class="card" style="margin-top: 24px;">
+        <div class="card-header">
+            <h3 class="card-title">최근 입고 내역</h3>
+        </div>
+        <div id="recent-transactions">
+            <div style="text-align: center; padding: 24px; color: var(--text-muted);">로딩 중...</div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let scannedItems = []; // 스캔된 품목 목록 [{item: {...}, quantity: 1, barcode: '...'}, ...]
+    let barcodeTimer = null;
+    let allItemsCache = {}; // 품목 캐시
+    
+    // 바코드로 품목 검색
+    async function searchItemByBarcode(barcode) {
+        if (!barcode || barcode.length < 3) return null;
+        
+        try {
+            const response = await apiRequest(`/inventory/items/?search=${encodeURIComponent(barcode)}`);
+            if (response && response.ok) {
+                const data = await response.json();
+                const items = data.results || data;
+                
+                if (items.length > 0) {
+                    return items[0];
+                }
+            }
+        } catch (error) {
+            console.error('Search failed:', error);
+        }
+        return null;
+    }
+    
+    // 새 품목 추가 모달 표시
+    function showAddItemModal(barcode) {
+        const modal = document.createElement('div');
+        modal.id = 'add-item-modal';
+        modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;';
+        
+        modal.innerHTML = `
+            <div class="card" style="max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;">
+                <div class="card-header">
+                    <h3 class="card-title">새 품목 추가</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="closeAddItemModal()" style="padding: 8px 12px;">✕</button>
+                </div>
+                <form id="add-item-form">
+                    <div class="form-group">
+                        <label class="form-label">관리번호(바코드) *</label>
+                        <input type="text" class="form-input" id="add-barcode" value="${barcode}" required readonly>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">품목명 *</label>
+                        <input type="text" class="form-input" id="add-name" placeholder="품목명을 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">시리얼번호 *</label>
+                        <input type="text" class="form-input" id="add-serial" placeholder="시리얼번호를 입력하세요" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">제작사</label>
+                        <input type="text" class="form-input" id="add-manufacturer" placeholder="제작사명">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">점검여부</label>
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                                <input type="checkbox" id="add-inspection" style="width: 20px; height: 20px;">
+                                <span>점검 필요</span>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">점검예정일자</label>
+                        <input type="date" class="form-input" id="add-inspection-date">
+                    </div>
+                    <div style="display: flex; gap: 12px; margin-top: 24px;">
+                        <button type="submit" class="btn btn-success" style="flex: 1;">품목 추가</button>
+                        <button type="button" class="btn btn-secondary" onclick="closeAddItemModal()" style="flex: 1;">취소</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        
+        document.body.appendChild(modal);
+        document.getElementById('add-name').focus();
+        
+        // 폼 제출 처리
+        document.getElementById('add-item-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            await addNewItem(barcode);
+        });
+    }
+    
+    function closeAddItemModal() {
+        const modal = document.getElementById('add-item-modal');
+        if (modal) {
+            modal.remove();
+        }
+        document.getElementById('barcode-input').focus();
+    }
+    
+    // 새 품목 추가
+    async function addNewItem(barcode) {
+        const name = document.getElementById('add-name').value.trim();
+        const serialNumber = document.getElementById('add-serial').value.trim();
+        const manufacturer = document.getElementById('add-manufacturer').value.trim();
+        const inspectionRequired = document.getElementById('add-inspection').checked;
+        const inspectionDate = document.getElementById('add-inspection-date').value;
+        
+        if (!name || !serialNumber) {
+            alert('품목명과 시리얼번호는 필수입니다.');
+            return;
+        }
+        
+        try {
+            const response = await apiRequest('/inventory/items/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    barcode: barcode,
+                    name: name,
+                    serial_number: serialNumber,
+                    manufacturer: manufacturer || '',
+                    inspection_required: inspectionRequired,
+                    inspection_due_date: inspectionDate || null
+                })
+            });
+            
+            if (response && response.ok) {
+                const newItem = await response.json();
+                
+                // 모달 닫기
+                closeAddItemModal();
+                
+                // 새로 추가된 품목을 목록에 추가
+                scannedItems.push({
+                    item: newItem,
+                    quantity: 1,
+                    barcode: barcode,
+                    scanCount: 1
+                });
+                
+                renderScannedItems();
+                
+                // 성공 알림
+                const successMsg = document.createElement('div');
+                successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: var(--success); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000;';
+                successMsg.textContent = `✓ ${name} 추가됨`;
+                document.body.appendChild(successMsg);
+                setTimeout(() => successMsg.remove(), 2000);
+            } else {
+                let errorMessage = '품목 추가 실패';
+                try {
+                    const error = await response.json();
+                    if (error.barcode && Array.isArray(error.barcode)) {
+                        errorMessage = error.barcode[0];
+                    } else if (error.name && Array.isArray(error.name)) {
+                        errorMessage = error.name[0];
+                    } else if (error.serial_number && Array.isArray(error.serial_number)) {
+                        errorMessage = error.serial_number[0];
+                    } else if (error.detail) {
+                        errorMessage = error.detail;
+                    } else if (typeof error === 'string') {
+                        errorMessage = error;
+                    } else {
+                        errorMessage = JSON.stringify(error);
+                    }
+                } catch (e) {
+                    errorMessage = `서버 오류 (${response.status})`;
+                }
+                
+                const errorMsg = document.createElement('div');
+                errorMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: var(--danger); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; max-width: 400px;';
+                errorMsg.textContent = `❌ ${errorMessage}`;
+                document.body.appendChild(errorMsg);
+                setTimeout(() => errorMsg.remove(), 5000);
+            }
+        } catch (error) {
+            console.error('Add item failed:', error);
+            alert('품목 추가 중 오류가 발생했습니다.');
+        }
+    }
+    
+    // 바코드 스캔 처리
+    async function handleBarcodeScan(barcode) {
+        const item = await searchItemByBarcode(barcode);
+        
+        if (!item) {
+            // 품목을 찾을 수 없음 - 새 품목 추가 모달 표시
+            showAddItemModal(barcode);
+            return;
+        }
+        
+        // 이미 목록에 있는 품목인지 확인
+        const existingIndex = scannedItems.findIndex(si => si.item.id === item.id);
+        
+        if (existingIndex >= 0) {
+            // 기존 품목 수량 증가
+            scannedItems[existingIndex].quantity += 1;
+            scannedItems[existingIndex].scanCount += 1;
+        } else {
+            // 새 품목 추가
+            scannedItems.push({
+                item: item,
+                quantity: 1,
+                barcode: barcode,
+                scanCount: 1
+            });
+        }
+        
+        renderScannedItems();
+        
+        // 성공 알림
+        const successMsg = document.createElement('div');
+        successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: var(--success); color: white; padding: 16px 24px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000;';
+        successMsg.textContent = `✓ ${item.name} 추가됨`;
+        document.body.appendChild(successMsg);
+        setTimeout(() => successMsg.remove(), 1500);
+    }
+    
+    // 스캔된 품목 목록 렌더링
+    function renderScannedItems() {
+        const container = document.getElementById('scanned-items-list');
+        const itemCount = scannedItems.length;
+        const totalQuantity = scannedItems.reduce((sum, si) => sum + si.quantity, 0);
+        
+        document.getElementById('item-count').textContent = `${itemCount}개 품목`;
+        document.getElementById('total-quantity').textContent = totalQuantity;
+        document.getElementById('btn-process-all').disabled = itemCount === 0;
+        
+        if (itemCount === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="margin: 0 auto 16px; opacity: 0.5;">
+                        <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                        <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                        <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                        <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                        <line x1="7" y1="12" x2="17" y2="12"></line>
+                    </svg>
+                    <p>바코드를 스캔하여 품목을 추가하세요</p>
+                </div>
+            `;
+            return;
+        }
+        
+        container.innerHTML = scannedItems.map((si, index) => `
+            <div class="low-stock-item" style="margin-bottom: 12px; padding: 16px;">
+                <div style="flex: 1;">
+                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 8px;">
+                        <span class="badge badge-info" style="min-width: 40px; text-align: center;">${index + 1}</span>
+                        <div>
+                            <div style="font-weight: 600; font-size: 1rem;">${si.item.name}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">
+                                ${si.item.item_code}${si.item.serial_number ? ' | S/N: ' + si.item.serial_number : ''}
+                            </div>
+                        </div>
+                    </div>
+                    <div style="display: flex; gap: 16px; font-size: 0.85rem; color: var(--text-muted); flex-wrap: wrap;">
+                        <span>스캔 횟수: <strong style="color: var(--accent);">${si.scanCount}</strong>회</span>
+                        <span>수량: <strong style="color: var(--success);">${si.quantity}</strong> ${si.item.unit}</span>
+                        <span>현재 재고: ${si.item.current_quantity} ${si.item.unit}</span>
+                        ${si.item.manufacturer ? `<span>제작사: ${si.item.manufacturer}</span>` : ''}
+                        ${si.item.inspection_required ? `<span class="badge badge-warning">점검 필요</span>` : ''}
+                    </div>
+                </div>
+                <div style="display: flex; flex-direction: column; gap: 8px; align-items: flex-end;">
+                    <div style="display: flex; gap: 8px; align-items: center;">
+                        <button class="btn btn-secondary btn-sm" onclick="decreaseQuantity(${index})" style="min-width: 36px; padding: 6px;">-</button>
+                        <input type="number" 
+                               class="form-input" 
+                               value="${si.quantity}" 
+                               min="1" 
+                               step="1"
+                               style="width: 80px; padding: 6px 8px; text-align: center;"
+                               onchange="updateQuantity(${index}, this.value)">
+                        <button class="btn btn-secondary btn-sm" onclick="increaseQuantity(${index})" style="min-width: 36px; padding: 6px;">+</button>
+                    </div>
+                    <button class="btn btn-danger btn-sm" onclick="removeItem(${index})" style="width: 100%;">
+                        삭제
+                    </button>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    function increaseQuantity(index) {
+        scannedItems[index].quantity += 1;
+        scannedItems[index].scanCount += 1;
+        renderScannedItems();
+    }
+    
+    function decreaseQuantity(index) {
+        if (scannedItems[index].quantity > 1) {
+            scannedItems[index].quantity -= 1;
+            scannedItems[index].scanCount -= 1;
+            renderScannedItems();
+        }
+    }
+    
+    function updateQuantity(index, value) {
+        const qty = parseInt(value) || 1;
+        scannedItems[index].quantity = Math.max(1, qty);
+        renderScannedItems();
+    }
+    
+    function removeItem(index) {
+        scannedItems.splice(index, 1);
+        renderScannedItems();
+    }
+    
+    // 바코드 입력 처리
+    document.getElementById('barcode-input').addEventListener('input', (e) => {
+        clearTimeout(barcodeTimer);
+        const barcode = e.target.value.trim();
+        
+        // 바코드 스캐너는 빠르게 입력되므로, 입력이 멈춘 후 처리
+        barcodeTimer = setTimeout(async () => {
+            if (barcode && barcode.length >= 3) {
+                await handleBarcodeScan(barcode);
+                // 입력 필드 초기화 (다음 스캔 준비)
+                e.target.value = '';
+                e.target.focus();
+            }
+        }, 200);
+    });
+    
+    document.getElementById('barcode-input').addEventListener('keypress', async (e) => {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            clearTimeout(barcodeTimer);
+            const barcode = e.target.value.trim();
+            if (barcode) {
+                await handleBarcodeScan(barcode);
+                e.target.value = '';
+                e.target.focus();
+            }
+        }
+    });
+    
+    async function loadRecentTransactions() {
+        try {
+            const response = await apiRequest('/inventory/transactions/?type=in');
+            if (response && response.ok) {
+                const data = await response.json();
+                const transactions = (data.results || data).slice(0, 5);
+                
+                if (transactions.length === 0) {
+                    document.getElementById('recent-transactions').innerHTML = `
+                        <div style="text-align: center; padding: 24px; color: var(--text-muted);">
+                            최근 입고 내역이 없습니다.
+                        </div>
+                    `;
+                    return;
+                }
+                
+                document.getElementById('recent-transactions').innerHTML = transactions.map(t => `
+                    <div class="low-stock-item">
+                        <div>
+                            <div style="font-weight: 600;">${t.item_name}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${t.transaction_number}</div>
+                        </div>
+                        <div style="text-align: right;">
+                            <div style="color: var(--success); font-weight: 600;">+${t.quantity}</div>
+                            <div style="font-size: 0.8rem; color: var(--text-muted);">${formatDateTime(t.created_at)}</div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+        } catch (error) {
+            console.error('Failed to load transactions:', error);
+        }
+    }
+    
+    function formatDateTime(dateString) {
+        if (!dateString) return '-';
+        return new Date(dateString).toLocaleString('ko-KR');
+    }
+    
+    // 일괄 입고 처리
+    async function processAllStockIn() {
+        if (scannedItems.length === 0) {
+            alert('입고할 품목이 없습니다.');
+            return;
+        }
+        
+        const reference = document.getElementById('reference').value;
+        const remarks = document.getElementById('remarks').value;
+        
+        // 확인 메시지
+        const totalQuantity = scannedItems.reduce((sum, si) => sum + si.quantity, 0);
+        if (!confirm(`총 ${scannedItems.length}개 품목, ${totalQuantity}개를 입고 처리하시겠습니까?`)) {
+            return;
+        }
+        
+        // 처리 중 표시
+        const btn = document.getElementById('btn-process-all');
+        btn.disabled = true;
+        btn.innerHTML = '<span>처리 중...</span>';
+        
+        let successCount = 0;
+        let failCount = 0;
+        const errors = [];
+        
+        // 각 품목별로 입고 처리
+        for (const scannedItem of scannedItems) {
+            try {
+                const response = await apiRequest('/inventory/stock/in/', {
+                    method: 'POST',
+                    body: JSON.stringify({
+                        item_id: scannedItem.item.id,
+                        quantity: scannedItem.quantity,
+                        reference_number: reference,
+                        remarks: `${remarks || ''} (바코드: ${scannedItem.barcode}, 스캔횟수: ${scannedItem.scanCount})`.trim()
+                    })
+                });
+                
+                if (response && response.ok) {
+                    successCount++;
+                } else {
+                    failCount++;
+                    const error = await response.json();
+                    errors.push(`${scannedItem.item.name}: ${error.error || JSON.stringify(error)}`);
+                }
+            } catch (error) {
+                failCount++;
+                errors.push(`${scannedItem.item.name}: 오류 발생`);
+            }
+        }
+        
+        // 결과 표시
+        if (failCount === 0) {
+            // 모두 성공
+            const successMsg = document.createElement('div');
+            successMsg.style.cssText = 'position: fixed; top: 20px; right: 20px; background: var(--success); color: white; padding: 20px 28px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0,0,0,0.3); z-index: 1000; max-width: 400px;';
+            successMsg.innerHTML = `
+                <div style="font-weight: 600; margin-bottom: 8px;">✓ 입고 처리 완료</div>
+                <div style="font-size: 0.9rem;">${successCount}개 품목, 총 ${totalQuantity}개 입고되었습니다</div>
+            `;
+            document.body.appendChild(successMsg);
+            setTimeout(() => successMsg.remove(), 3000);
+            
+            // 폼 초기화
+            scannedItems = [];
+            document.getElementById('reference').value = '';
+            document.getElementById('remarks').value = '';
+            renderScannedItems();
+        } else {
+            // 일부 실패
+            alert(`처리 완료: 성공 ${successCount}개, 실패 ${failCount}개\n\n실패 항목:\n${errors.join('\n')}`);
+        }
+        
+        // 버튼 복원
+        btn.disabled = false;
+        btn.innerHTML = `
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="24" height="24">
+                <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                <line x1="12" y1="17" x2="12" y2="11"></line>
+                <polyline points="9 14 12 11 15 14"></polyline>
+            </svg>
+            일괄 입고 처리 (<span id="total-quantity">0</span>개)
+        `;
+        
+        // 최신 정보 업데이트
+        loadRecentTransactions();
+        
+        // 바코드 입력 필드로 포커스 이동
+        setTimeout(() => {
+            document.getElementById('barcode-input').focus();
+        }, 100);
+    }
+    
+    document.getElementById('btn-process-all').addEventListener('click', processAllStockIn);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        loadRecentTransactions();
+        // 바코드 입력 필드에 자동 포커스
+        setTimeout(() => {
+            document.getElementById('barcode-input').focus();
+        }, 100);
+    });
+</script>
+{% endblock %}

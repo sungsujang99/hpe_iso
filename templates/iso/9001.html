@@ -1,0 +1,312 @@
+{% extends 'base.html' %}
+
+{% block title %}ISO 9001 품질경영{% endblock %}
+
+{% block content %}
+<div style="margin-bottom: 24px;">
+    <h2 style="margin: 0 0 8px 0; font-size: 1.75rem; font-weight: 600;">ISO 9001 품질경영 시스템</h2>
+    <p style="margin: 0; color: var(--text-muted);">품질경영 매뉴얼 및 관련 절차서</p>
+</div>
+
+<div style="display: grid; grid-template-columns: 350px 1fr; gap: 24px; height: calc(100vh - 200px);">
+    <!-- 문서 목록 (왼쪽) -->
+    <div class="card" style="height: 100%; overflow-y: auto; padding: 0;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border); position: sticky; top: 0; background: white; z-index: 10;">
+            <h3 style="margin: 0; font-size: 1.1rem; font-weight: 600;">문서 목록</h3>
+        </div>
+        
+        <!-- 매뉴얼 섹션 -->
+        <div style="padding: 16px; border-bottom: 1px solid var(--border);">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">매뉴얼</div>
+            <div id="manual-list"></div>
+        </div>
+        
+        <!-- 절차서 섹션 -->
+        <div style="padding: 16px;">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">절차서</div>
+            <div id="procedure-list"></div>
+        </div>
+        
+        <!-- 지침서 섹션 -->
+        <div style="padding: 16px; border-top: 1px solid var(--border);">
+            <div style="font-size: 0.85rem; font-weight: 600; color: var(--text-muted); margin-bottom: 12px; text-transform: uppercase;">지침서</div>
+            <div id="instruction-list"></div>
+        </div>
+    </div>
+    
+    <!-- PDF 뷰어 (오른쪽) -->
+    <div class="card" style="height: 100%; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
+        <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
+            <div>
+                <h3 id="selected-doc-title" style="margin: 0; font-size: 1.1rem; font-weight: 600;">문서를 선택하세요</h3>
+                <p id="selected-doc-number" style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem;"></p>
+            </div>
+            <button id="btn-download-pdf" class="btn btn-primary" style="display: none;" onclick="downloadSelectedPDF()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
+                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                    <polyline points="7 10 12 15 17 10"></polyline>
+                    <line x1="12" y1="15" x2="12" y2="3"></line>
+                </svg>
+                PDF 다운로드
+            </button>
+        </div>
+        
+        <div id="pdf-viewer" style="flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f5f5f5;">
+            <div style="text-align: center; color: var(--text-muted);">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64" style="margin: 0 auto 16px; opacity: 0.3;">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                    <polyline points="14 2 14 8 20 8"></polyline>
+                    <line x1="16" y1="13" x2="8" y2="13"></line>
+                    <line x1="16" y1="17" x2="8" y2="17"></line>
+                    <polyline points="10 9 9 9 8 9"></polyline>
+                </svg>
+                <p style="font-size: 1.1rem;">왼쪽 목록에서 문서를 선택하여<br/>PDF를 확인하세요</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.doc-item {
+    padding: 12px;
+    margin-bottom: 8px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: white;
+}
+
+.doc-item:hover {
+    background: var(--bg-hover);
+    border-color: var(--primary);
+    transform: translateX(4px);
+}
+
+.doc-item.active {
+    background: var(--primary);
+    color: white;
+    border-color: var(--primary);
+}
+
+.doc-item.active .doc-status {
+    color: rgba(255, 255, 255, 0.8) !important;
+}
+
+.doc-number {
+    font-size: 0.85rem;
+    font-weight: 600;
+    margin-bottom: 4px;
+}
+
+.doc-title {
+    font-size: 0.9rem;
+    margin-bottom: 4px;
+    line-height: 1.3;
+}
+
+.doc-status {
+    font-size: 0.75rem;
+    color: var(--text-muted);
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 2px 8px;
+    border-radius: 12px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.status-approved {
+    background: #d1f4e0;
+    color: #0d7d3f;
+}
+
+.status-pending {
+    background: #fff4d1;
+    color: #8b6914;
+}
+
+.status-draft {
+    background: #e5e7eb;
+    color: #4b5563;
+}
+</style>
+
+<script>
+    let documents = [];
+    let selectedDocumentId = null;
+    
+    // API 요청 헬퍼
+    async function apiRequest(url, options = {}) {
+        const token = localStorage.getItem('access_token');
+        if (!token) {
+            window.location.href = '/login/';
+            return null;
+        }
+        
+        const response = await fetch(`/api/v1${url}`, {
+            ...options,
+            headers: {
+                ...options.headers,
+                'Authorization': `Bearer ${token}`,
+                'Content-Type': 'application/json',
+            },
+        });
+        
+        if (response.status === 401) {
+            localStorage.removeItem('access_token');
+            window.location.href = '/login/';
+            return null;
+        }
+        
+        return response;
+    }
+    
+    // 상태 텍스트 변환
+    function getStatusText(status) {
+        const statusMap = {
+            'draft': '작성중',
+            'pending_review': '검토대기',
+            'pending_approval': '승인대기',
+            'approved': '승인완료',
+            'rejected': '반려'
+        };
+        return statusMap[status] || status;
+    }
+    
+    // 상태 클래스 변환
+    function getStatusClass(status) {
+        if (status === 'approved') return 'status-approved';
+        if (status === 'pending_review' || status === 'pending_approval') return 'status-pending';
+        return 'status-draft';
+    }
+    
+    // ISO 9001 문서 로드
+    async function loadDocuments() {
+        try {
+            // HP-QM (매뉴얼), HP-QP (절차서), HP-QI (지침서) 카테고리의 모든 문서 가져오기
+            const response = await apiRequest('/documents/items/?category__code__in=HP-QM,HP-QP,HP-QI&page_size=100');
+            if (response && response.ok) {
+                const data = await response.json();
+                documents = data.results || data;
+                
+                // 카테고리별로 분류
+                const manuals = documents.filter(doc => doc.category_code === 'HP-QM');
+                const procedures = documents.filter(doc => doc.category_code === 'HP-QP');
+                const instructions = documents.filter(doc => doc.category_code === 'HP-QI');
+                
+                // 리스트 렌더링
+                renderDocumentList('manual-list', manuals);
+                renderDocumentList('procedure-list', procedures);
+                renderDocumentList('instruction-list', instructions);
+            }
+        } catch (error) {
+            console.error('Failed to load documents:', error);
+        }
+    }
+    
+    // 문서 리스트 렌더링
+    function renderDocumentList(elementId, docs) {
+        const container = document.getElementById(elementId);
+        if (docs.length === 0) {
+            container.innerHTML = '<div style="padding: 12px; text-align: center; color: var(--text-muted); font-size: 0.9rem;">문서 없음</div>';
+            return;
+        }
+        
+        container.innerHTML = docs.map(doc => `
+            <div class="doc-item" onclick="selectDocument('${doc.id}')">
+                <div class="doc-number">${doc.document_number}</div>
+                <div class="doc-title">${doc.title}</div>
+                <div class="doc-status">
+                    <span class="status-badge ${getStatusClass(doc.status)}">${getStatusText(doc.status)}</span>
+                    <span style="margin-left: 8px;">${new Date(doc.created_at).toLocaleDateString('ko-KR')}</span>
+                </div>
+            </div>
+        `).join('');
+    }
+    
+    // 문서 선택
+    async function selectDocument(documentId) {
+        selectedDocumentId = documentId;
+        
+        // 활성 상태 표시
+        document.querySelectorAll('.doc-item').forEach(item => item.classList.remove('active'));
+        event.currentTarget.classList.add('active');
+        
+        const doc = documents.find(d => d.id === documentId);
+        if (!doc) return;
+        
+        // 문서 정보 표시
+        document.getElementById('selected-doc-title').textContent = doc.title;
+        document.getElementById('selected-doc-number').textContent = `${doc.document_number} | ${getStatusText(doc.status)}`;
+        document.getElementById('btn-download-pdf').style.display = 'flex';
+        
+        // PDF 로드
+        await loadPDF(documentId);
+    }
+    
+    // PDF 로드
+    async function loadPDF(documentId) {
+        const viewer = document.getElementById('pdf-viewer');
+        viewer.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p style="margin-top: 16px; color: var(--text-muted);">PDF 로딩 중...</p></div>';
+        
+        try {
+            const response = await apiRequest(`/documents/items/${documentId}/download_pdf/`);
+            if (response && response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                
+                // iframe으로 PDF 표시
+                viewer.innerHTML = `<iframe src="${url}" style="width: 100%; height: 100%; border: none;"></iframe>`;
+            } else {
+                viewer.innerHTML = `
+                    <div style="text-align: center; color: var(--text-muted);">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64" style="margin: 0 auto 16px; opacity: 0.3;">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <line x1="12" y1="8" x2="12" y2="12"></line>
+                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                        </svg>
+                        <p style="font-size: 1.1rem;">PDF 생성 실패</p>
+                        <p style="font-size: 0.9rem;">문서가 아직 승인되지 않았거나<br/>PDF 생성 중 오류가 발생했습니다.</p>
+                    </div>
+                `;
+            }
+        } catch (error) {
+            console.error('Failed to load PDF:', error);
+            viewer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">PDF 로딩 실패</div>';
+        }
+    }
+    
+    // PDF 다운로드
+    async function downloadSelectedPDF() {
+        if (!selectedDocumentId) return;
+        
+        try {
+            const response = await apiRequest(`/documents/items/${selectedDocumentId}/download_pdf/`);
+            if (response && response.ok) {
+                const blob = await response.blob();
+                const url = window.URL.createObjectURL(blob);
+                
+                const doc = documents.find(d => d.id === selectedDocumentId);
+                const filename = doc ? `${doc.document_number}.pdf` : 'document.pdf';
+                
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                window.URL.revokeObjectURL(url);
+                document.body.removeChild(a);
+            }
+        } catch (error) {
+            console.error('Failed to download PDF:', error);
+            alert('PDF 다운로드 중 오류가 발생했습니다.');
+        }
+    }
+    
+    // 페이지 로드 시
+    document.addEventListener('DOMContentLoaded', loadDocuments);
+</script>
+{% endblock %}

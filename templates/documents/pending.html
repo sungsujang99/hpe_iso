@@ -1,0 +1,179 @@
+{% extends "base.html" %}
+
+{% block title %}승인 대기 - HPE System{% endblock %}
+{% block nav_documents_pending %}active{% endblock %}
+{% block page_title %}승인 대기 문서{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<span>승인 대기</span>
+{% endblock %}
+
+{% block content %}
+<!-- 탭 -->
+<div style="display: flex; gap: 12px; margin-bottom: 24px;">
+    <button class="btn btn-primary" id="tab-review" onclick="showTab('review')">
+        검토 대기
+        <span class="nav-badge" id="review-count" style="margin-left: 8px;">0</span>
+    </button>
+    <button class="btn btn-secondary" id="tab-approval" onclick="showTab('approval')">
+        승인 대기
+        <span class="nav-badge" id="approval-count" style="margin-left: 8px; background: var(--warning);">0</span>
+    </button>
+</div>
+
+<!-- 검토 대기 -->
+<div class="card" id="review-section">
+    <div class="card-header">
+        <h3 class="card-title">검토 대기 문서</h3>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>문서번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>제출일</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody id="review-table">
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- 승인 대기 -->
+<div class="card" id="approval-section" style="display: none;">
+    <div class="card-header">
+        <h3 class="card-title">승인 대기 문서</h3>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>문서번호</th>
+                    <th>제목</th>
+                    <th>작성자</th>
+                    <th>검토자</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody id="approval-table">
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    function showTab(tab) {
+        document.getElementById('review-section').style.display = tab === 'review' ? 'block' : 'none';
+        document.getElementById('approval-section').style.display = tab === 'approval' ? 'block' : 'none';
+        document.getElementById('tab-review').className = tab === 'review' ? 'btn btn-primary' : 'btn btn-secondary';
+        document.getElementById('tab-approval').className = tab === 'approval' ? 'btn btn-primary' : 'btn btn-secondary';
+    }
+    
+    async function loadPendingDocuments() {
+        // 검토 대기
+        try {
+            const reviewResponse = await apiRequest('/documents/pending-review/');
+            if (reviewResponse && reviewResponse.ok) {
+                const docs = await reviewResponse.json();
+                const list = Array.isArray(docs) ? docs : (docs.results || []);
+                document.getElementById('review-count').textContent = list.length;
+                renderTable('review-table', list);
+            }
+        } catch (error) {
+            console.error('Failed to load review pending:', error);
+        }
+        
+        // 승인 대기
+        try {
+            const approvalResponse = await apiRequest('/documents/pending-approval/');
+            if (approvalResponse && approvalResponse.ok) {
+                const docs = await approvalResponse.json();
+                const list = Array.isArray(docs) ? docs : (docs.results || []);
+                document.getElementById('approval-count').textContent = list.length;
+                renderApprovalTable('approval-table', list);
+            }
+        } catch (error) {
+            console.error('Failed to load approval pending:', error);
+        }
+    }
+    
+    function renderTable(tableId, docs) {
+        const tbody = document.getElementById(tableId);
+        
+        if (docs.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        대기 중인 문서가 없습니다.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = docs.map(doc => `
+            <tr>
+                <td><a href="/documents/${doc.id}/" style="color: var(--accent); font-weight: 600;">${doc.document_number}</a></td>
+                <td>${doc.title}</td>
+                <td>${doc.created_by_name || '-'}</td>
+                <td>${formatDate(doc.submitted_at || doc.created_at)}</td>
+                <td>
+                    <a href="/documents/${doc.id}/" class="btn btn-primary btn-sm">검토하기</a>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function renderApprovalTable(tableId, docs) {
+        const tbody = document.getElementById(tableId);
+        
+        if (docs.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        대기 중인 문서가 없습니다.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = docs.map(doc => `
+            <tr>
+                <td><a href="/documents/${doc.id}/" style="color: var(--accent); font-weight: 600;">${doc.document_number}</a></td>
+                <td>${doc.title}</td>
+                <td>${doc.created_by_name || '-'}</td>
+                <td>${doc.reviewed_by_name || '-'}</td>
+                <td>
+                    <a href="/documents/${doc.id}/" class="btn btn-success btn-sm">승인하기</a>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        return new Date(dateString).toLocaleDateString('ko-KR');
+    }
+    
+    document.addEventListener('DOMContentLoaded', loadPendingDocuments);
+</script>
+{% endblock %}

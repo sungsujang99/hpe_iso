@@ -1,0 +1,566 @@
+{% extends "base.html" %}
+
+{% block title %}사용자 관리 - HPE System{% endblock %}
+{% block nav_users %}active{% endblock %}
+{% block page_title %}사용자 관리{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<span>사용자 관리</span>
+{% endblock %}
+
+{% block content %}
+<!-- Header Actions -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div style="display: flex; gap: 12px; flex: 1;">
+        <input type="text" 
+               class="form-input" 
+               id="search-input" 
+               placeholder="아이디, 이름, 부서로 검색..." 
+               style="flex: 1; max-width: 400px; padding: 12px 16px; border-radius: 12px;">
+        <select class="form-select" id="filter-department" style="width: 160px; padding: 12px 16px; border-radius: 12px;">
+            <option value="">전체 부서</option>
+        </select>
+        <select class="form-select" id="filter-role" style="width: 140px; padding: 12px 16px; border-radius: 12px;">
+            <option value="">전체 역할</option>
+            <option value="admin">관리자</option>
+            <option value="manager">중간관리자</option>
+            <option value="user">일반사용자</option>
+        </select>
+    </div>
+    <div style="display: flex; gap: 12px;">
+        <a href="/departments/" class="btn btn-secondary">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                <path d="M2 17l10 5 10-5"></path>
+                <path d="M2 12l10 5 10-5"></path>
+            </svg>
+            부서 관리
+        </a>
+        <button class="btn btn-success" onclick="showAddUserModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            사용자 추가
+        </button>
+    </div>
+</div>
+
+<!-- Users Table -->
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>아이디</th>
+                    <th>이름</th>
+                    <th>부서</th>
+                    <th>직책</th>
+                    <th>부서장</th>
+                    <th>역할</th>
+                    <th>상태</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody id="users-table">
+                <tr>
+                    <td colspan="8" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add User Modal -->
+<div id="add-user-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;">
+        <div class="card-header">
+            <h3 class="card-title">사용자 추가</h3>
+            <button class="btn btn-secondary btn-sm" onclick="closeAddUserModal()" style="padding: 8px 12px;">✕</button>
+        </div>
+        <form id="add-user-form">
+            <div class="form-group">
+                <label class="form-label">아이디 *</label>
+                <input type="text" class="form-input" id="add-username" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">비밀번호 *</label>
+                <input type="password" class="form-input" id="add-password" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">비밀번호 확인 *</label>
+                <input type="password" class="form-input" id="add-password-confirm" required>
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label class="form-label">성 *</label>
+                    <input type="text" class="form-input" id="add-last-name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">이름 *</label>
+                    <input type="text" class="form-input" id="add-first-name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">이메일</label>
+                <input type="email" class="form-input" id="add-email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">부서</label>
+                <select class="form-select" id="add-department">
+                    <option value="">부서 선택</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">직책</label>
+                <input type="text" class="form-input" id="add-position" placeholder="예: 팀장, 사원">
+            </div>
+            <div class="form-group">
+                <label class="form-label">연락처</label>
+                <input type="text" class="form-input" id="add-phone" placeholder="010-1234-5678">
+            </div>
+            <div class="form-group">
+                <label class="form-label">사번</label>
+                <input type="text" class="form-input" id="add-employee-id">
+            </div>
+            <div class="form-group">
+                <label class="form-label">부서장 여부</label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="add-is-department-head" style="width: 20px; height: 20px;">
+                        <span>부서장으로 설정</span>
+                    </label>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">(부서장은 중간관리자 권한을 가집니다)</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">사용자 추가</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAddUserModal()" style="flex: 1;">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit User Modal -->
+<div id="edit-user-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;">
+        <div class="card-header">
+            <h3 class="card-title">사용자 수정</h3>
+            <button class="btn btn-secondary btn-sm" onclick="closeEditUserModal()" style="padding: 8px 12px;">✕</button>
+        </div>
+        <form id="edit-user-form">
+            <input type="hidden" id="edit-user-id">
+            <div class="form-group">
+                <label class="form-label">아이디 *</label>
+                <input type="text" class="form-input" id="edit-username" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">비밀번호 변경 (선택사항)</label>
+                <input type="password" class="form-input" id="edit-password" placeholder="변경할 비밀번호 입력">
+            </div>
+            <div class="form-group">
+                <label class="form-label">비밀번호 확인</label>
+                <input type="password" class="form-input" id="edit-password-confirm" placeholder="비밀번호 확인">
+            </div>
+            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 16px;">
+                <div class="form-group">
+                    <label class="form-label">성 *</label>
+                    <input type="text" class="form-input" id="edit-last-name" required>
+                </div>
+                <div class="form-group">
+                    <label class="form-label">이름 *</label>
+                    <input type="text" class="form-input" id="edit-first-name" required>
+                </div>
+            </div>
+            <div class="form-group">
+                <label class="form-label">이메일</label>
+                <input type="email" class="form-input" id="edit-email">
+            </div>
+            <div class="form-group">
+                <label class="form-label">부서</label>
+                <select class="form-select" id="edit-department">
+                    <option value="">부서 선택</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label class="form-label">직책</label>
+                <input type="text" class="form-input" id="edit-position" placeholder="예: 팀장, 사원">
+            </div>
+            <div class="form-group">
+                <label class="form-label">연락처</label>
+                <input type="text" class="form-input" id="edit-phone" placeholder="010-1234-5678">
+            </div>
+            <div class="form-group">
+                <label class="form-label">부서장 여부</label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="edit-is-department-head" style="width: 20px; height: 20px;">
+                        <span>부서장으로 설정</span>
+                    </label>
+                    <span style="font-size: 0.8rem; color: var(--text-muted);">(부서장은 중간관리자 권한을 가집니다)</span>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">수정</button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditUserModal()" style="flex: 1;">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let allUsers = [];
+    let allDepartments = [];
+    let currentEditUserId = null;
+    
+    async function loadDepartments() {
+        try {
+            const response = await apiRequest('/auth/departments/?is_active=true');
+            if (response && response.ok) {
+                const data = await response.json();
+                allDepartments = data.results || data;
+                populateDepartmentSelects();
+            }
+        } catch (error) {
+            console.error('Failed to load departments:', error);
+        }
+    }
+    
+    function populateDepartmentSelects() {
+        // 필터 드롭다운
+        const filterSelect = document.getElementById('filter-department');
+        filterSelect.innerHTML = '<option value="">전체 부서</option>';
+        allDepartments.forEach(dept => {
+            const option = document.createElement('option');
+            option.value = dept.id;
+            option.textContent = dept.name;
+            filterSelect.appendChild(option);
+        });
+        
+        // 추가 모달 드롭다운
+        const addSelect = document.getElementById('add-department');
+        if (addSelect) {
+            addSelect.innerHTML = '<option value="">부서 선택</option>';
+            allDepartments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.id;
+                option.textContent = dept.name;
+                addSelect.appendChild(option);
+            });
+        }
+        
+        // 수정 모달 드롭다운
+        const editSelect = document.getElementById('edit-department');
+        if (editSelect) {
+            editSelect.innerHTML = '<option value="">부서 선택</option>';
+            allDepartments.forEach(dept => {
+                const option = document.createElement('option');
+                option.value = dept.id;
+                option.textContent = dept.name;
+                editSelect.appendChild(option);
+            });
+        }
+    }
+    
+    async function loadUsers() {
+        try {
+            const response = await apiRequest('/auth/users/');
+            if (response && response.ok) {
+                const data = await response.json();
+                allUsers = data.results || data;
+                renderUsers(allUsers);
+            }
+        } catch (error) {
+            console.error('Failed to load users:', error);
+        }
+    }
+    
+    function renderUsers(users) {
+        const tbody = document.getElementById('users-table');
+        
+        if (users.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="8" class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <p>등록된 사용자가 없습니다.</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = users.map((user, index) => {
+            return `
+            <tr>
+                <td style="font-weight: 600; color: var(--accent);">${user.username}</td>
+                <td>${user.full_name || '-'}</td>
+                <td>${user.department_name || '-'}</td>
+                <td>${user.position || '-'}</td>
+                <td>${user.is_department_head ? '<span class="badge badge-warning">부서장</span>' : '-'}</td>
+                <td>${getRoleBadge(user.role)}</td>
+                <td>${user.is_active ? '<span class="badge badge-success">활성</span>' : '<span class="badge badge-danger">비활성</span>'}</td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="editUserById('${user.id}')">수정</button>
+                        ${user.role !== 'admin' ? `<button class="btn btn-danger btn-sm" onclick="deleteUser('${user.id}')">삭제</button>` : ''}
+                    </div>
+                </td>
+            </tr>
+        `;
+        }).join('');
+    }
+    
+    function getRoleBadge(role) {
+        const badges = {
+            'admin': '<span class="badge badge-danger">관리자</span>',
+            'manager': '<span class="badge badge-warning">중간관리자</span>',
+            'user': '<span class="badge badge-info">일반사용자</span>'
+        };
+        return badges[role] || role;
+    }
+    
+    function filterUsers() {
+        const departmentId = document.getElementById('filter-department').value;
+        const role = document.getElementById('filter-role').value;
+        const search = document.getElementById('search-input').value.toLowerCase();
+        
+        let filtered = allUsers;
+        
+        if (departmentId) {
+            filtered = filtered.filter(u => u.department == departmentId);
+        }
+        
+        if (role) {
+            filtered = filtered.filter(u => u.role === role);
+        }
+        
+        if (search) {
+            filtered = filtered.filter(u => 
+                (u.username || '').toLowerCase().includes(search) ||
+                (u.full_name || '').toLowerCase().includes(search) ||
+                (u.department_name || '').toLowerCase().includes(search)
+            );
+        }
+        
+        renderUsers(filtered);
+    }
+    
+    function showAddUserModal() {
+        document.getElementById('add-user-modal').style.display = 'flex';
+        document.getElementById('add-username').focus();
+    }
+    
+    function closeAddUserModal() {
+        document.getElementById('add-user-modal').style.display = 'none';
+        document.getElementById('add-user-form').reset();
+    }
+    
+    function showEditUserModal(user) {
+        currentEditUserId = user.id;
+        document.getElementById('edit-user-id').value = user.id;
+        document.getElementById('edit-username').value = user.username || '';
+        document.getElementById('edit-password').value = '';
+        document.getElementById('edit-password-confirm').value = '';
+        document.getElementById('edit-first-name').value = user.first_name || '';
+        document.getElementById('edit-last-name').value = user.last_name || '';
+        document.getElementById('edit-email').value = user.email || '';
+        document.getElementById('edit-department').value = user.department || '';
+        document.getElementById('edit-position').value = user.position || '';
+        document.getElementById('edit-phone').value = user.phone || '';
+        document.getElementById('edit-is-department-head').checked = user.is_department_head || false;
+        
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.style.display = 'flex';
+            setTimeout(() => {
+                document.getElementById('edit-username').focus();
+            }, 100);
+        }
+    }
+    
+    function showAddUserModal() {
+        document.getElementById('add-user-modal').style.display = 'flex';
+        document.getElementById('add-username').focus();
+    }
+    
+    function closeEditUserModal() {
+        const modal = document.getElementById('edit-user-modal');
+        if (modal) {
+            modal.style.display = 'none';
+            document.getElementById('edit-user-form').reset();
+            currentEditUserId = null;
+        }
+    }
+    
+    function editUserById(userId) {
+        const user = allUsers.find(u => String(u.id) === String(userId));
+        if (user) {
+            showEditUserModal(user);
+        } else {
+            alert('사용자 정보를 찾을 수 없습니다.');
+        }
+    }
+    
+    async function deleteUser(userId) {
+        if (!confirm('정말 이 사용자를 삭제하시겠습니까?')) {
+            return;
+        }
+        
+        try {
+            const response = await apiRequest(`/auth/users/${userId}/`, {
+                method: 'DELETE'
+            });
+            
+            if (response && response.ok) {
+                alert('사용자가 삭제되었습니다.');
+                loadUsers();
+            } else {
+                const error = await response.json();
+                alert('삭제 실패: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    }
+    
+    document.getElementById('add-user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const password = document.getElementById('add-password').value;
+        const passwordConfirm = document.getElementById('add-password-confirm').value;
+        
+        if (password !== passwordConfirm) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+        
+        const isDepartmentHead = document.getElementById('add-is-department-head').checked;
+        const departmentId = document.getElementById('add-department').value;
+        
+        if (isDepartmentHead && !departmentId) {
+            alert('부서장으로 설정하려면 부서를 선택해주세요.');
+            return;
+        }
+        
+        try {
+            const response = await apiRequest('/auth/users/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    username: document.getElementById('add-username').value.trim(),
+                    password: password,
+                    password_confirm: passwordConfirm,
+                    first_name: document.getElementById('add-first-name').value.trim(),
+                    last_name: document.getElementById('add-last-name').value.trim(),
+                    email: document.getElementById('add-email').value.trim() || '',
+                    department: departmentId || null,
+                    position: document.getElementById('add-position').value.trim() || '',
+                    phone: document.getElementById('add-phone').value.trim() || '',
+                    employee_id: document.getElementById('add-employee-id').value.trim() || '',
+                    is_department_head: isDepartmentHead
+                })
+            });
+            
+            if (response && response.ok) {
+                closeAddUserModal();
+                loadUsers();
+                alert('사용자가 추가되었습니다.');
+            } else {
+                const error = await response.json();
+                alert('추가 실패: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    });
+    
+    document.getElementById('edit-user-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const userId = document.getElementById('edit-user-id').value;
+        const username = document.getElementById('edit-username').value.trim();
+        const password = document.getElementById('edit-password').value;
+        const passwordConfirm = document.getElementById('edit-password-confirm').value;
+        const isDepartmentHead = document.getElementById('edit-is-department-head').checked;
+        const departmentId = document.getElementById('edit-department').value;
+        
+        if (!username) {
+            alert('아이디는 필수입니다.');
+            return;
+        }
+        
+        if (password && password !== passwordConfirm) {
+            alert('비밀번호가 일치하지 않습니다.');
+            return;
+        }
+        
+        if (isDepartmentHead && !departmentId) {
+            alert('부서장으로 설정하려면 부서를 선택해주세요.');
+            return;
+        }
+        
+        const updateData = {
+            username: username,
+            first_name: document.getElementById('edit-first-name').value.trim(),
+            last_name: document.getElementById('edit-last-name').value.trim(),
+            email: document.getElementById('edit-email').value.trim() || '',
+            department: departmentId || null,
+            position: document.getElementById('edit-position').value.trim() || '',
+            phone: document.getElementById('edit-phone').value.trim() || '',
+            is_department_head: isDepartmentHead
+        };
+        
+        // 비밀번호 변경이 있는 경우만 추가
+        if (password) {
+            updateData.password = password;
+            updateData.password_confirm = passwordConfirm;
+        }
+        
+        try {
+            const response = await apiRequest(`/auth/users/${userId}/`, {
+                method: 'PATCH',
+                body: JSON.stringify(updateData)
+            });
+            
+            if (response && response.ok) {
+                closeEditUserModal();
+                loadUsers();
+                alert('사용자 정보가 수정되었습니다.');
+            } else {
+                const error = await response.json();
+                let errorMessage = '수정 실패';
+                if (error.username && Array.isArray(error.username)) {
+                    errorMessage = error.username[0];
+                } else if (error.password && Array.isArray(error.password)) {
+                    errorMessage = error.password[0];
+                } else if (error.detail) {
+                    errorMessage = error.detail;
+                } else {
+                    errorMessage = JSON.stringify(error);
+                }
+                alert(errorMessage);
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    });
+    
+    document.getElementById('search-input').addEventListener('input', filterUsers);
+    document.getElementById('filter-department').addEventListener('change', filterUsers);
+    document.getElementById('filter-role').addEventListener('change', filterUsers);
+    
+    document.addEventListener('DOMContentLoaded', async () => {
+        await loadDepartments();
+        await loadUsers();
+    });
+</script>
+{% endblock %}

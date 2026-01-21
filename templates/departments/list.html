@@ -1,0 +1,309 @@
+{% extends "base.html" %}
+
+{% block title %}부서 관리 - HPE System{% endblock %}
+{% block nav_departments %}active{% endblock %}
+{% block page_title %}부서 관리{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<a href="/users/">사용자 관리</a>
+<span>›</span>
+<span>부서 관리</span>
+{% endblock %}
+
+{% block content %}
+<!-- Header Actions -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div style="display: flex; gap: 12px; flex: 1;">
+        <input type="text" 
+               class="form-input" 
+               id="search-input" 
+               placeholder="부서명으로 검색..." 
+               style="flex: 1; max-width: 400px; padding: 12px 16px; border-radius: 12px;">
+    </div>
+    <div style="display: flex; gap: 12px;">
+        <button class="btn btn-success" onclick="showAddDepartmentModal()">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                <line x1="12" y1="5" x2="12" y2="19"></line>
+                <line x1="5" y1="12" x2="19" y2="12"></line>
+            </svg>
+            부서 추가
+        </button>
+    </div>
+</div>
+
+<!-- Departments Table -->
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>부서명</th>
+                    <th>부서코드</th>
+                    <th>설명</th>
+                    <th>소속 인원</th>
+                    <th>상태</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody id="departments-table">
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Add Department Modal -->
+<div id="add-department-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="max-width: 500px; width: 100%;">
+        <div class="card-header">
+            <h3 class="card-title">부서 추가</h3>
+            <button class="btn btn-secondary btn-sm" onclick="closeAddDepartmentModal()" style="padding: 8px 12px;">✕</button>
+        </div>
+        <form id="add-department-form">
+            <div class="form-group">
+                <label class="form-label">부서명 *</label>
+                <input type="text" class="form-input" id="add-dept-name" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">부서코드</label>
+                <input type="text" class="form-input" id="add-dept-code" placeholder="자동 생성됨">
+            </div>
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <textarea class="form-input" id="add-dept-description" rows="3" placeholder="부서 설명"></textarea>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">부서 추가</button>
+                <button type="button" class="btn btn-secondary" onclick="closeAddDepartmentModal()" style="flex: 1;">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<!-- Edit Department Modal -->
+<div id="edit-department-modal" style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; align-items: center; justify-content: center; padding: 20px;">
+    <div class="card" style="max-width: 500px; width: 100%;">
+        <div class="card-header">
+            <h3 class="card-title">부서 수정</h3>
+            <button class="btn btn-secondary btn-sm" onclick="closeEditDepartmentModal()" style="padding: 8px 12px;">✕</button>
+        </div>
+        <form id="edit-department-form">
+            <input type="hidden" id="edit-dept-id">
+            <div class="form-group">
+                <label class="form-label">부서명 *</label>
+                <input type="text" class="form-input" id="edit-dept-name" required>
+            </div>
+            <div class="form-group">
+                <label class="form-label">부서코드</label>
+                <input type="text" class="form-input" id="edit-dept-code">
+            </div>
+            <div class="form-group">
+                <label class="form-label">설명</label>
+                <textarea class="form-input" id="edit-dept-description" rows="3"></textarea>
+            </div>
+            <div class="form-group">
+                <label class="form-label">활성화</label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
+                        <input type="checkbox" id="edit-dept-active" style="width: 20px; height: 20px;" checked>
+                        <span>활성화</span>
+                    </label>
+                </div>
+            </div>
+            <div style="display: flex; gap: 12px; margin-top: 24px;">
+                <button type="submit" class="btn btn-success" style="flex: 1;">수정</button>
+                <button type="button" class="btn btn-secondary" onclick="closeEditDepartmentModal()" style="flex: 1;">취소</button>
+            </div>
+        </form>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let allDepartments = [];
+    
+    async function loadDepartments() {
+        try {
+            const response = await apiRequest('/auth/departments/');
+            if (response && response.ok) {
+                const data = await response.json();
+                allDepartments = data.results || data;
+                renderDepartments(allDepartments);
+            }
+        } catch (error) {
+            console.error('Failed to load departments:', error);
+        }
+    }
+    
+    function renderDepartments(departments) {
+        const tbody = document.getElementById('departments-table');
+        
+        if (departments.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M12 2L2 7l10 5 10-5-10-5z"></path>
+                            <path d="M2 17l10 5 10-5"></path>
+                            <path d="M2 12l10 5 10-5"></path>
+                        </svg>
+                        <p>등록된 부서가 없습니다.</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = departments.map(dept => `
+            <tr>
+                <td style="font-weight: 600; color: var(--accent);">${dept.name}</td>
+                <td>${dept.code || '-'}</td>
+                <td>${dept.description || '-'}</td>
+                <td>${dept.member_count || 0}명</td>
+                <td>${dept.is_active ? '<span class="badge badge-success">활성</span>' : '<span class="badge badge-danger">비활성</span>'}</td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-secondary btn-sm" onclick="editDepartment(${dept.id})">수정</button>
+                        ${dept.member_count === 0 ? `<button class="btn btn-danger btn-sm" onclick="deleteDepartment(${dept.id})">삭제</button>` : '<span style="color: var(--text-muted); font-size: 0.8rem;">소속 인원 있음</span>'}
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function filterDepartments() {
+        const search = document.getElementById('search-input').value.toLowerCase();
+        let filtered = allDepartments;
+        
+        if (search) {
+            filtered = filtered.filter(d => 
+                (d.name || '').toLowerCase().includes(search) ||
+                (d.code || '').toLowerCase().includes(search)
+            );
+        }
+        
+        renderDepartments(filtered);
+    }
+    
+    function showAddDepartmentModal() {
+        document.getElementById('add-department-modal').style.display = 'flex';
+        document.getElementById('add-dept-name').focus();
+    }
+    
+    function closeAddDepartmentModal() {
+        document.getElementById('add-department-modal').style.display = 'none';
+        document.getElementById('add-department-form').reset();
+    }
+    
+    function showEditDepartmentModal(dept) {
+        document.getElementById('edit-dept-id').value = dept.id;
+        document.getElementById('edit-dept-name').value = dept.name || '';
+        document.getElementById('edit-dept-code').value = dept.code || '';
+        document.getElementById('edit-dept-description').value = dept.description || '';
+        document.getElementById('edit-dept-active').checked = dept.is_active !== false;
+        document.getElementById('edit-department-modal').style.display = 'flex';
+    }
+    
+    function closeEditDepartmentModal() {
+        document.getElementById('edit-department-modal').style.display = 'none';
+        document.getElementById('edit-department-form').reset();
+    }
+    
+    async function editDepartment(deptId) {
+        const dept = allDepartments.find(d => d.id === deptId);
+        if (dept) {
+            showEditDepartmentModal(dept);
+        }
+    }
+    
+    async function deleteDepartment(deptId) {
+        if (!confirm('정말 이 부서를 삭제하시겠습니까?')) {
+            return;
+        }
+        
+        try {
+            const response = await apiRequest(`/auth/departments/${deptId}/`, {
+                method: 'DELETE'
+            });
+            
+            if (response && response.ok) {
+                alert('부서가 삭제되었습니다.');
+                loadDepartments();
+            } else {
+                const error = await response.json();
+                alert('삭제 실패: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    }
+    
+    document.getElementById('add-department-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        try {
+            const response = await apiRequest('/auth/departments/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    name: document.getElementById('add-dept-name').value.trim(),
+                    code: document.getElementById('add-dept-code').value.trim() || null,
+                    description: document.getElementById('add-dept-description').value.trim() || ''
+                })
+            });
+            
+            if (response && response.ok) {
+                closeAddDepartmentModal();
+                loadDepartments();
+                alert('부서가 추가되었습니다.');
+            } else {
+                const error = await response.json();
+                alert('추가 실패: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    });
+    
+    document.getElementById('edit-department-form').addEventListener('submit', async (e) => {
+        e.preventDefault();
+        
+        const deptId = document.getElementById('edit-dept-id').value;
+        
+        try {
+            const response = await apiRequest(`/auth/departments/${deptId}/`, {
+                method: 'PATCH',
+                body: JSON.stringify({
+                    name: document.getElementById('edit-dept-name').value.trim(),
+                    code: document.getElementById('edit-dept-code').value.trim() || null,
+                    description: document.getElementById('edit-dept-description').value.trim() || '',
+                    is_active: document.getElementById('edit-dept-active').checked
+                })
+            });
+            
+            if (response && response.ok) {
+                closeEditDepartmentModal();
+                loadDepartments();
+                alert('부서 정보가 수정되었습니다.');
+            } else {
+                const error = await response.json();
+                alert('수정 실패: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    });
+    
+    document.getElementById('search-input').addEventListener('input', filterDepartments);
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        loadDepartments();
+    });
+</script>
+{% endblock %}

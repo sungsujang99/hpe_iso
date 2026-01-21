@@ -1,0 +1,194 @@
+{% extends "base.html" %}
+
+{% block title %}재고 현황 - HPE System{% endblock %}
+{% block nav_inventory %}active{% endblock %}
+{% block page_title %}재고 현황{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<span>재고 현황</span>
+{% endblock %}
+
+{% block content %}
+<!-- Header Actions -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div style="display: flex; gap: 12px; flex: 1;">
+            <input type="text" 
+                   class="form-input" 
+                   id="search-input" 
+                   placeholder="관리번호(바코드), 품목명, 시리얼번호로 검색..." 
+                   style="flex: 1; max-width: 400px; padding: 12px 16px; border-radius: 12px;">
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <a href="/inventory/scan/" class="btn btn-success">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+                    <path d="M3 7V5a2 2 0 0 1 2-2h2"></path>
+                    <path d="M17 3h2a2 2 0 0 1 2 2v2"></path>
+                    <path d="M21 17v2a2 2 0 0 1-2 2h-2"></path>
+                    <path d="M7 21H5a2 2 0 0 1-2-2v-2"></path>
+                    <line x1="7" y1="12" x2="17" y2="12"></line>
+                </svg>
+                바코드 스캔
+            </a>
+        </div>
+</div>
+
+<!-- Items Table -->
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>관리번호(바코드)</th>
+                    <th>품목명</th>
+                    <th>시리얼번호</th>
+                    <th>제작사</th>
+                    <th>점검여부</th>
+                    <th>점검예정일자</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody id="items-table">
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let allItems = [];
+    
+    async function loadItems() {
+        try {
+            const response = await apiRequest('/inventory/items/');
+            if (response && response.ok) {
+                const data = await response.json();
+                allItems = data.results || data;
+                renderItems(allItems);
+            }
+        } catch (error) {
+            console.error('Failed to load items:', error);
+        }
+    }
+    
+    function renderItems(items) {
+        const tbody = document.getElementById('items-table');
+        
+        if (items.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                        </svg>
+                        <p>등록된 품목이 없습니다.</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = items.map(item => `
+            <tr>
+                <td style="font-weight: 600; color: var(--accent);">${item.barcode || item.item_code || '-'}</td>
+                <td style="font-weight: 500;">${item.name || '-'}</td>
+                <td>${item.serial_number || '-'}</td>
+                <td>${item.manufacturer || '-'}</td>
+                <td>${item.inspection_required ? '<span class="badge badge-warning">필요</span>' : '<span class="badge badge-gray">불필요</span>'}</td>
+                <td>${item.inspection_due_date ? new Date(item.inspection_due_date).toLocaleDateString('ko-KR') : '-'}</td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <button class="btn btn-success btn-sm" onclick="stockIn('${item.id}')">입고</button>
+                        <button class="btn btn-warning btn-sm" onclick="stockOut('${item.id}')">출고</button>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function filterItems() {
+        const search = document.getElementById('search-input').value.toLowerCase();
+        
+        let filtered = allItems;
+        
+        if (search) {
+            filtered = filtered.filter(item => 
+                (item.barcode || item.item_code || '')?.toLowerCase().includes(search) ||
+                (item.name || '')?.toLowerCase().includes(search) ||
+                (item.serial_number || '')?.toLowerCase().includes(search) ||
+                (item.manufacturer || '')?.toLowerCase().includes(search)
+            );
+        }
+        
+        renderItems(filtered);
+    }
+    
+    async function stockIn(itemId) {
+        const qty = prompt('입고 수량을 입력하세요:');
+        if (!qty || isNaN(qty) || parseFloat(qty) <= 0) return;
+        
+        try {
+            const response = await apiRequest('/inventory/stock/in/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    item_id: itemId,
+                    quantity: parseFloat(qty)
+                })
+            });
+            
+            if (response && response.ok) {
+                alert('입고 처리되었습니다.');
+                loadItems();
+            } else {
+                const error = await response.json();
+                alert('실패: ' + JSON.stringify(error));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    }
+    
+    async function stockOut(itemId) {
+        const qty = prompt('출고 수량을 입력하세요:');
+        if (!qty || isNaN(qty) || parseFloat(qty) <= 0) return;
+        
+        try {
+            const response = await apiRequest('/inventory/stock/out/', {
+                method: 'POST',
+                body: JSON.stringify({
+                    item_id: itemId,
+                    quantity: parseFloat(qty)
+                })
+            });
+            
+            if (response && response.ok) {
+                alert('출고 처리되었습니다.');
+                loadItems();
+            } else {
+                const error = await response.json();
+                alert('실패: ' + (error.error || JSON.stringify(error)));
+            }
+        } catch (error) {
+            alert('오류 발생');
+        }
+    }
+    
+    document.getElementById('search-input').addEventListener('input', filterItems);
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            filterItems();
+        }
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        loadItems();
+    });
+</script>
+{% endblock %}

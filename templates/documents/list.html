@@ -1,0 +1,214 @@
+{% extends "base.html" %}
+
+{% block title %}문서 목록 - HPE System{% endblock %}
+{% block nav_documents %}active{% endblock %}
+{% block page_title %}문서 목록{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<span>문서 목록</span>
+{% endblock %}
+
+{% block content %}
+<!-- Header Actions -->
+<div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+    <div style="display: flex; gap: 12px; flex: 1;">
+        <select class="form-select" id="filter-status" style="width: 160px; padding: 12px 16px; border-radius: 12px;">
+            <option value="">전체 상태</option>
+            <option value="draft">작성중</option>
+            <option value="pending_review">검토 대기</option>
+            <option value="pending_approval">승인 대기</option>
+            <option value="approved">승인 완료</option>
+            <option value="rejected">반려</option>
+        </select>
+        <select class="form-select" id="filter-category" style="width: 180px; padding: 12px 16px; border-radius: 12px;">
+            <option value="">전체 카테고리</option>
+        </select>
+        <div style="position: relative; flex: 1; max-width: 400px;">
+            <input type="text" class="form-input" id="search-input" placeholder="문서번호(예: HP-QP-1010) 또는 제목으로 검색..." style="width: 100%; padding: 12px 16px 12px 44px; border-radius: 12px;">
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); width: 20px; height: 20px; color: var(--text-muted); pointer-events: none;">
+                <circle cx="11" cy="11" r="8"></circle>
+                <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+        </div>
+    </div>
+    <a href="/documents/new/" class="btn btn-primary">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="20" height="20">
+            <line x1="12" y1="5" x2="12" y2="19"></line>
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+        </svg>
+        새 문서 작성
+    </a>
+</div>
+
+<!-- Documents Table -->
+<div class="card">
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>문서번호</th>
+                    <th>제목</th>
+                    <th>카테고리</th>
+                    <th>상태</th>
+                    <th>작성자</th>
+                    <th>작성일</th>
+                    <th>작업</th>
+                </tr>
+            </thead>
+            <tbody id="documents-table">
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let allDocuments = [];
+    let categories = [];
+    
+    async function loadCategories() {
+        try {
+            const response = await apiRequest('/documents/categories/');
+            if (response && response.ok) {
+                categories = await response.json();
+                const select = document.getElementById('filter-category');
+                categories.forEach(cat => {
+                    const option = document.createElement('option');
+                    option.value = cat.id;
+                    option.textContent = `${cat.code} - ${cat.name}`;
+                    select.appendChild(option);
+                });
+            }
+        } catch (error) {
+            console.error('Failed to load categories:', error);
+        }
+    }
+    
+    async function loadDocuments() {
+        try {
+            const status = document.getElementById('filter-status').value;
+            const category = document.getElementById('filter-category').value;
+            const search = document.getElementById('search-input').value.trim();
+            
+            let url = '/documents/items/?';
+            const params = [];
+            if (status) params.push(`status=${status}`);
+            if (category) params.push(`category=${category}`);
+            if (search) params.push(`search=${encodeURIComponent(search)}`);
+            
+            url += params.join('&');
+            
+            const response = await apiRequest(url);
+            if (response && response.ok) {
+                const data = await response.json();
+                allDocuments = data.results || data;
+                renderDocuments(allDocuments);
+            }
+        } catch (error) {
+            console.error('Failed to load documents:', error);
+            document.getElementById('documents-table').innerHTML = `
+                <tr>
+                    <td colspan="7" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        문서를 불러오는데 실패했습니다.
+                    </td>
+                </tr>
+            `;
+        }
+    }
+    
+    function renderDocuments(documents) {
+        const tbody = document.getElementById('documents-table');
+        
+        if (documents.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                            <polyline points="14 2 14 8 20 8"></polyline>
+                        </svg>
+                        <p>등록된 문서가 없습니다.</p>
+                        <a href="/documents/new/" class="btn btn-primary btn-sm" style="margin-top: 16px;">새 문서 작성</a>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = documents.map(doc => `
+            <tr>
+                <td>
+                    <a href="/documents/${doc.id}/" style="color: var(--accent); text-decoration: none; font-weight: 600;">
+                        ${doc.document_number}
+                    </a>
+                </td>
+                <td>${doc.title}</td>
+                <td><span class="badge badge-info">${doc.category_code || '-'}</span></td>
+                <td>${getStatusBadge(doc.status)}</td>
+                <td>${doc.created_by_name || '-'}</td>
+                <td>${formatDate(doc.created_at)}</td>
+                <td>
+                    <div style="display: flex; gap: 8px;">
+                        <a href="/documents/${doc.id}/" class="btn btn-secondary btn-sm">
+                            상세
+                        </a>
+                    </div>
+                </td>
+            </tr>
+        `).join('');
+    }
+    
+    function getStatusBadge(status) {
+        const badges = {
+            'draft': '<span class="badge badge-gray">작성중</span>',
+            'pending_review': '<span class="badge badge-warning">검토 대기</span>',
+            'pending_approval': '<span class="badge badge-info">승인 대기</span>',
+            'approved': '<span class="badge badge-success">승인 완료</span>',
+            'rejected': '<span class="badge badge-danger">반려</span>',
+        };
+        return badges[status] || `<span class="badge badge-gray">${status}</span>`;
+    }
+    
+    function formatDate(dateString) {
+        if (!dateString) return '-';
+        const date = new Date(dateString);
+        return date.toLocaleDateString('ko-KR', {
+            year: 'numeric',
+            month: '2-digit',
+            day: '2-digit'
+        });
+    }
+    
+    // 검색 입력 시 디바운스 적용
+    let searchTimeout;
+    function handleSearch() {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(() => {
+            loadDocuments();
+        }, 300);
+    }
+    
+    document.getElementById('filter-status').addEventListener('change', loadDocuments);
+    document.getElementById('filter-category').addEventListener('change', loadDocuments);
+    document.getElementById('search-input').addEventListener('input', handleSearch);
+    document.getElementById('search-input').addEventListener('keypress', (e) => {
+        if (e.key === 'Enter') {
+            clearTimeout(searchTimeout);
+            loadDocuments();
+        }
+    });
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        loadCategories();
+        loadDocuments();
+    });
+</script>
+{% endblock %}
