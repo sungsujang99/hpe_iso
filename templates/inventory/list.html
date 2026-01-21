@@ -43,6 +43,7 @@
                     <th>관리번호(바코드)</th>
                     <th>품목명</th>
                     <th>시리얼번호</th>
+                    <th>현재재고</th>
                     <th>제작사</th>
                     <th>점검여부</th>
                     <th>점검예정일자</th>
@@ -51,7 +52,7 @@
             </thead>
             <tbody id="items-table">
                 <tr>
-                    <td colspan="7" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                    <td colspan="8" style="text-align: center; padding: 48px; color: var(--text-muted);">
                         로딩 중...
                     </td>
                 </tr>
@@ -84,7 +85,7 @@
         if (items.length === 0) {
             tbody.innerHTML = `
                 <tr>
-                    <td colspan="7" class="empty-state">
+                    <td colspan="8" class="empty-state">
                         <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
                             <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
                         </svg>
@@ -95,11 +96,20 @@
             return;
         }
         
-        tbody.innerHTML = items.map(item => `
+        tbody.innerHTML = items.map(item => {
+            const quantity = item.current_quantity || 0;
+            const isLowStock = item.is_low_stock || false;
+            const quantityStyle = isLowStock ? 'color: var(--danger); font-weight: 600;' : 'font-weight: 600;';
+            
+            return `
             <tr>
                 <td style="font-weight: 600; color: var(--accent);">${item.barcode || item.item_code || '-'}</td>
                 <td style="font-weight: 500;">${item.name || '-'}</td>
                 <td>${item.serial_number || '-'}</td>
+                <td style="${quantityStyle}">
+                    ${quantity} ${item.unit || 'EA'}
+                    ${isLowStock ? '<span class="badge badge-danger" style="margin-left: 8px;">부족</span>' : ''}
+                </td>
                 <td>${item.manufacturer || '-'}</td>
                 <td>${item.inspection_required ? '<span class="badge badge-warning">필요</span>' : '<span class="badge badge-gray">불필요</span>'}</td>
                 <td>${item.inspection_due_date ? new Date(item.inspection_due_date).toLocaleDateString('ko-KR') : '-'}</td>
@@ -110,7 +120,8 @@
                     </div>
                 </td>
             </tr>
-        `).join('');
+            `;
+        }).join('');
     }
     
     function filterItems() {

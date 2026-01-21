@@ -103,6 +103,35 @@
     </div>
 </div>
 
+<!-- Recent Inventory -->
+<div class="card" style="margin-top: 24px;">
+    <div class="card-header">
+        <h3 class="card-title">재고 현황</h3>
+        <a href="/inventory/" class="btn btn-secondary btn-sm">전체보기</a>
+    </div>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>관리번호</th>
+                    <th>품목명</th>
+                    <th>시리얼번호</th>
+                    <th>현재재고</th>
+                    <th>제작사</th>
+                    <th>상태</th>
+                </tr>
+            </thead>
+            <tbody id="recent-inventory">
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 32px; color: var(--text-muted);">
+                        로딩 중...
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
 <!-- Quick Actions -->
 <div class="card" style="margin-top: 24px;">
     <div class="card-header">
@@ -180,6 +209,9 @@
                 // Low stock items
                 const lowStock = items.filter(i => i.is_low_stock);
                 renderLowStockItems(lowStock.slice(0, 5));
+                
+                // Recent inventory (최근 10개 품목)
+                renderRecentInventory(items.slice(0, 10));
             }
         } catch (error) {
             console.error('Failed to load items:', error);
@@ -254,6 +286,43 @@
                 </div>
             </div>
         `).join('');
+    }
+    
+    function renderRecentInventory(items) {
+        const tbody = document.getElementById('recent-inventory');
+        
+        if (items.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 32px; color: var(--text-muted);">
+                        등록된 품목이 없습니다.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = items.map(item => {
+            const quantity = item.current_quantity || 0;
+            const isLowStock = item.is_low_stock || false;
+            const quantityStyle = isLowStock ? 'color: var(--danger); font-weight: 600;' : 'font-weight: 600;';
+            
+            return `
+            <tr style="cursor: pointer;" onclick="location.href='/inventory/'">
+                <td style="font-weight: 600; color: var(--accent);">${item.barcode || item.item_code || '-'}</td>
+                <td style="font-weight: 500;">${item.name || '-'}</td>
+                <td>${item.serial_number || '-'}</td>
+                <td style="${quantityStyle}">
+                    ${quantity} ${item.unit || 'EA'}
+                    ${isLowStock ? '<span class="badge badge-danger" style="margin-left: 8px;">부족</span>' : ''}
+                </td>
+                <td>${item.manufacturer || '-'}</td>
+                <td>
+                    ${item.inspection_required ? '<span class="badge badge-warning">점검 필요</span>' : '<span class="badge badge-success">정상</span>'}
+                </td>
+            </tr>
+            `;
+        }).join('');
     }
     
     function getStatusBadge(status) {
