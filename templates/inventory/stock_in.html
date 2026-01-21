@@ -151,6 +151,10 @@
                         <input type="text" class="form-input" id="add-manufacturer" placeholder="제작사명">
                     </div>
                     <div class="form-group">
+                        <label class="form-label">수량</label>
+                        <input type="number" class="form-input" id="add-quantity" placeholder="수량" min="1" value="1">
+                    </div>
+                    <div class="form-group">
                         <label class="form-label">점검여부</label>
                         <div style="display: flex; align-items: center; gap: 12px;">
                             <label style="display: flex; align-items: center; gap: 8px; cursor: pointer;">
@@ -194,6 +198,7 @@
         const name = document.getElementById('add-name').value.trim();
         const serialNumber = document.getElementById('add-serial').value.trim();
         const manufacturer = document.getElementById('add-manufacturer').value.trim();
+        const quantity = parseInt(document.getElementById('add-quantity').value) || 1;
         const inspectionRequired = document.getElementById('add-inspection').checked;
         const inspectionDate = document.getElementById('add-inspection-date').value;
         
@@ -221,12 +226,12 @@
                 // 모달 닫기
                 closeAddItemModal();
                 
-                // 새로 추가된 품목을 목록에 추가
+                // 새로 추가된 품목을 목록에 추가 (사용자가 입력한 수량으로)
                 scannedItems.push({
                     item: newItem,
-                    quantity: 1,
+                    quantity: quantity,
                     barcode: barcode,
-                    scanCount: 1
+                    scanCount: quantity
                 });
                 
                 renderScannedItems();
