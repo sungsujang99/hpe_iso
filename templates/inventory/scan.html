@@ -105,6 +105,11 @@
     
     // 바코드 스캐너 입력 감지 (빠른 연속 입력)
     function handleBarcodeInput() {
+        // 모달이 열려있으면 바코드 입력 무시
+        if (document.getElementById('add-item-modal') || document.getElementById('edit-item-modal')) {
+            return;
+        }
+        
         const input = document.getElementById('barcode-input');
         const now = Date.now();
         const timeSinceLastInput = now - lastInputTime;
@@ -130,6 +135,13 @@
     
     // 새 품목 추가 모달 표시
     function showAddItemModal(barcode) {
+        // 바코드 입력 비활성화
+        const barcodeInput = document.getElementById('barcode-input');
+        if (barcodeInput) {
+            barcodeInput.disabled = true;
+            barcodeInput.blur();
+        }
+        
         const modal = document.createElement('div');
         modal.id = 'add-item-modal';
         modal.style.cssText = 'position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); z-index: 2000; display: flex; align-items: center; justify-content: center; padding: 20px;';
@@ -197,7 +209,14 @@
         if (modal) {
             modal.remove();
         }
-        document.getElementById('barcode-input').focus();
+        
+        // 바코드 입력 다시 활성화
+        const barcodeInput = document.getElementById('barcode-input');
+        if (barcodeInput) {
+            barcodeInput.disabled = false;
+            barcodeInput.value = '';
+            barcodeInput.focus();
+        }
     }
     
     // 새 품목 추가
@@ -471,6 +490,13 @@
     async function editItem(itemId) {
         if (!currentItem) return;
         
+        // 바코드 입력 비활성화
+        const barcodeInput = document.getElementById('barcode-input');
+        if (barcodeInput) {
+            barcodeInput.disabled = true;
+            barcodeInput.blur();
+        }
+        
         // 수정 모달 HTML 생성
         const modalHTML = `
             <div id="edit-item-modal" style="position: fixed; top: 0; left: 0; right: 0; bottom: 0; background: rgba(0,0,0,0.7); display: flex; align-items: center; justify-content: center; z-index: 1000;">
@@ -523,6 +549,14 @@
         const modal = document.getElementById('edit-item-modal');
         if (modal) {
             modal.remove();
+        }
+        
+        // 바코드 입력 다시 활성화
+        const barcodeInput = document.getElementById('barcode-input');
+        if (barcodeInput) {
+            barcodeInput.disabled = false;
+            barcodeInput.value = '';
+            barcodeInput.focus();
         }
     }
     
