@@ -163,25 +163,75 @@ class StockTransactionSerializer(serializers.ModelSerializer):
 
 
 class StockInSerializer(serializers.Serializer):
-    """입고 시리얼라이저"""
+    """입고 시리얼라이저 (바코드 기반) - 자동 품목 생성"""
     
-    item_id = serializers.UUIDField()
+    item_id = serializers.UUIDField(required=False, allow_null=True)
+    barcode = serializers.CharField(required=False, allow_blank=True)
     quantity = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0.01)
     location_id = serializers.IntegerField(required=False, allow_null=True)
     reference_number = serializers.CharField(required=False, allow_blank=True)
     remarks = serializers.CharField(required=False, allow_blank=True)
     scanned_barcode = serializers.CharField(required=False, allow_blank=True)
+    
+    def validate(self, attrs):
+        """item_id 또는 barcode 중 하나는 필수, 새 바코드면 자동 생성"""
+        item_id = attrs.get('item_id')
+        barcode = attrs.get('barcode')
+        
+        if not item_id and not barcode:
+            raise serializers.ValidationError('item_id 또는 barcode 중 하나는 필수입니다.')
+        
+        # barcode로 item 찾기 또는 자동 생성 (입고 시에만)
+        if barcode and not item_id:
+            try:
+                item = InventoryItem.objects.get(barcode=barcode)
+                attrs['item_id'] = item.id
+            except InventoryItem.DoesNotExist:
+                # 새로운 바코드인 경우 자동으로 품목 생성
+                item = InventoryItem.objects.create(
+                    barcode=barcode,
+                    item_code=barcode,  # item_code는 barcode와 동일하게 자동 생성
+                    name=f'품목-{barcode}',  # 기본 이름 (나중에 수정 가능)
+                    serial_number=barcode,  # serial_number도 barcode로 설정
+                    unit='EA',
+                    item_type=InventoryItem.ItemType.EQUIPMENT,
+                    current_quantity=0,
+                    created_by=self.context['request'].user
+                )
+                attrs['item_id'] = item.id
+                attrs['_new_item_created'] = True  # 새 품목 생성 플래그
+        
+        return attrs
 
 
 class StockOutSerializer(serializers.Serializer):
-    """출고 시리얼라이저"""
+    """출고 시리얼라이저 (바코드 기반)"""
     
-    item_id = serializers.UUIDField()
+    item_id = serializers.UUIDField(required=False, allow_null=True)
+    barcode = serializers.CharField(required=False, allow_blank=True)
     quantity = serializers.DecimalField(max_digits=12, decimal_places=2, min_value=0.01)
     location_id = serializers.IntegerField(required=False, allow_null=True)
     reference_number = serializers.CharField(required=False, allow_blank=True)
     remarks = serializers.CharField(required=False, allow_blank=True)
     scanned_barcode = serializers.CharField(required=False, allow_blank=True)
+    
+    def validate(self, attrs):
+        """item_id 또는 barcode 중 하나는 필수"""
+        item_id = attrs.get('item_id')
+        barcode = attrs.get('barcode')
+        
+        if not item_id and not barcode:
+            raise serializers.ValidationError('item_id 또는 barcode 중 하나는 필수입니다.')
+        
+        # barcode로 item 찾기
+        if barcode and not item_id:
+            try:
+                item = InventoryItem.objects.get(barcode=barcode)
+                attrs['item_id'] = item.id
+            except InventoryItem.DoesNotExist:
+                raise serializers.ValidationError(f'바코드 "{barcode}"에 해당하는 품목을 찾을 수 없습니다.')
+        
+        return attrs
 
 
 class StockTransferSerializer(serializers.Serializer):
