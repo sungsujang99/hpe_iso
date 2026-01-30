@@ -98,6 +98,7 @@
             const category = document.getElementById('filter-category').value;
             const search = document.getElementById('search-input').value.trim();
             
+            // 1. 일반 문서 로드
             let url = '/documents/items/?';
             const params = [];
             if (status) params.push(`status=${status}`);
@@ -107,11 +108,48 @@
             url += params.join('&');
             
             const response = await apiRequest(url);
+            let regularDocs = [];
             if (response && response.ok) {
                 const data = await response.json();
-                allDocuments = data.results || data;
-                renderDocuments(allDocuments);
+                regularDocs = data.results || data;
             }
+            
+            // 2. 엑셀 문서 로드
+            const excelResponse = await apiRequest('/inventory/excel-documents/');
+            let excelDocs = [];
+            if (excelResponse && excelResponse.ok) {
+                const excelData = await excelResponse.json();
+                console.log('Excel documents loaded:', excelData);
+                excelDocs = (excelData.results || excelData).map(doc => ({
+                    ...doc,
+                    is_excel: true,
+                    document_number: doc.doc_type,
+                    status: 'approved',  // 엑셀 문서는 항상 승인 상태
+                    category_code: '엑셀',
+                    created_by_name: '-',
+                    created_at: doc.created_at
+                }));
+            }
+            
+            console.log('Regular docs:', regularDocs.length, 'Excel docs:', excelDocs.length);
+            
+            // 3. 두 문서를 합치고 정렬 (최신순)
+            allDocuments = [...regularDocs, ...excelDocs].sort((a, b) => {
+                return new Date(b.created_at) - new Date(a.created_at);
+            });
+            
+            console.log('Total documents:', allDocuments.length);
+            
+            // 필터링 적용 (검색어가 있으면 엑셀 문서도 필터링)
+            if (search) {
+                allDocuments = allDocuments.filter(doc => {
+                    const searchLower = search.toLowerCase();
+                    return (doc.title && doc.title.toLowerCase().includes(searchLower)) ||
+                           (doc.document_number && doc.document_number.toLowerCase().includes(searchLower));
+                });
+            }
+            
+            renderDocuments(allDocuments);
         } catch (error) {
             console.error('Failed to load documents:', error);
             document.getElementById('documents-table').innerHTML = `
@@ -143,25 +181,221 @@
             return;
         }
         
-        tbody.innerHTML = documents.map(doc => `
-            <tr>
-                <td>
-                    <a href="/documents/${doc.id}/" style="color: var(--accent); text-decoration: none; font-weight: 600;">
-                        ${doc.document_number}
-                    </a>
-                </td>
-                <td>${doc.title}</td>
-                <td><span class="badge badge-info">${doc.category_code || '-'}</span></td>
-                <td>${getStatusBadge(doc.status)}</td>
-                <td>${doc.created_by_name || '-'}</td>
-                <td>${formatDate(doc.created_at)}</td>
-                <td>
-                    <div style="display: flex; gap: 8px;">
-                        <a href="/documents/${doc.id}/" class="btn btn-secondary btn-sm">
-                            상세
-                        </a>
+        tbody.innerHTML = documents.map(doc => {
+            if (doc.is_excel) {
+                // 엑셀 문서
+                return `
+                    <tr>
+                        <td>
+                            <span style="color: var(--accent); font-weight: 600; display: flex; align-items: center; gap: 6px;">
+                                📊 ${doc.doc_type_display}
+                            </span>
+                        </td>
+                        <td>
+                            <strong>${doc.title}</strong>
+                            <br>
+                            <small style="color: var(--text-muted);">${doc.total_items || 0}개 항목</small>
+                        </td>
+                        <td><span class="badge" style="background-color: #f0f0f0; color: #666;">엑셀 문서</span></td>
+                        <td><span class="badge badge-success">승인 완료</span></td>
+                        <td>-</td>
+                        <td>${formatDate(doc.created_at)}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/inventory/excel-documents/${doc.id}/view/" target="_blank" class="btn btn-primary btn-sm">
+                                    📄 보기
+                                </a>
+                                <button class="btn btn-secondary btn-sm" onclick="downloadExcelFile('${doc.file_path}', '${doc.file_name}')">
+                                    📥 다운로드
+                                </button>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            } else {
+                // 일반 문서
+                return `
+                    <tr>
+                        <td>
+                            <a href="/documents/${doc.id}/" style="color: var(--accent); text-decoration: none; font-weight: 600;">
+                                ${doc.document_number}
+                            </a>
+                        </td>
+                        <td>${doc.title}</td>
+                        <td><span class="badge badge-info">${doc.category_code || '-'}</span></td>
+                        <td>${getStatusBadge(doc.status)}</td>
+                        <td>${doc.created_by_name || '-'}</td>
+                        <td>${formatDate(doc.created_at)}</td>
+                        <td>
+                            <div style="display: flex; gap: 8px;">
+                                <a href="/documents/${doc.id}/" class="btn btn-secondary btn-sm">
+                                    상세
+                                </a>
+                            </div>
+                        </td>
+                    </tr>
+                `;
+            }
+        }).join('');
+    }
+    
+    // 엑셀 문서 상세 모달 표시
+    async function showExcelDocumentDetail(docId) {
+        console.log('Loading excel document:', docId);
+        try {
+            const response = await apiRequest(`/inventory/excel-documents/${docId}/items/`);
+            console.log('Response:', response);
+            
+            if (!response) {
+                alert('서버 응답이 없습니다.');
+                return;
+            }
+            
+            if (response && response.ok) {
+                const data = await response.json();
+                console.log('Excel document data:', data);
+                const doc = data.document;
+                const items = data.items || [];
+                
+                // 안전한 값 렌더링 함수
+                const safeValue = (val) => {
+                    if (val === null || val === undefined) return '-';
+                    if (typeof val === 'string' && val.startsWith('=')) return '-';
+                    if (typeof val === 'number') return val;
+                    if (typeof val === 'string' && !isNaN(parseFloat(val))) return parseFloat(val);
+                    return val;
+                };
+                
+                // 모달 HTML 생성
+                const modalHtml = `
+                    <div id="excelModal" class="modal" style="display: flex;">
+                        <div class="modal-content" style="max-width: 90vw; max-height: 90vh; width: 1200px;">
+                            <div class="modal-header" style="padding: 24px; border-bottom: 2px solid var(--border);">
+                                <div>
+                                    <h2 style="font-size: 1.5rem; margin-bottom: 8px;">📊 ${doc.title}</h2>
+                                    <p style="color: var(--text-muted); font-size: 0.9rem;">${doc.doc_type_display} • 총 ${items.length}개 항목</p>
+                                </div>
+                                <button class="close-btn" onclick="closeExcelModal()" style="font-size: 2rem;">&times;</button>
+                            </div>
+                            <div class="modal-body" style="padding: 24px; overflow-y: auto; max-height: calc(90vh - 140px);">
+                                <div style="margin-bottom: 20px; display: flex; gap: 12px; align-items: center;">
+                                    <input type="text" id="excelSearchInput" placeholder="🔍 바코드 또는 이름으로 검색..." 
+                                           onkeyup="searchExcelItems()" 
+                                           style="flex: 1; padding: 12px 16px; border: 2px solid var(--border); border-radius: 10px; font-size: 14px;">
+                                    <span style="color: var(--text-muted); font-size: 0.9rem; white-space: nowrap;">
+                                        <span id="filteredCount">${items.length}</span> / ${items.length}개
+                                    </span>
+                                </div>
+                                <div class="table-wrapper" style="overflow: auto; border-radius: 10px; border: 1px solid var(--border);">
+                                    <table style="width: 100%; border-collapse: collapse;">
+                                        <thead>
+                                            <tr style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">
+                                                <th style="padding: 14px; text-align: left; font-weight: 600; position: sticky; top: 0; z-index: 10;">번호</th>
+                                                <th style="padding: 14px; text-align: left; font-weight: 600; position: sticky; top: 0; z-index: 10;">바코드</th>
+                                                <th style="padding: 14px; text-align: left; font-weight: 600; position: sticky; top: 0; z-index: 10;">이름</th>
+                                                ${items.some(i => i.received !== undefined) ? '<th style="padding: 14px; text-align: center; font-weight: 600; position: sticky; top: 0; z-index: 10;">입고</th>' : ''}
+                                                ${items.some(i => i.issued !== undefined) ? '<th style="padding: 14px; text-align: center; font-weight: 600; position: sticky; top: 0; z-index: 10;">출고</th>' : ''}
+                                                ${items.some(i => i.current !== undefined) ? '<th style="padding: 14px; text-align: center; font-weight: 600; position: sticky; top: 0; z-index: 10;">현재</th>' : ''}
+                                            </tr>
+                                        </thead>
+                                        <tbody id="excelItemsTable">
+                                            ${items.map((item, idx) => `
+                                                <tr style="border-bottom: 1px solid var(--border); transition: background 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                                                    <td style="padding: 12px; color: var(--text-muted);">${idx + 1}</td>
+                                                    <td style="padding: 12px;"><code style="background: #f1f3f5; padding: 4px 8px; border-radius: 4px; font-size: 13px;">${item.barcode || '-'}</code></td>
+                                                    <td style="padding: 12px; font-weight: 500;">${item.name || '-'}</td>
+                                                    ${item.received !== undefined ? `<td style="padding: 12px; text-align: center; color: #10b981; font-weight: 600;">${safeValue(item.received)}</td>` : ''}
+                                                    ${item.issued !== undefined ? `<td style="padding: 12px; text-align: center; color: #ef4444; font-weight: 600;">${safeValue(item.issued)}</td>` : ''}
+                                                    ${item.current !== undefined ? `<td style="padding: 12px; text-align: center;"><strong style="font-size: 1.1rem; color: ${item.current > 0 ? '#3b82f6' : '#ef4444'};">${safeValue(item.current)}</strong></td>` : ''}
+                                                </tr>
+                                            `).join('')}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
                     </div>
-                </td>
+                `;
+                
+                // 기존 모달 제거 후 새로 추가
+                const existingModal = document.getElementById('excelModal');
+                if (existingModal) existingModal.remove();
+                document.body.insertAdjacentHTML('beforeend', modalHtml);
+                
+                // 전역 변수로 항목 저장
+                window.currentExcelItems = items;
+            } else {
+                // 응답이 ok가 아닐 때
+                const errorText = await response.text();
+                console.error('Error response:', response.status, errorText);
+                alert(`문서를 불러오는데 실패했습니다. (${response.status})`);
+            }
+        } catch (error) {
+            console.error('Failed to load excel document:', error);
+            alert('문서를 불러오는데 실패했습니다: ' + error.message);
+        }
+    }
+    
+    function closeExcelModal() {
+        const modal = document.getElementById('excelModal');
+        if (modal) modal.remove();
+    }
+    
+    function searchExcelItems() {
+        if (!window.currentExcelItems) {
+            console.error('currentExcelItems not defined');
+            return;
+        }
+        
+        const searchTerm = document.getElementById('excelSearchInput').value.toLowerCase();
+        const filteredItems = window.currentExcelItems.filter(item => {
+            return (item.barcode && item.barcode.toLowerCase().includes(searchTerm)) ||
+                   (item.name && item.name.toLowerCase().includes(searchTerm));
+        });
+        
+        const tbody = document.getElementById('excelItemsTable');
+        const countSpan = document.getElementById('filteredCount');
+        
+        if (!tbody) {
+            console.error('excelItemsTable not found');
+            return;
+        }
+        
+        // 필터링된 개수 업데이트
+        if (countSpan) {
+            countSpan.textContent = filteredItems.length;
+        }
+        
+        const hasInventory = filteredItems.some(i => i.received !== undefined);
+        
+        // 안전한 값 렌더링
+        const safeValue = (val) => {
+            if (val === null || val === undefined) return '-';
+            if (typeof val === 'string' && val.startsWith('=')) return '-';
+            if (typeof val === 'number') return val;
+            if (typeof val === 'string' && !isNaN(parseFloat(val))) return parseFloat(val);
+            return val;
+        };
+        
+        if (filteredItems.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="6" style="text-align: center; padding: 48px; color: var(--text-muted);">
+                        검색 결과가 없습니다.
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        tbody.innerHTML = filteredItems.map((item, idx) => `
+            <tr style="border-bottom: 1px solid var(--border); transition: background 0.2s;" onmouseover="this.style.background='#f8f9fa'" onmouseout="this.style.background='white'">
+                <td style="padding: 12px; color: var(--text-muted);">${idx + 1}</td>
+                <td style="padding: 12px;"><code style="background: #f1f3f5; padding: 4px 8px; border-radius: 4px; font-size: 13px;">${item.barcode || '-'}</code></td>
+                <td style="padding: 12px; font-weight: 500;">${item.name || '-'}</td>
+                ${hasInventory ? `<td style="padding: 12px; text-align: center; color: #10b981; font-weight: 600;">${safeValue(item.received)}</td>` : ''}
+                ${hasInventory ? `<td style="padding: 12px; text-align: center; color: #ef4444; font-weight: 600;">${safeValue(item.issued)}</td>` : ''}
+                ${hasInventory ? `<td style="padding: 12px; text-align: center;"><strong style="font-size: 1.1rem; color: ${item.current > 0 ? '#3b82f6' : '#ef4444'};">${safeValue(item.current)}</strong></td>` : ''}
             </tr>
         `).join('');
     }
@@ -206,9 +440,54 @@
         }
     });
     
+    
+    // 엑셀 파일 다운로드
+    function downloadExcelFile(filePath, fileName) {
+        const fileUrl = `/media/${filePath}`;
+        const link = document.createElement('a');
+        link.href = fileUrl;
+        link.download = fileName;
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+        showMessage(`${fileName} 다운로드가 시작되었습니다.`, 'success');
+    }
+    
+    // 메시지 표시 함수
+    function showMessage(message, type = 'info') {
+        const messageDiv = document.createElement('div');
+        messageDiv.style.cssText = `
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 16px 24px;
+            background: ${type === 'success' ? '#10b981' : type === 'error' ? '#ef4444' : '#3b82f6'};
+            color: white;
+            border-radius: 12px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+            z-index: 10000;
+            font-weight: 500;
+        `;
+        messageDiv.textContent = message;
+        document.body.appendChild(messageDiv);
+        
+        setTimeout(() => {
+            messageDiv.style.opacity = '0';
+            messageDiv.style.transition = 'opacity 0.3s';
+            setTimeout(() => document.body.removeChild(messageDiv), 300);
+        }, 3000);
+    }
+    
     document.addEventListener('DOMContentLoaded', () => {
         loadCategories();
         loadDocuments();
+    });
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+            closeExcelModal();
+        }
     });
 </script>
 {% endblock %}

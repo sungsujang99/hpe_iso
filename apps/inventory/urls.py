@@ -11,6 +11,9 @@ from .views import (
     StockAlertViewSet, InventoryCountViewSet,
     InventoryDashboardView
 )
+from .views_excel import (
+    ExcelMasterDocumentViewSet, ExcelUpdateLogViewSet
+)
 
 router = DefaultRouter()
 router.register(r'warehouses', WarehouseViewSet, basename='warehouse')
@@ -20,6 +23,8 @@ router.register(r'items', InventoryItemViewSet, basename='item')
 router.register(r'transactions', StockTransactionViewSet, basename='transaction')
 router.register(r'alerts', StockAlertViewSet, basename='alert')
 router.register(r'counts', InventoryCountViewSet, basename='count')
+router.register(r'excel-documents', ExcelMasterDocumentViewSet, basename='excel-document')
+router.register(r'excel-logs', ExcelUpdateLogViewSet, basename='excel-log')
 
 app_name = 'inventory'
 

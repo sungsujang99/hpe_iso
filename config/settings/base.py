@@ -30,6 +30,8 @@ LOCAL_APPS = [
     'apps.accounts',
     'apps.documents',
     'apps.inventory',
+    # 'apps.ks_certification',  # → apps.inventory로 통합
+    # 'apps.measurement_equipment',  # → apps.inventory로 통합
 ]
 
 INSTALLED_APPS = DJANGO_APPS + THIRD_PARTY_APPS + LOCAL_APPS

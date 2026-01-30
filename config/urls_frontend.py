@@ -9,7 +9,8 @@ from apps.core.views_frontend import (
     InventoryListPageView, InventoryScanPageView,
     InventoryInPageView, InventoryOutPageView, InventoryAlertsPageView,
     UserManagementPageView, DepartmentManagementPageView,
-    ISO9001PageView, ISO14001PageView
+    ISO9001PageView, ISO14001PageView,
+    ExcelDocumentsPageView, ExcelDocumentViewPageView
 )
 
 urlpatterns = [
@@ -32,6 +33,8 @@ urlpatterns = [
     path('inventory/in/', InventoryInPageView.as_view(), name='inventory-in'),
     path('inventory/out/', InventoryOutPageView.as_view(), name='inventory-out'),
     path('inventory/alerts/', InventoryAlertsPageView.as_view(), name='inventory-alerts'),
+    path('inventory/excel-documents/', ExcelDocumentsPageView.as_view(), name='excel-documents'),
+    path('inventory/excel-documents/<uuid:pk>/view/', ExcelDocumentViewPageView.as_view(), name='excel-document-view'),
     
     # Users (Admin only)
     path('users/', UserManagementPageView.as_view(), name='user-list'),

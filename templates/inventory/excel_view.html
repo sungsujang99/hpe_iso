@@ -1,0 +1,236 @@
+{% extends "base.html" %}
+{% load static %}
+
+{% block title %}엑셀 문서 보기{% endblock %}
+{% block page_title %}엑셀 문서 보기{% endblock %}
+
+{% block breadcrumb %}
+<a href="/">홈</a>
+<span>›</span>
+<a href="/documents/">문서 목록</a>
+<span>›</span>
+<span id="doc-title">엑셀 문서</span>
+{% endblock %}
+
+{% block content %}
+<!-- SheetJS 라이브러리 - 로컬 파일 -->
+<script src="{% static 'js/xlsx.full.min.js' %}"></script>
+
+<style>
+    #excel-container {
+        width: 100%;
+        height: calc(100vh - 200px);
+        overflow: auto;
+        background: white;
+        border: 1px solid #ddd;
+        border-radius: 8px;
+    }
+    
+    #excel-container table {
+        border-collapse: collapse;
+        font-family: 'Malgun Gothic', 'Arial', sans-serif;
+        font-size: 12pt;
+        width: auto;
+        color: #000000 !important;
+    }
+    
+    #excel-container th,
+    #excel-container td {
+        border: 1px solid #a0a0a0;
+        padding: 6px 10px;
+        min-width: 80px;
+        white-space: pre-wrap;
+        text-align: left;
+        background: white;
+        color: #000000 !important;
+    }
+    
+    #excel-container th {
+        background: #d9e2f3 !important;
+        font-weight: 700;
+        text-align: center;
+        position: sticky;
+        top: 0;
+        z-index: 10;
+        color: #000000 !important;
+    }
+    
+    #excel-container tr:hover td {
+        background: #fff3cd !important;
+    }
+    
+    #excel-container td:first-child {
+        font-weight: 600;
+        background: #f0f0f0;
+    }
+</style>
+<div class="card" style="margin-bottom: 20px;">
+    <div class="card-header" style="background: #217346; color: white; display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+        <div>
+            <h2 id="doc-title-header" style="font-size: 1.3rem; margin: 0;">📊 엑셀 문서</h2>
+            <p id="doc-info" style="margin: 4px 0 0 0; opacity: 0.9; font-size: 0.9rem;"></p>
+        </div>
+        <div style="display: flex; gap: 12px;">
+            <button class="btn btn-secondary" onclick="window.print()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);">
+                🖨️ 인쇄
+            </button>
+            <a id="download-link" href="#" download class="btn btn-secondary" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);">
+                📥 원본 다운로드
+            </a>
+            <a href="/documents/" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);">
+                📋 목록
+            </a>
+        </div>
+    </div>
+</div>
+
+<!-- 엑셀 파일 렌더링 영역 -->
+<div class="card" style="padding: 0; overflow: hidden;">
+    <div id="loading" style="text-align: center; padding: 100px; color: #666;">
+        <div style="font-size: 3rem; margin-bottom: 16px;">📊</div>
+        <p style="font-size: 1.2rem; font-weight: 600;">엑셀 파일 로딩 중...</p>
+    </div>
+    <div id="excel-container" style="display: none;"></div>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    const documentId = window.location.pathname.split('/').filter(Boolean)[2];
+    let currentDoc = null;
+    let workbook = null;
+    
+    async function loadExcelFile() {
+        try {
+            // 1. 문서 정보 가져오기
+            const response = await apiRequest(`/inventory/excel-documents/${documentId}/items/`);
+            
+            if (!response || !response.ok) {
+                showError('문서를 불러올 수 없습니다.');
+                return;
+            }
+            
+            const data = await response.json();
+            currentDoc = data.document;
+            
+            // 제목 및 정보 업데이트
+            document.getElementById('doc-title').textContent = currentDoc.title;
+            document.getElementById('doc-title-header').textContent = '📊 ' + currentDoc.title;
+            document.getElementById('doc-info').textContent = `${currentDoc.doc_type_display} • ${currentDoc.file_name}`;
+            document.title = currentDoc.title + ' - HPE System';
+            
+            // 다운로드 링크 설정
+            const downloadLink = document.getElementById('download-link');
+            downloadLink.href = `/media/${currentDoc.file_path}`;
+            downloadLink.download = currentDoc.file_name;
+            
+            // 2. 실제 엑셀 파일 로드
+            const fileUrl = `/media/${currentDoc.file_path}`;
+            console.log('엑셀 파일 로드 중:', fileUrl);
+            
+            const fileResponse = await fetch(fileUrl);
+            if (!fileResponse.ok) {
+                throw new Error('엑셀 파일을 다운로드할 수 없습니다.');
+            }
+            
+            const arrayBuffer = await fileResponse.arrayBuffer();
+            
+            // 3. SheetJS로 엑셀 파일 파싱
+            workbook = XLSX.read(arrayBuffer, {
+                type: 'array',
+                cellStyles: true,
+                cellDates: true
+            });
+            
+            // 4. 첫 번째 시트 렌더링
+            renderExcelSheet(workbook, workbook.SheetNames[0]);
+            
+        } catch (error) {
+            console.error('Failed to load excel file:', error);
+            showError('엑셀 파일을 불러오는데 실패했습니다: ' + error.message);
+        }
+    }
+    
+    function renderExcelSheet(wb, sheetName) {
+        const sheet = wb.Sheets[sheetName];
+        
+        // HTML 테이블로 변환
+        const htmlTable = XLSX.utils.sheet_to_html(sheet, {
+            id: 'excel-table',
+            editable: false
+        });
+        
+        // 컨테이너에 삽입
+        const container = document.getElementById('excel-container');
+        container.innerHTML = htmlTable;
+        
+        // 로딩 숨기고 컨테이너 표시
+        document.getElementById('loading').style.display = 'none';
+        container.style.display = 'block';
+        
+        console.log('✅ 엑셀 시트 렌더링 완료:', sheetName);
+    }
+    
+    function showError(message) {
+        document.getElementById('loading').innerHTML = `
+            <div style="text-align: center; padding: 48px;">
+                <span style="font-size: 3rem; display: block; margin-bottom: 16px;">❌</span>
+                <p style="color: #c43434; font-size: 1.1rem; font-weight: 600;">${message}</p>
+                <a href="/documents/" class="btn btn-secondary" style="margin-top: 16px;">목록으로 돌아가기</a>
+            </div>
+        `;
+    }
+    
+    // XLSX 라이브러리가 로드될 때까지 대기 (최대 5초)
+    let xlsxWaitCount = 0;
+    function waitForXLSX() {
+        if (typeof XLSX !== 'undefined') {
+            console.log('✅ 로컬 XLSX 라이브러리 로드 완료');
+            loadExcelFile();
+        } else {
+            xlsxWaitCount++;
+            if (xlsxWaitCount > 50) { // 5초 초과
+                console.error('❌ 로컬 XLSX 라이브러리 로드 실패');
+                console.error('경로 확인: /static/js/xlsx.full.min.js');
+                showError('엑셀 라이브러리를 로드할 수 없습니다. 서버를 재시작하거나 페이지를 새로고침하세요.');
+                return;
+            }
+            if (xlsxWaitCount % 10 === 0) { // 1초마다 로그
+                console.log('⏳ 로컬 XLSX 라이브러리 로딩 중... (' + (xlsxWaitCount/10) + '초)');
+            }
+            setTimeout(waitForXLSX, 100);
+        }
+    }
+    
+    document.addEventListener('DOMContentLoaded', () => {
+        waitForXLSX();
+    });
+</script>
+
+<style>
+@media print {
+    .sidebar, .header, .btn, button, .breadcrumb {
+        display: none !important;
+    }
+    
+    .main-wrapper {
+        margin-left: 0 !important;
+        padding: 0 !important;
+    }
+    
+    #excel-container {
+        border: none !important;
+        height: auto !important;
+    }
+    
+    #excel-container table {
+        page-break-inside: auto;
+    }
+    
+    #excel-container tr {
+        page-break-inside: avoid;
+        page-break-after: auto;
+    }
+}
+</style>
+{% endblock %}

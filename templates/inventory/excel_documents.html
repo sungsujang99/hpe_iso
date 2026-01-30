@@ -1,0 +1,321 @@
+{% extends "base.html" %}
+
+{% block title %}엑셀 문서 관리{% endblock %}
+
+{% block content %}
+<div class="content-header">
+    <h1>📄 엑셀 문서 관리</h1>
+    <p>바코드 스캔으로 실시간 업데이트되는 엑셀 문서 목록</p>
+</div>
+
+<div class="card">
+    <div class="card-header">
+        <h2>등록된 엑셀 문서</h2>
+        <div class="header-actions">
+            <button type="button" class="btn btn-secondary" onclick="refreshDocuments()">
+                <i class="fas fa-sync-alt"></i> 새로고침
+            </button>
+        </div>
+    </div>
+    
+    <div class="card-body">
+        <div id="documents-grid" class="documents-grid">
+            <!-- 문서 카드들이 여기에 표시됨 -->
+        </div>
+    </div>
+</div>
+
+<!-- 문서 상세 정보 모달 -->
+<div id="documentDetailModal" class="modal">
+    <div class="modal-content large">
+        <div class="modal-header">
+            <h2 id="modalDocTitle">문서 상세 정보</h2>
+            <button class="close-btn" onclick="closeDocumentDetailModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="doc-info">
+                <p><strong>문서 유형:</strong> <span id="modalDocType"></span></p>
+                <p><strong>파일명:</strong> <span id="modalFileName"></span></p>
+                <p><strong>총 항목:</strong> <span id="modalTotalItems"></span>개</p>
+                <p><strong>최종 업데이트:</strong> <span id="modalLastUpdated"></span></p>
+            </div>
+            
+            <div class="items-section">
+                <h3>📦 항목 목록</h3>
+                <div class="search-box">
+                    <input type="text" id="itemSearchInput" placeholder="바코드 또는 이름으로 검색..." onkeyup="searchItems()">
+                </div>
+                <div id="itemsTableContainer" class="table-responsive" style="max-height: 400px; overflow-y: auto;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>바코드</th>
+                                <th>이름</th>
+                                <th>입고</th>
+                                <th>출고</th>
+                                <th>현재</th>
+                            </tr>
+                        </thead>
+                        <tbody id="itemsTableBody">
+                            <!-- 항목들이 여기에 표시됨 -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+.documents-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 20px;
+    padding: 20px 0;
+}
+
+.document-card {
+    background: white;
+    border-radius: 15px;
+    padding: 25px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease;
+    cursor: pointer;
+    border: 2px solid transparent;
+}
+
+.document-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    border-color: #007bff;
+}
+
+.document-card .doc-icon {
+    font-size: 48px;
+    margin-bottom: 15px;
+    text-align: center;
+}
+
+.document-card h3 {
+    font-size: 18px;
+    margin-bottom: 10px;
+    color: #333;
+}
+
+.document-card .doc-meta {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 15px;
+    padding-top: 15px;
+    border-top: 1px solid #eee;
+}
+
+.document-card .doc-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+}
+
+.doc-badge.ks {
+    background-color: #e3f2fd;
+    color: #1976d2;
+}
+
+.doc-badge.measurement {
+    background-color: #f3e5f5;
+    color: #7b1fa2;
+}
+
+.doc-badge.parts {
+    background-color: #e8f5e9;
+    color: #388e3c;
+}
+
+.doc-badge.supplies {
+    background-color: #fff3e0;
+    color: #f57c00;
+}
+
+.items-section {
+    margin-top: 30px;
+}
+
+.search-box {
+    margin: 15px 0;
+}
+
+.search-box input {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ddd;
+    border-radius: 10px;
+    font-size: 14px;
+}
+
+.doc-info {
+    background-color: #f8f9fa;
+    padding: 20px;
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+.doc-info p {
+    margin: 8px 0;
+    font-size: 14px;
+}
+
+.modal-content.large {
+    max-width: 900px;
+}
+
+.table-responsive {
+    overflow-x: auto;
+}
+</style>
+
+<script>
+let allDocuments = [];
+let currentDocumentItems = [];
+
+async function loadDocuments() {
+    try {
+        const response = await apiRequest('/api/v1/inventory/excel-documents/', {
+            method: 'GET'
+        });
+        
+        const data = await response.json();
+        allDocuments = data.results || [];
+        
+        renderDocuments();
+    } catch (error) {
+        console.error('문서 로드 실패:', error);
+        showMessage('문서 로드에 실패했습니다.', 'error');
+    }
+}
+
+function renderDocuments() {
+    const grid = document.getElementById('documents-grid');
+    
+    if (allDocuments.length === 0) {
+        grid.innerHTML = '<p class="text-center">등록된 문서가 없습니다.</p>';
+        return;
+    }
+    
+    grid.innerHTML = allDocuments.map(doc => {
+        const iconMap = {
+            'ks_cert': '📋',
+            'measurement': '📏',
+            'parts': '🔧',
+            'supplies': '📦'
+        };
+        
+        const typeClassMap = {
+            'ks_cert': 'ks',
+            'measurement': 'measurement',
+            'parts': 'parts',
+            'supplies': 'supplies'
+        };
+        
+        return `
+            <div class="document-card" onclick="showDocumentDetail('${doc.id}')">
+                <div class="doc-icon">${iconMap[doc.doc_type] || '📄'}</div>
+                <h3>${doc.title}</h3>
+                <div class="doc-meta">
+                    <span class="doc-badge ${typeClassMap[doc.doc_type]}">${doc.doc_type_display}</span>
+                    <span class="text-muted">${doc.total_items || 0}개 항목</span>
+                </div>
+            </div>
+        `;
+    }).join('');
+}
+
+async function showDocumentDetail(docId) {
+    try {
+        const response = await apiRequest(`/api/v1/inventory/excel-documents/${docId}/items/`, {
+            method: 'GET'
+        });
+        
+        const data = await response.json();
+        const doc = data.document;
+        currentDocumentItems = data.items || [];
+        
+        // 모달 정보 업데이트
+        document.getElementById('modalDocTitle').textContent = doc.title;
+        document.getElementById('modalDocType').textContent = doc.doc_type_display;
+        document.getElementById('modalFileName').textContent = doc.file_name;
+        document.getElementById('modalTotalItems').textContent = doc.total_items || 0;
+        document.getElementById('modalLastUpdated').textContent = new Date(doc.last_updated).toLocaleString('ko-KR');
+        
+        // 항목 테이블 렌더링
+        renderItems(currentDocumentItems);
+        
+        // 모달 열기
+        document.getElementById('documentDetailModal').style.display = 'flex';
+    } catch (error) {
+        console.error('문서 상세 정보 로드 실패:', error);
+        showMessage('문서 상세 정보 로드에 실패했습니다.', 'error');
+    }
+}
+
+function renderItems(items) {
+    const tbody = document.getElementById('itemsTableBody');
+    
+    if (items.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="5" class="text-center">항목이 없습니다.</td></tr>';
+        return;
+    }
+    
+    tbody.innerHTML = items.map(item => {
+        const received = item.received !== undefined ? item.received : '-';
+        const issued = item.issued !== undefined ? item.issued : '-';
+        const current = item.current !== undefined ? item.current : '-';
+        
+        return `
+            <tr>
+                <td><code>${item.barcode}</code></td>
+                <td>${item.name}</td>
+                <td>${received}</td>
+                <td>${issued}</td>
+                <td><strong>${current}</strong></td>
+            </tr>
+        `;
+    }).join('');
+}
+
+function searchItems() {
+    const searchTerm = document.getElementById('itemSearchInput').value.toLowerCase();
+    
+    const filteredItems = currentDocumentItems.filter(item => {
+        return item.barcode.toLowerCase().includes(searchTerm) ||
+               item.name.toLowerCase().includes(searchTerm);
+    });
+    
+    renderItems(filteredItems);
+}
+
+function closeDocumentDetailModal() {
+    document.getElementById('documentDetailModal').style.display = 'none';
+    document.getElementById('itemSearchInput').value = '';
+}
+
+function refreshDocuments() {
+    loadDocuments();
+    showMessage('문서 목록을 새로고침했습니다.', 'success');
+}
+
+// 페이지 로드 시 문서 로드
+document.addEventListener('DOMContentLoaded', function() {
+    loadDocuments();
+});
+
+// ESC 키로 모달 닫기
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeDocumentDetailModal();
+    }
+});
+</script>
+{% endblock %}

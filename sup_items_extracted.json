@@ -1,0 +1,314 @@
+[
+  {
+    "barcode": "HP-SUP-2026-001",
+    "name": "평화일반클립 B1",
+    "received": 2,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-002",
+    "name": "JETSTREAM RD",
+    "received": 4,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-003",
+    "name": "JETSTREAM BL",
+    "received": 4,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-004",
+    "name": "JETSTREAM BK 0.38",
+    "received": 3,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-005",
+    "name": "JETSTREAM BK 0.5",
+    "received": 19,
+    "issued": 3
+  },
+  {
+    "barcode": "HP-SUP-2026-006",
+    "name": "JETSTREAM BK 0.7",
+    "received": 18,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-007",
+    "name": "JETSTREAM BK 1.0",
+    "received": 18,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-008",
+    "name": "고체형광펜(노랑)",
+    "received": 22,
+    "issued": 3
+  },
+  {
+    "barcode": "HP-SUP-2026-009",
+    "name": "고체형광펜(주황)",
+    "received": 12,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-010",
+    "name": "네임펜(모나미)",
+    "received": 26,
+    "issued": 3
+  },
+  {
+    "barcode": "HP-SUP-2026-011",
+    "name": "3색볼펜",
+    "received": 6,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-012",
+    "name": "필기구(샤프, 연필등)",
+    "received": 8,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-013",
+    "name": "기타外 볼펜, 필기구등",
+    "received": 4,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-014",
+    "name": "액체 형광펜(색상구분X)",
+    "received": 16,
+    "issued": 2
+  },
+  {
+    "barcode": "HP-SUP-2026-015",
+    "name": "지우개",
+    "received": 7,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-016",
+    "name": "샤프심",
+    "received": 2,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-017",
+    "name": "커터칼",
+    "received": 8,
+    "issued": 3
+  },
+  {
+    "barcode": "HP-SUP-2026-018",
+    "name": "스카치투명테이프",
+    "received": 12,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-019",
+    "name": "스카치재접착테이프",
+    "received": 13,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-020",
+    "name": "스카치양면테이프",
+    "received": 2,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-021",
+    "name": "화이트",
+    "received": 7,
+    "issued": 3
+  },
+  {
+    "barcode": "HP-SUP-2026-022",
+    "name": "님봇 50*30 라벨지",
+    "received": 3,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-023",
+    "name": "클립 大형",
+    "received": 8,
+    "issued": 2
+  },
+  {
+    "barcode": "HP-SUP-2026-024",
+    "name": "클립 中형",
+    "received": 12,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-025",
+    "name": "클립 小형",
+    "received": 42,
+    "issued": 2
+  },
+  {
+    "barcode": "HP-SUP-2026-026",
+    "name": "스테인플러",
+    "received": 4,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-027",
+    "name": "스테인플러 제침기",
+    "received": 5,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-028",
+    "name": "스테인플러 심 33호",
+    "received": 6,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-029",
+    "name": "화신클리퍼",
+    "received": 5,
+    "issued": 2
+  },
+  {
+    "barcode": "HP-SUP-2026-030",
+    "name": "포스트잇",
+    "received": 5,
+    "issued": 2
+  },
+  {
+    "barcode": "HP-SUP-2026-031",
+    "name": "AAA건전지 (4개입)",
+    "received": 1,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-032",
+    "name": "AA건전지 (2개입)",
+    "received": 2,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-033",
+    "name": "A4 100g",
+    "received": 3,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-034",
+    "name": "A4 85g",
+    "received": 3,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-035",
+    "name": "A4 80g",
+    "received": 2,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-036",
+    "name": "취급주의 종이테이프",
+    "received": 17,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-037",
+    "name": "무지 종이테이프",
+    "received": 19,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2025-002",
+    "name": "캐논레이저포인트BK",
+    "received": 6,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2025-002",
+    "name": "캐논레이저포인트BL",
+    "received": 2,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2025-002",
+    "name": "캐논레이저포인트YE",
+    "received": 1,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2025-002",
+    "name": "캐논레이저포인트PK",
+    "received": 2,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-038",
+    "name": "투명 파일철",
+    "received": 120,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-039",
+    "name": "화장실용 물티슈",
+    "received": 19,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-040",
+    "name": "님봇 시노링크 라벨지 세트",
+    "received": 2,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-041",
+    "name": "곽티슈",
+    "received": 4,
+    "issued": 1
+  },
+  {
+    "barcode": "HP-SUP-2026-042",
+    "name": "두루마리 휴지",
+    "received": 30,
+    "issued": 2
+  },
+  {
+    "barcode": "HP-SUP-2025-001",
+    "name": "씰테이프",
+    "received": 8,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-043",
+    "name": "가위",
+    "received": 5,
+    "issued": 3
+  },
+  {
+    "barcode": "HP-SUP-2026-044",
+    "name": "구연산",
+    "received": 1,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-045",
+    "name": "백상지(상장종이)",
+    "received": 2,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-046",
+    "name": "목장갑",
+    "received": 3,
+    "issued": 0
+  },
+  {
+    "barcode": "HP-SUP-2026-047",
+    "name": "친환경 물티슈",
+    "received": 10,
+    "issued": 0
+  }
+]

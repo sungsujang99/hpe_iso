@@ -25,21 +25,45 @@
     const documentId = window.location.pathname.split('/').filter(Boolean).pop();
     
     async function loadDocument() {
+        console.log('Loading document:', documentId);
         try {
             const response = await apiRequest(`/documents/items/${documentId}/`);
-            if (response && response.ok) {
-                const doc = await response.json();
-                renderDocument(doc);
-            } else {
+            console.log('Document response:', response);
+            
+            if (!response) {
                 document.getElementById('document-content').innerHTML = `
                     <div class="card" style="text-align: center; padding: 48px;">
-                        <p style="color: var(--danger);">문서를 찾을 수 없습니다.</p>
+                        <p style="color: var(--danger);">서버 응답이 없습니다.</p>
+                        <a href="/documents/" class="btn btn-secondary" style="margin-top: 16px;">목록으로</a>
+                    </div>
+                `;
+                return;
+            }
+            
+            if (response && response.ok) {
+                const doc = await response.json();
+                console.log('Document loaded:', doc);
+                renderDocument(doc);
+            } else {
+                const errorText = await response.text();
+                console.error('Error loading document:', response.status, errorText);
+                document.getElementById('document-content').innerHTML = `
+                    <div class="card" style="text-align: center; padding: 48px;">
+                        <p style="color: var(--danger);">문서를 찾을 수 없습니다. (${response.status})</p>
+                        <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">문서 ID: ${documentId}</p>
                         <a href="/documents/" class="btn btn-secondary" style="margin-top: 16px;">목록으로</a>
                     </div>
                 `;
             }
         } catch (error) {
             console.error('Failed to load document:', error);
+            document.getElementById('document-content').innerHTML = `
+                <div class="card" style="text-align: center; padding: 48px;">
+                    <p style="color: var(--danger);">문서를 불러오는데 실패했습니다.</p>
+                    <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 8px;">${error.message}</p>
+                    <a href="/documents/" class="btn btn-secondary" style="margin-top: 16px;">목록으로</a>
+                </div>
+            `;
         }
     }
     

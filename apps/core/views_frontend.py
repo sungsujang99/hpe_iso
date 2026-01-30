@@ -79,3 +79,13 @@ class ISO9001PageView(TemplateView):
 class ISO14001PageView(TemplateView):
     """ISO 14001 매뉴얼 및 관련 문서 페이지"""
     template_name = 'iso/14001.html'
+
+
+class ExcelDocumentsPageView(TemplateView):
+    """엑셀 문서 관리 페이지"""
+    template_name = 'inventory/excel_documents.html'
+
+
+class ExcelDocumentViewPageView(TemplateView):
+    """엑셀 문서 보기 페이지"""
+    template_name = 'inventory/excel_view.html'
