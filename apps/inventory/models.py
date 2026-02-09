@@ -592,7 +592,7 @@ class ExcelMasterDocument(models.Model):
     def get_file_path(self):
         """실제 파일 경로 반환"""
         from pathlib import Path
-        return Path(settings.BASE_DIR) / self.file_path
+        return Path(settings.MEDIA_ROOT) / self.file_path
     
     def find_item_row(self, barcode):
         """바코드로 엑셀 행 찾기"""

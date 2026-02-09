@@ -13,7 +13,8 @@ from django.shortcuts import get_object_or_404
 from apps.accounts.permissions import IsAdminRole, IsManagerOrAdmin
 from .models import (
     Warehouse, Location, ItemCategory, InventoryItem,
-    StockTransaction, StockAlert, InventoryCount, InventoryCountItem
+    StockTransaction, StockAlert, InventoryCount, InventoryCountItem,
+    ExcelMasterDocument, ExcelUpdateLog
 )
 from .serializers import (
     WarehouseSerializer, LocationSerializer, ItemCategorySerializer,
@@ -254,16 +255,95 @@ class StockOperationView(generics.GenericAPIView):
                 is_resolved=False
             ).update(is_resolved=True, resolved_at=timezone.now())
     
+    def _update_excel_file(self, item, operation_type, quantity, user):
+        """엑셀 파일 동기화"""
+        try:
+            # 바코드로 문서 찾기
+            barcode = item.barcode
+            if not barcode:
+                return  # 바코드 없으면 스킵
+            
+            # 문서 타입 판별
+            document = None
+            if barcode.startswith('HP-KSTC-'):
+                document = ExcelMasterDocument.objects.filter(doc_type='ks_cert').first()
+            elif barcode.startswith('HP-P10-') or barcode.startswith('HP-P20-'):
+                document = ExcelMasterDocument.objects.filter(doc_type='measurement').first()
+            elif barcode.startswith('HP-PRT-'):
+                document = ExcelMasterDocument.objects.filter(doc_type='parts').first()
+            elif barcode.startswith('HP-SUP-'):
+                document = ExcelMasterDocument.objects.filter(doc_type='supplies').first()
+            
+            if not document:
+                return  # 해당 문서 없으면 스킵
+            
+            # PRT/SUP만 입고/출고 처리
+            if document.doc_type not in ['parts', 'supplies']:
+                return
+            
+            # 현재 엑셀 값 읽기
+            items = document.read_all_items()
+            existing_item = next((i for i in items if i['barcode'] == barcode), None)
+            
+            if not existing_item:
+                return  # 엑셀에 없으면 스킵
+            
+            # 현재 값
+            current_received = float(existing_item.get('received', 0) or 0)
+            current_issued = float(existing_item.get('issued', 0) or 0)
+            
+            # 새 값 계산
+            if operation_type == 'in':
+                new_received = current_received + float(quantity)
+                new_issued = current_issued
+            elif operation_type == 'out':
+                new_received = current_received
+                new_issued = current_issued + float(quantity)
+            else:
+                return  # 조정/이동은 스킵
+            
+            new_current = new_received - new_issued
+            
+            # 엑셀 파일 업데이트
+            updates = {
+                'received': new_received,
+                'issued': new_issued,
+                'current': new_current
+            }
+            
+            success = document.update_item(barcode, updates)
+            
+            if success:
+                # 로그 기록
+                ExcelUpdateLog.objects.create(
+                    document=document,
+                    barcode=barcode,
+                    action=f'stock_{operation_type}',
+                    updates=updates,
+                    previous_values={
+                        'received': current_received,
+                        'issued': current_issued,
+                        'current': current_received - current_issued
+                    },
+                    created_by=user
+                )
+                
+        except Exception as e:
+            # 엑셀 업데이트 실패해도 DB 작업은 성공으로 처리
+            import logging
+            logger = logging.getLogger('hpe')
+            logger.error(f'엑셀 파일 업데이트 실패: {str(e)}')
+    
     def post(self, request, operation_type):
         """입출고/조정 처리"""
         if operation_type == 'in':
-            serializer = StockInSerializer(data=request.data)
+            serializer = StockInSerializer(data=request.data, context={'request': request})
         elif operation_type == 'out':
-            serializer = StockOutSerializer(data=request.data)
+            serializer = StockOutSerializer(data=request.data, context={'request': request})
         elif operation_type == 'adjust':
-            serializer = StockAdjustSerializer(data=request.data)
+            serializer = StockAdjustSerializer(data=request.data, context={'request': request})
         elif operation_type == 'transfer':
-            serializer = StockTransferSerializer(data=request.data)
+            serializer = StockTransferSerializer(data=request.data, context={'request': request})
         else:
             return Response(
                 {'error': '잘못된 작업 유형입니다.'},
@@ -296,6 +376,9 @@ class StockOperationView(generics.GenericAPIView):
                 user=request.user,
                 **kwargs
             )
+            
+            # 엑셀 파일도 업데이트
+            self._update_excel_file(item, operation_type, quantity, request.user)
             
             return Response({
                 'message': '처리되었습니다.',
