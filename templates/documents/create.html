@@ -191,7 +191,8 @@
     function renderDynamicFields(template) {
         const container = document.getElementById('dynamic-fields');
         
-        if (!template || !template.fields_schema || !template.fields_schema.fields) {
+        // fields_schema가 없거나 빈 객체면 메시지 표시
+        if (!template || !template.fields_schema || Object.keys(template.fields_schema).length === 0) {
             container.innerHTML = `
                 <div style="text-align: center; padding: 48px; color: var(--text-muted);">
                     <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="48" height="48" style="margin: 0 auto 16px; opacity: 0.5;">
@@ -206,38 +207,39 @@
             return;
         }
         
-        const fields = template.fields_schema.fields;
+        // fields_schema는 이제 객체 형식 (key: field_name, value: field_config)
+        const fields = template.fields_schema;
         let html = '';
         
-        fields.forEach(field => {
-            const requiredMark = field.required ? ' *' : '';
-            const requiredAttr = field.required ? 'required' : '';
-            const placeholder = field.placeholder || '';
+        for (const [fieldName, fieldConfig] of Object.entries(fields)) {
+            const requiredMark = fieldConfig.required ? ' *' : '';
+            const requiredAttr = fieldConfig.required ? 'required' : '';
+            const placeholder = fieldConfig.placeholder || '';
             
             html += `<div class="form-group">`;
-            html += `<label class="form-label">${field.label}${requiredMark}</label>`;
+            html += `<label class="form-label">${fieldConfig.label}${requiredMark}</label>`;
             
-            switch (field.type) {
+            switch (fieldConfig.type) {
                 case 'textarea':
-                    html += `<textarea class="form-input" id="field-${field.name}" rows="6" placeholder="${placeholder}" ${requiredAttr} style="font-family: inherit;"></textarea>`;
+                    html += `<textarea class="form-input" id="field-${fieldName}" rows="6" placeholder="${placeholder}" ${requiredAttr} style="font-family: inherit;"></textarea>`;
                     break;
                 case 'date':
-                    html += `<input type="date" class="form-input" id="field-${field.name}" ${requiredAttr}>`;
+                    html += `<input type="date" class="form-input" id="field-${fieldName}" ${requiredAttr}>`;
                     break;
                 case 'datetime':
-                    html += `<input type="datetime-local" class="form-input" id="field-${field.name}" ${requiredAttr}>`;
+                    html += `<input type="datetime-local" class="form-input" id="field-${fieldName}" ${requiredAttr}>`;
                     break;
                 case 'number':
-                    html += `<input type="number" class="form-input" id="field-${field.name}" placeholder="${placeholder}" ${requiredAttr}>`;
+                    html += `<input type="number" class="form-input" id="field-${fieldName}" placeholder="${placeholder}" ${requiredAttr}>`;
                     break;
                 case 'text':
                 default:
-                    html += `<input type="text" class="form-input" id="field-${field.name}" placeholder="${placeholder}" ${requiredAttr}>`;
+                    html += `<input type="text" class="form-input" id="field-${fieldName}" placeholder="${placeholder}" ${requiredAttr}>`;
                     break;
             }
             
             html += `</div>`;
-        });
+        }
         
         container.innerHTML = html;
     }
@@ -251,20 +253,21 @@
         }
         
         const selectedTemplate = templates.find(t => t.id == templateId);
-        if (!selectedTemplate || !selectedTemplate.fields_schema || !selectedTemplate.fields_schema.fields) {
+        if (!selectedTemplate || !selectedTemplate.fields_schema || Object.keys(selectedTemplate.fields_schema).length === 0) {
             return {};
         }
         
         const data = {};
-        selectedTemplate.fields_schema.fields.forEach(field => {
-            const el = document.getElementById(`field-${field.name}`);
+        // fields_schema는 객체 형식 (key: field_name, value: field_config)
+        for (const [fieldName, fieldConfig] of Object.entries(selectedTemplate.fields_schema)) {
+            const el = document.getElementById(`field-${fieldName}`);
             if (el) {
                 const value = el.value.trim();
-                if (value || field.required) {
-                    data[field.name] = value;
+                if (value || fieldConfig.required) {
+                    data[fieldName] = value;
                 }
             }
-        });
+        }
         
         return data;
     }

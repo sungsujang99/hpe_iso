@@ -124,6 +124,24 @@ class DocumentViewSet(viewsets.ModelViewSet):
     
     def perform_create(self, serializer):
         document = serializer.save()
+        
+        # 템플릿 파일이 있고, 엑셀 파일이 없으면 자동 생성
+        if document.template and document.template.template_file and not document.excel_file:
+            try:
+                from .excel_generator import ExcelGenerator
+                
+                generator = ExcelGenerator(document.template)
+                excel_file = generator.generate_from_data(document.content_data)
+                
+                # 파일명 설정
+                filename = f'{document.document_number}.xlsx'
+                document.excel_file.save(filename, excel_file, save=True)
+                
+                print(f"✅ 엑셀 파일 자동 생성: {filename}")
+            except Exception as e:
+                # 엑셀 생성 실패해도 문서는 저장
+                print(f"⚠️  엑셀 파일 생성 실패: {str(e)}")
+        
         log_document_history(
             document=document,
             user=self.request.user,
