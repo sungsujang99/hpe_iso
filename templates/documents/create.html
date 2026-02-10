@@ -301,19 +301,45 @@
             return;
         }
         
-        // fields_schema는 이제 객체 형식 (key: field_name, value: field_config)
-        const fields = template.fields_schema;
+        const schema = template.fields_schema;
         let html = '';
         
-        for (const [fieldName, fieldConfig] of Object.entries(fields)) {
-            const requiredMark = fieldConfig.required ? ' *' : '';
-            const requiredAttr = fieldConfig.required ? 'required' : '';
-            const placeholder = fieldConfig.placeholder || '';
+        // fields_schema 형식 자동 감지:
+        // 1) {fields: [{name, label, type, ...}]} - fixture 배열 형식
+        // 2) {field_name: {label, type, ...}} - 객체 형식
+        let fieldList = [];
+        if (schema.fields && Array.isArray(schema.fields)) {
+            // 배열 형식 (fixture에서 온 형태)
+            fieldList = schema.fields;
+        } else {
+            // 객체 형식 (key-value)
+            for (const [fieldName, fieldConfig] of Object.entries(schema)) {
+                if (typeof fieldConfig === 'object' && fieldConfig !== null && !Array.isArray(fieldConfig)) {
+                    fieldList.push({ name: fieldName, ...fieldConfig });
+                }
+            }
+        }
+        
+        if (fieldList.length === 0) {
+            container.innerHTML = `
+                <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+                    <p>이 템플릿에는 입력 필드가 정의되어 있지 않습니다.</p>
+                </div>
+            `;
+            return;
+        }
+        
+        for (const field of fieldList) {
+            const fieldName = field.name || 'unknown';
+            const label = field.label || fieldName;
+            const requiredMark = field.required ? ' *' : '';
+            const requiredAttr = field.required ? 'required' : '';
+            const placeholder = field.placeholder || '';
             
             html += `<div class="form-group">`;
-            html += `<label class="form-label">${fieldConfig.label}${requiredMark}</label>`;
+            html += `<label class="form-label">${label}${requiredMark}</label>`;
             
-            switch (fieldConfig.type) {
+            switch (field.type) {
                 case 'textarea':
                     html += `<textarea class="form-input" id="field-${fieldName}" rows="6" placeholder="${placeholder}" ${requiredAttr} style="font-family: inherit;"></textarea>`;
                     break;
@@ -360,13 +386,24 @@
         }
         
         const data = {};
-        // fields_schema는 객체 형식 (key: field_name, value: field_config)
-        for (const [fieldName, fieldConfig] of Object.entries(selectedTemplate.fields_schema)) {
-            const el = document.getElementById(`field-${fieldName}`);
+        const schema = selectedTemplate.fields_schema;
+        // 배열 형식과 객체 형식 모두 지원
+        let fieldList = [];
+        if (schema.fields && Array.isArray(schema.fields)) {
+            fieldList = schema.fields;
+        } else {
+            for (const [fieldName, fieldConfig] of Object.entries(schema)) {
+                if (typeof fieldConfig === 'object' && fieldConfig !== null && !Array.isArray(fieldConfig)) {
+                    fieldList.push({ name: fieldName, ...fieldConfig });
+                }
+            }
+        }
+        for (const field of fieldList) {
+            const el = document.getElementById(`field-${field.name}`);
             if (el) {
                 const value = el.value.trim();
-                if (value || fieldConfig.required) {
-                    data[fieldName] = value;
+                if (value || field.required) {
+                    data[field.name] = value;
                 }
             }
         }
