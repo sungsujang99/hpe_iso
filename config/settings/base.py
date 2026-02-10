@@ -159,7 +159,7 @@ COMPANY_LOGO = 'images/logo.png'
 DOCUMENT_TYPES = {
     'HP-QP': 'Quality Procedure (품질절차서)',
     'HP-EP': 'Engineering Procedure (기술절차서)',
-    'HP-QR': 'Quality Record (품질기록)',
+    # HP-QR 삭제됨 - 모든 서식은 HP-QM에 통합
 }
 
 # User Roles

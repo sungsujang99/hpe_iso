@@ -97,13 +97,7 @@ def create_document_categories():
             'prefix': 'HP-EP-',
             'next_number': 1001,
         },
-        {
-            'code': 'HP-QR',
-            'name': '품질기록',
-            'description': 'Quality Record - 품질 관련 기록 양식',
-            'prefix': 'HP-QR-',
-            'next_number': 1001,
-        },
+        # HP-QR 삭제됨 - 모든 서식은 HP-QM에 통합
         {
             'code': 'HP-WI',
             'name': '작업지시서',
@@ -129,14 +123,14 @@ def create_document_templates():
     # Get categories
     try:
         qp_cat = DocumentCategory.objects.get(code='HP-QP')
-        qr_cat = DocumentCategory.objects.get(code='HP-QR')
+        qm_cat = DocumentCategory.objects.get(code='HP-QM')
     except DocumentCategory.DoesNotExist:
         print("  Categories not found, skipping templates")
         return
     
     templates = [
         {
-            'category': qr_cat,
+            'category': qm_cat,
             'name': '부적합보고서',
             'description': '품질 부적합 발생 시 작성하는 보고서',
             'fields_schema': {
@@ -168,7 +162,7 @@ def create_document_templates():
             },
         },
         {
-            'category': qr_cat,
+            'category': qm_cat,
             'name': '시정조치요청서',
             'description': '시정 조치 요청 및 이행 확인 기록',
             'fields_schema': {

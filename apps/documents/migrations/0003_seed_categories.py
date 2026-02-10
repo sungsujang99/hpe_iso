@@ -10,7 +10,7 @@ def seed_categories(apps, schema_editor):
         ('HP-QM', '품질경영 매뉴얼', 'HP-QM-'),
         ('HP-QP', '품질절차서', 'HP-QP-'),
         ('HP-QI', '품질경영 지침서', 'HP-QI-'),
-        ('HP-QR', '품질기록', 'HP-QR-'),
+        # HP-QR 삭제됨 - 모든 서식은 HP-QM에 통합
         ('HP-EM', '환경경영 매뉴얼', 'HP-EM-'),
         ('HP-EP', '기술절차서', 'HP-EP-'),
         ('HP-EI', '환경경영 지침서', 'HP-EI-'),
