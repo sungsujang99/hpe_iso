@@ -1,0 +1,4266 @@
+[
+  {
+    "category_code": "HP-EI",
+    "name": "문서작성 지침서 (HP-EI-761)",
+    "description": "ISO 14001:2015 환경경영시스템 - 문서작성 지침서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EI",
+    "name": "오염물질 배출관리 지침서 (HP-EI-852)",
+    "description": "ISO 14001:2015 환경경영시스템 - 오염물질 배출관리 지침서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EI",
+    "name": "환경자격인증관리 지침서 (HP-EI-741)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경자격인증관리 지침서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EI",
+    "name": "환경측면 식별 및 평가 지침서 (HP-EI-851)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경측면 식별 및 평가 지침서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EM",
+    "name": "환경경영 매뉴얼 (HP-EM-01)",
+    "description": "ISO 14001:2015 환경경영시스템 매뉴얼\n\n이 매뉴얼은 관련 절차서들의 내용을 종합하여 작성됩니다.\n각 섹션은 해당하는 절차서들에서 자동으로 데이터를 가져올 수 있습니다.",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "environmental_policy",
+          "label": "0.3 환경경영 방침",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "회사의 환경 방침을 기술합니다.",
+          "default": "지속적 개선을 통한 고객만족 실현"
+        },
+        {
+          "name": "environmental_objectives",
+          "label": "환경 목표",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "환경 목표를 기술합니다 (각 줄마다 하나씩)",
+          "default": "1. 오염방지의 지속적 노력\n2. 환경법규의 준수\n3. 지구환경 보전을 위한 지속적 실행"
+        },
+        {
+          "name": "scope",
+          "label": "1.0 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "환경경영시스템의 적용범위를 기술합니다."
+        },
+        {
+          "name": "reference_standards",
+          "label": "2.0 인용 표준",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "참조하는 표준 문서를 기술합니다.",
+          "default": "ISO 14001:2015\nKS Q ISO 14001:2015"
+        },
+        {
+          "name": "terms_definitions",
+          "label": "3.0 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "매뉴얼에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "organizational_context",
+          "label": "4.0 조직의 상황",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "조직의 내외부 상황을 기술합니다.\n참조: HP-EP-410"
+        },
+        {
+          "name": "leadership",
+          "label": "5.0 리더십",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "최고경영자의 리더십과 환경 방침을 기술합니다.\n참조: HP-EP-510, HP-EP-520"
+        },
+        {
+          "name": "planning",
+          "label": "6.0 기획",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "환경경영시스템 기획 및 리스크 관리를 기술합니다.\n참조: HP-EP-610"
+        },
+        {
+          "name": "support",
+          "label": "7.0 지원",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "환경경영시스템 운영에 필요한 자원을 기술합니다.\n참조: HP-EP-710~760, HP-EI-741, 761"
+        },
+        {
+          "name": "operation",
+          "label": "8.0 운영",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "환경영향 평가 및 관리 프로세스를 기술합니다.\n참조: HP-EP-810~870, HP-EI-851~852"
+        },
+        {
+          "name": "performance_evaluation",
+          "label": "9.0 성과평가",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "모니터링, 측정, 분석 및 평가 활동을 기술합니다.\n참조: HP-EP-910~950"
+        },
+        {
+          "name": "improvement",
+          "label": "10.0 개선",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "부적합 처리 및 지속적 개선 활동을 기술합니다.\n참조: HP-EP-1010, 1020"
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "경영검토 절차서 (HP-EP-950)",
+    "description": "ISO 14001:2015 환경경영시스템 - 경영검토 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "내부심사 절차서 (HP-EP-940)",
+    "description": "ISO 14001:2015 환경경영시스템 - 내부심사 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "데이터 분석관리 절차서 (HP-EP-930)",
+    "description": "ISO 14001:2015 환경경영시스템 - 데이터 분석관리 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "리더십 및 환경방침수립 절차서 (HP-EP-510)",
+    "description": "ISO 14001:2015 환경경영시스템 - 리더십 및 환경방침수립 절차서\n매뉴얼 섹션: 5.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "문서화 정보관리 절차서 (HP-EP-760)",
+    "description": "ISO 14001:2015 환경경영시스템 - 문서화 정보관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "부적합 및 시정조치 절차서 (HP-EP-1010)",
+    "description": "ISO 14001:2015 환경경영시스템 - 부적합 및 시정조치 절차서\n매뉴얼 섹션: 10.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "비상사태 대응 절차서 (HP-EP-840)",
+    "description": "ISO 14001:2015 환경경영시스템 - 비상사태 대응 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "상황이해 및 환경경영시스템 운영 절차서 (HP-EP-410)",
+    "description": "ISO 14001:2015 환경경영시스템 - 상황이해 및 환경경영시스템 운영 절차서\n매뉴얼 섹션: 4.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "설비관리 절차서 (HP-EP-720)",
+    "description": "ISO 14001:2015 환경경영시스템 - 설비관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "에너지 관리 절차서 (HP-EP-860)",
+    "description": "ISO 14001:2015 환경경영시스템 - 에너지 관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "자원관리 절차서 (HP-EP-710)",
+    "description": "ISO 14001:2015 환경경영시스템 - 자원관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "조직 및 업무분장 절차서 (HP-EP-520)",
+    "description": "ISO 14001:2015 환경경영시스템 - 조직 및 업무분장 절차서\n매뉴얼 섹션: 5.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "지속적 개선 절차서 (HP-EP-1020)",
+    "description": "ISO 14001:2015 환경경영시스템 - 지속적 개선 절차서\n매뉴얼 섹션: 10.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "폐기물관리 절차서 (HP-EP-850)",
+    "description": "ISO 14001:2015 환경경영시스템 - 폐기물관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "프로세스 성과관리 절차서 (HP-EP-910)",
+    "description": "ISO 14001:2015 환경경영시스템 - 프로세스 성과관리 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경 측정장비 관리 절차서 (HP-EP-730)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경 측정장비 관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경경영시스템 기획 및 리스크 관리 절차서 (HP-EP-610)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경경영시스템 기획 및 리스크 관리 절차서\n매뉴얼 섹션: 6.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경교육 및 훈련 관리 절차서 (HP-EP-740)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경교육 및 훈련 관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경목표 수립 및 관리 절차서 (HP-EP-820)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경목표 수립 및 관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경법규 준수 평가 절차서 (HP-EP-830)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경법규 준수 평가 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경영향평가 절차서 (HP-EP-810)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경영향평가 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경오염 방지 절차서 (HP-EP-870)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경오염 방지 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경인식 및 의사소통 절차서 (HP-EP-750)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경인식 및 의사소통 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-EP",
+    "name": "환경점검 및 측정관리 절차서 (HP-EP-920)",
+    "description": "ISO 14001:2015 환경경영시스템 - 환경점검 및 측정관리 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QI",
+    "name": "고객 및 외부공급자 자산관리 지침서 (HP-QI-852)",
+    "description": "ISO 9001:2015 품질경영시스템 - 고객 및 외부공급자 자산관리 지침서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QI",
+    "name": "문서작성 지침서 (HP-QI-761)",
+    "description": "ISO 9001:2015 품질경영시스템 - 문서작성 지침서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QI",
+    "name": "식별 및 추적성 관리 지침서 (HP-QI-851)",
+    "description": "ISO 9001:2015 품질경영시스템 - 식별 및 추적성 관리 지침서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QI",
+    "name": "인도 후 활동 지침서 (HP-QI-854)",
+    "description": "ISO 9001:2015 품질경영시스템 - 인도 후 활동 지침서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QI",
+    "name": "자격인증관리 지침서 (HP-QI-741)",
+    "description": "ISO 9001:2015 품질경영시스템 - 자격인증관리 지침서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QI",
+    "name": "제품 보존관리 지침서 (HP-QI-853)",
+    "description": "ISO 9001:2015 품질경영시스템 - 제품 보존관리 지침서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QM",
+    "name": "품질 경영 매뉴얼 (HP-QM-01)",
+    "description": "ISO 9001:2015 품질경영시스템 매뉴얼\n\n이 매뉴얼은 관련 절차서들의 내용을 종합하여 작성됩니다.\n각 섹션은 해당하는 절차서들에서 자동으로 데이터를 가져올 수 있습니다.",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "quality_policy",
+          "label": "0.3 품질 방침",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "회사의 품질 방침을 기술합니다.",
+          "default": "고객 요구사항 준수를 통한 고객만족 실현"
+        },
+        {
+          "name": "quality_objectives",
+          "label": "품질 목표",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "품질 목표를 기술합니다 (각 줄마다 하나씩)",
+          "default": "1. 고객과 소통하는 경영\n2. 실행중심·고객중심·인간중심\n3. 고객약속 최우선"
+        },
+        {
+          "name": "scope",
+          "label": "1.0 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "품질경영시스템의 적용범위를 기술합니다."
+        },
+        {
+          "name": "reference_standards",
+          "label": "2.0 인용 표준",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "참조하는 표준 문서를 기술합니다.",
+          "default": "ISO 9001:2015\nKS Q ISO 9001:2015"
+        },
+        {
+          "name": "terms_definitions",
+          "label": "3.0 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "매뉴얼에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "organizational_context",
+          "label": "4.0 조직의 상황",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "조직의 내외부 상황을 기술합니다.\n참조: HP-QP-410"
+        },
+        {
+          "name": "leadership",
+          "label": "5.0 리더십",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "최고경영자의 리더십과 품질 방침을 기술합니다.\n참조: HP-QP-510, HP-QP-520"
+        },
+        {
+          "name": "planning",
+          "label": "6.0 기획",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "품질경영시스템 기획 및 리스크 관리를 기술합니다.\n참조: HP-QP-610"
+        },
+        {
+          "name": "support",
+          "label": "7.0 지원 (자원)",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "품질경영시스템 운영에 필요한 자원을 기술합니다.\n참조: HP-QP-710~760, HP-QI-741, 761"
+        },
+        {
+          "name": "operation",
+          "label": "8.0 운영",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "제품 및 서비스 제공 프로세스를 기술합니다.\n참조: HP-QP-810~870, HP-QI-851~854"
+        },
+        {
+          "name": "performance_evaluation",
+          "label": "9.0 성과평가",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "모니터링, 측정, 분석 및 평가 활동을 기술합니다.\n참조: HP-QP-910~950"
+        },
+        {
+          "name": "improvement",
+          "label": "10.0 개선",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "부적합 처리 및 지속적 개선 활동을 기술합니다.\n참조: HP-QP-1010, 1020"
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "검사 및 시험 절차서 (HP-QP-860)",
+    "description": "ISO 9001:2015 품질경영시스템 - 검사 및 시험 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "경영검토 절차서 (HP-QP-950)",
+    "description": "ISO 9001:2015 품질경영시스템 - 경영검토 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "고객만족관리 절차서 (HP-QP-920)",
+    "description": "ISO 9001:2015 품질경영시스템 - 고객만족관리 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "공급자관리 절차서 (HP-QP-840)",
+    "description": "ISO 9001:2015 품질경영시스템 - 공급자관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "교육 및 훈련 관리 절차서 (HP-QP-740)",
+    "description": "ISO 9001:2015 품질경영시스템 - 교육 및 훈련 관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "구매관리 절차서 (HP-QP-830)",
+    "description": "ISO 9001:2015 품질경영시스템 - 구매관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "내부심사 절차서 (HP-QP-940)",
+    "description": "ISO 9001:2015 품질경영시스템 - 내부심사 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "내부심사 체크리스트 (HP-QP-940)",
+    "description": "ISO 9001 내부심사 체크리스트 템플릿",
+    "fields_schema": {
+      "audit_date": {
+        "type": "date",
+        "label": "내부심사 시행일",
+        "required": true,
+        "cell": "G6"
+      },
+      "department": {
+        "type": "text",
+        "label": "심사대상 부서",
+        "required": true,
+        "cell": "D6"
+      }
+    },
+    "template_file": "document_templates/내부심사_체크리스트_템플릿.xlsx",
+    "is_active": true,
+    "version": "1.0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "데이터 분석관리 절차서 (HP-QP-930)",
+    "description": "ISO 9001:2015 품질경영시스템 - 데이터 분석관리 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "리더십 및 방침수립 절차서 (HP-QP-510)",
+    "description": "ISO 9001:2015 품질경영시스템 - 리더십 및 방침수립 절차서\n매뉴얼 섹션: 5.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "문서화 정보관리 절차서 (HP-QP-760)",
+    "description": "ISO 9001:2015 품질경영시스템 - 문서화 정보관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "부적합 및 시정조치 절차서 (HP-QP-1010)",
+    "description": "ISO 9001:2015 품질경영시스템 - 부적합 및 시정조치 절차서\n매뉴얼 섹션: 10.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "부적합품 관리 절차서 (HP-QP-870)",
+    "description": "ISO 9001:2015 품질경영시스템 - 부적합품 관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "상황이해 및 품질경영시스템 운영 절차서 (HP-QP-410)",
+    "description": "ISO 9001:2015 품질경영시스템 - 상황이해 및 품질경영시스템 운영 절차서\n매뉴얼 섹션: 4.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "생산관리 절차서 (HP-QP-850)",
+    "description": "ISO 9001:2015 품질경영시스템 - 생산관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "설계 및 개발관리 절차서 (HP-QP-820)",
+    "description": "ISO 9001:2015 품질경영시스템 - 설계 및 개발관리 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "설비관리 절차서 (HP-QP-720)",
+    "description": "ISO 9001:2015 품질경영시스템 - 설비관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "시험 및 측정장비 관리 절차서 (HP-QP-730)",
+    "description": "ISO 9001:2015 품질경영시스템 - 시험 및 측정장비 관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "인식 및 의사소통 절차서 (HP-QP-750)",
+    "description": "ISO 9001:2015 품질경영시스템 - 인식 및 의사소통 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "자원관리절차서 (HP-QP-710)",
+    "description": "ISO 9001 7.1 자원관리 절차서\n매뉴얼 섹션: 7.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "목적",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "scope",
+          "label": "적용범위",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "responsibility",
+          "label": "책임과 권한",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "procedure",
+          "label": "절차",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "related_documents",
+          "label": "관련문서",
+          "type": "textarea",
+          "required": false
+        },
+        {
+          "name": "records",
+          "label": "기록",
+          "type": "textarea",
+          "required": false
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "1.0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "제품 및 서비스 요구사항 검토 절차서 (HP-QP-810)",
+    "description": "ISO 9001:2015 품질경영시스템 - 제품 및 서비스 요구사항 검토 절차서\n매뉴얼 섹션: 8.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "조직 및 업무분장 절차서 (HP-QP-520)",
+    "description": "ISO 9001:2015 품질경영시스템 - 조직 및 업무분장 절차서\n매뉴얼 섹션: 5.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "지속적 개선 절차서 (HP-QP-1020)",
+    "description": "ISO 9001:2015 품질경영시스템 - 지속적 개선 절차서\n매뉴얼 섹션: 10.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "품질 경영시스템 기획 및 리스크 관리 절차서 (HP-QP-610)",
+    "description": "ISO 9001:2015 품질경영시스템 - 품질 경영시스템 기획 및 리스크 관리 절차서\n매뉴얼 섹션: 6.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QP",
+    "name": "프로세스 성과관리 절차서 (HP-QP-910)",
+    "description": "ISO 9001:2015 품질경영시스템 - 프로세스 성과관리 절차서\n매뉴얼 섹션: 9.0",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "purpose",
+          "label": "1. 목적",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차서의 목적을 기술합니다."
+        },
+        {
+          "name": "scope",
+          "label": "2. 적용범위",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "이 절차가 적용되는 범위를 명시합니다."
+        },
+        {
+          "name": "terms",
+          "label": "3. 용어의 정의",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에서 사용되는 주요 용어를 정의합니다."
+        },
+        {
+          "name": "responsibility",
+          "label": "4. 책임과 권한",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "각 직책별 책임과 권한을 명시합니다."
+        },
+        {
+          "name": "procedure",
+          "label": "5. 업무절차",
+          "type": "textarea",
+          "required": true,
+          "placeholder": "상세한 업무 수행 절차를 단계별로 기술합니다."
+        },
+        {
+          "name": "related_documents",
+          "label": "6. 관련 문서",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "관련된 다른 문서의 번호와 명칭을 나열합니다."
+        },
+        {
+          "name": "records",
+          "label": "7. 기록",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "이 절차에서 발생하는 기록물의 명칭과 보관방법을 명시합니다."
+        },
+        {
+          "name": "attachments",
+          "label": "8. 첨부",
+          "type": "textarea",
+          "required": false,
+          "placeholder": "절차서에 첨부되는 양식이나 참고자료를 나열합니다."
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "0"
+  },
+  {
+    "category_code": "HP-QR",
+    "name": "부적합보고서",
+    "description": "품질 부적합 발생 시 작성하는 보고서",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "occurrence_date",
+          "label": "발생 일시",
+          "type": "datetime",
+          "required": true
+        },
+        {
+          "name": "location",
+          "label": "발생 장소",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "nonconformity_content",
+          "label": "부적합 내용",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "cause_analysis",
+          "label": "원인 분석",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "corrective_action",
+          "label": "시정 조치 계획",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "preventive_action",
+          "label": "예방 조치",
+          "type": "textarea",
+          "required": false
+        },
+        {
+          "name": "target_date",
+          "label": "목표 완료일",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "remarks",
+          "label": "비고",
+          "type": "textarea",
+          "required": false
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "1.0"
+  },
+  {
+    "category_code": "HP-QR",
+    "name": "시정조치요청서",
+    "description": "시정 조치 요청 및 이행 확인 기록",
+    "fields_schema": {
+      "fields": [
+        {
+          "name": "request_date",
+          "label": "요청일",
+          "type": "date",
+          "required": true
+        },
+        {
+          "name": "requester",
+          "label": "요청자",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "department",
+          "label": "관련 부서",
+          "type": "text",
+          "required": true
+        },
+        {
+          "name": "issue_description",
+          "label": "문제 사항",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "root_cause",
+          "label": "근본 원인",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "corrective_action",
+          "label": "시정 조치",
+          "type": "textarea",
+          "required": true
+        },
+        {
+          "name": "verification",
+          "label": "이행 확인",
+          "type": "textarea",
+          "required": false
+        },
+        {
+          "name": "due_date",
+          "label": "완료 기한",
+          "type": "date",
+          "required": true
+        }
+      ]
+    },
+    "template_file": "",
+    "is_active": true,
+    "version": "1.0"
+  }
+]

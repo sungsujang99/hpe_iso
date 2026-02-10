@@ -61,7 +61,7 @@ class DocumentTemplate(models.Model):
         upload_to='document_templates/',
         blank=True,
         null=True,
-        validators=[FileExtensionValidator(['html', 'docx'])]
+        validators=[FileExtensionValidator(['html', 'docx', 'xlsx', 'xls', 'hwp'])]
     )
     
     is_active = models.BooleanField(_('활성화'), default=True)

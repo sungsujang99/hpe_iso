@@ -125,22 +125,88 @@ class DocumentViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         document = serializer.save()
         
-        # 템플릿 파일이 있고, 엑셀 파일이 없으면 자동 생성
+        # 엑셀 템플릿이 있는 경우: 셀 편집 데이터로 엑셀 파일 생성
         if document.template and document.template.template_file and not document.excel_file:
-            try:
-                from .excel_generator import ExcelGenerator
-                
-                generator = ExcelGenerator(document.template)
-                excel_file = generator.generate_from_data(document.content_data)
-                
-                # 파일명 설정
-                filename = f'{document.document_number}.xlsx'
-                document.excel_file.save(filename, excel_file, save=True)
-                
-                print(f"✅ 엑셀 파일 자동 생성: {filename}")
-            except Exception as e:
-                # 엑셀 생성 실패해도 문서는 저장
-                print(f"⚠️  엑셀 파일 생성 실패: {str(e)}")
+            template_file_name = str(document.template.template_file)
+            is_excel_template = template_file_name.endswith('.xlsx') or template_file_name.endswith('.xls')
+            
+            if is_excel_template and document.content_data and '_excel_cells' in document.content_data:
+                try:
+                    import openpyxl
+                    import shutil
+                    import tempfile
+                    from pathlib import Path
+                    from django.conf import settings
+                    from django.core.files import File
+                    
+                    # 템플릿 파일 복사
+                    template_path = Path(settings.MEDIA_ROOT) / str(document.template.template_file)
+                    
+                    with tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False) as tmp:
+                        shutil.copy2(template_path, tmp.name)
+                        
+                        # openpyxl로 셀 수정
+                        wb = openpyxl.load_workbook(tmp.name)
+                        sheet_name = document.content_data.get('_sheet_name', wb.sheetnames[0])
+                        ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.active
+                        
+                        # 사용자 편집 셀 반영
+                        for cell_data in document.content_data['_excel_cells']:
+                            row = cell_data['row'] + 1  # 0-indexed -> 1-indexed
+                            col = cell_data['col'] + 1
+                            value = cell_data['value']
+                            
+                            try:
+                                cell = ws.cell(row=row, column=col)
+                                # 숫자 변환 시도
+                                try:
+                                    value = int(value)
+                                except (ValueError, TypeError):
+                                    try:
+                                        value = float(value)
+                                    except (ValueError, TypeError):
+                                        pass
+                                cell.value = value
+                            except Exception:
+                                pass
+                        
+                        # 작성자 이름 자동 입력 (K3 셀 - 작성란)
+                        try:
+                            user = self.request.user
+                            user_name = user.get_full_name() or user.username
+                            ws['K3'] = user_name
+                        except Exception:
+                            pass
+                        
+                        wb.save(tmp.name)
+                        
+                        # 저장
+                        filename = f'{document.document_number}.xlsx'
+                        with open(tmp.name, 'rb') as f:
+                            document.excel_file.save(filename, File(f), save=True)
+                    
+                    # content_data에서 임시 데이터 정리
+                    clean_data = {k: v for k, v in document.content_data.items() if not k.startswith('_')}
+                    document.content_data = clean_data
+                    document.save(update_fields=['content_data'])
+                    
+                    print(f"✅ 엑셀 파일 생성 (셀 편집): {filename}")
+                except Exception as e:
+                    print(f"⚠️  엑셀 파일 생성 실패: {str(e)}")
+            else:
+                # 기존 방식: fields_schema 기반 생성
+                try:
+                    from .excel_generator import ExcelGenerator
+                    
+                    generator = ExcelGenerator(document.template)
+                    excel_file = generator.generate_from_data(document.content_data)
+                    
+                    filename = f'{document.document_number}.xlsx'
+                    document.excel_file.save(filename, excel_file, save=True)
+                    
+                    print(f"✅ 엑셀 파일 자동 생성: {filename}")
+                except Exception as e:
+                    print(f"⚠️  엑셀 파일 생성 실패: {str(e)}")
         
         log_document_history(
             document=document,

@@ -26,7 +26,7 @@ class DocumentTemplateSerializer(serializers.ModelSerializer):
         model = DocumentTemplate
         fields = [
             'id', 'category', 'category_name', 'name', 'description',
-            'fields_schema', 'is_active', 'version', 'created_at'
+            'fields_schema', 'template_file', 'is_active', 'version', 'created_at'
         ]
 
 
