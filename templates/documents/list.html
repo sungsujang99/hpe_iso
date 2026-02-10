@@ -221,7 +221,7 @@
                                 ${doc.document_number}
                             </a>
                         </td>
-                        <td>${doc.title}</td>
+                        <td>${doc.title} (${doc.document_number})</td>
                         <td><span class="badge badge-info">${doc.category_code || '-'}</span></td>
                         <td>${getStatusBadge(doc.status)}</td>
                         <td>${doc.created_by_name || '-'}</td>

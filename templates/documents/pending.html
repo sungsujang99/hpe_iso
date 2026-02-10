@@ -393,8 +393,8 @@
             const doc = await resp.json();
             
             // 헤더 정보 채우기
-            document.getElementById('preview-title').textContent = doc.title;
-            document.getElementById('preview-docnum').textContent = doc.document_number;
+            document.getElementById('preview-title').textContent = doc.title ? `${doc.title} (${doc.document_number})` : doc.document_number;
+            document.getElementById('preview-docnum').textContent = '';
             document.getElementById('preview-category').textContent = doc.category_detail?.name || '-';
             document.getElementById('preview-author').textContent = doc.created_by_name || '-';
             document.getElementById('preview-date').textContent = formatDate(doc.submitted_at || doc.created_at);
@@ -529,7 +529,7 @@
         tbody.innerHTML = docs.map(doc => `
             <tr>
                 <td><a href="/documents/${doc.id}/" style="color: var(--accent); font-weight: 600;">${doc.document_number}</a></td>
-                <td>${doc.title}</td>
+                <td>${doc.title} (${doc.document_number})</td>
                 <td>${doc.created_by_name || '-'}</td>
                 <td>${isApproval ? (doc.reviewed_by_name || '-') : formatDate(doc.submitted_at || doc.created_at)}</td>
                 <td>

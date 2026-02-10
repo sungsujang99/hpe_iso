@@ -220,8 +220,7 @@
         
         container.innerHTML = docs.map(doc => `
             <div class="doc-item" onclick="selectDocument('${doc.id}')">
-                <div class="doc-number">${doc.document_number}</div>
-                <div class="doc-title">${doc.title}</div>
+                <div class="doc-title">${doc.title} (${doc.document_number})</div>
                 <div class="doc-status">
                     <span class="status-badge ${getStatusClass(doc.status)}">${getStatusText(doc.status)}</span>
                     <span style="margin-left: 8px;">${new Date(doc.created_at).toLocaleDateString('ko-KR')}</span>
@@ -242,8 +241,8 @@
         if (!doc) return;
         
         // 문서 정보 표시
-        document.getElementById('selected-doc-title').textContent = doc.title;
-        document.getElementById('selected-doc-number').textContent = `${doc.document_number} | ${getStatusText(doc.status)}`;
+        document.getElementById('selected-doc-title').textContent = doc.title ? `${doc.title} (${doc.document_number})` : doc.document_number;
+        document.getElementById('selected-doc-number').textContent = getStatusText(doc.status);
         
         // 액션 버튼 표시
         const actionsDiv = document.getElementById('doc-actions');
@@ -276,8 +275,8 @@
                 contentHtml += `
                     <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 32px; max-width: 800px; margin: 0 auto;">
                         <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 24px;">
-                            <h2 style="margin: 0 0 8px; font-size: 1.5rem;">${doc.title}</h2>
-                            <p style="margin: 0; color: #666;">${doc.document_number} | Rev.${doc.revision}</p>
+                            <h2 style="margin: 0 0 8px; font-size: 1.5rem;">${doc.title} (${doc.document_number})</h2>
+                            <p style="margin: 0; color: #666;">Rev.${doc.revision}</p>
                             <span class="status-badge ${getStatusClass(doc.status)}" style="margin-top: 8px; display: inline-block;">${getStatusText(doc.status)}</span>
                         </div>
                 `;

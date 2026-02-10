@@ -113,7 +113,7 @@
     
     function renderDocument(doc) {
         currentDocument = doc;
-        document.getElementById('breadcrumb-docnum').textContent = doc.document_number;
+        document.getElementById('breadcrumb-docnum').textContent = doc.title ? `${doc.title} (${doc.document_number})` : doc.document_number;
         
         const canEdit = doc.can_edit;
         const canSubmit = doc.can_submit;
@@ -126,8 +126,7 @@
                 <div class="card">
                     <div class="card-header">
                         <div>
-                            <h3 class="card-title">${doc.title}</h3>
-                            <p style="color: var(--text-muted); font-size: 0.9rem; margin-top: 4px;">${doc.document_number}</p>
+                            <h3 class="card-title">${doc.title} (${doc.document_number})</h3>
                         </div>
                         ${getStatusBadge(doc.status)}
                     </div>

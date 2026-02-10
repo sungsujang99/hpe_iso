@@ -247,7 +247,7 @@
         tbody.innerHTML = docs.map(doc => `
             <tr>
                 <td><a href="/documents/${doc.id}/" style="color: var(--accent); font-weight: 600;">${doc.document_number}</a></td>
-                <td>${doc.title}</td>
+                <td>${doc.title} (${doc.document_number})</td>
                 <td>${getStatusBadge(doc.status)}</td>
                 <td>${formatDate(doc.created_at)}</td>
             </tr>
