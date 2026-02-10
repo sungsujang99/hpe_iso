@@ -170,11 +170,21 @@ class DocumentViewSet(viewsets.ModelViewSet):
                             except Exception:
                                 pass
                         
-                        # 작성자 이름 자동 입력 (K3 셀 - 작성란)
+                        # 템플릿별 자동 입력
                         try:
                             user = self.request.user
                             user_name = user.get_full_name() or user.username
-                            ws['K3'] = user_name
+                            user_dept = user.department.name if user.department else ''
+                            template_name = document.template.name if document.template else ''
+                            
+                            if '내부심사' in template_name and '체크리스트' in template_name:
+                                ws['K3'] = user_name
+                                ws['N6'] = user_name
+                                for r in range(9, 36):
+                                    ws.cell(row=r, column=2).value = user_name
+                            elif '부적합품' in template_name and '관리대장' in template_name:
+                                ws['Z4'] = user_dept   # 부서명
+                                ws['AO4'] = user_name  # 작성자
                         except Exception:
                             pass
                         
