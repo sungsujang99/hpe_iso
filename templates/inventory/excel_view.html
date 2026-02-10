@@ -19,7 +19,7 @@
 <style>
     #excel-container {
         width: 100%;
-        height: calc(100vh - 200px);
+        height: calc(100vh - 250px);
         overflow: auto;
         background: white;
         border: 1px solid #ddd;
@@ -29,7 +29,7 @@
     #excel-container table {
         border-collapse: collapse;
         font-family: 'Malgun Gothic', 'Arial', sans-serif;
-        font-size: 12pt;
+        font-size: 11pt;
         width: auto;
         color: #000000 !important;
     }
@@ -37,12 +37,13 @@
     #excel-container th,
     #excel-container td {
         border: 1px solid #a0a0a0;
-        padding: 6px 10px;
-        min-width: 80px;
+        padding: 4px 8px;
+        min-width: 60px;
         white-space: pre-wrap;
         text-align: left;
         background: white;
         color: #000000 !important;
+        cursor: cell;
     }
     
     #excel-container th {
@@ -53,29 +54,97 @@
         top: 0;
         z-index: 10;
         color: #000000 !important;
+        cursor: default;
     }
     
     #excel-container tr:hover td {
-        background: #fff3cd !important;
+        background: #f5f9ff !important;
     }
     
     #excel-container td:first-child {
         font-weight: 600;
         background: #f0f0f0;
+        cursor: default;
+    }
+    
+    /* 편집 모드 */
+    #excel-container td.editing {
+        background: #fffde7 !important;
+        outline: 2px solid #1976d2;
+        outline-offset: -1px;
+        padding: 2px;
+    }
+    
+    #excel-container td.editing input {
+        width: 100%;
+        height: 100%;
+        border: none;
+        outline: none;
+        font-family: inherit;
+        font-size: inherit;
+        background: transparent;
+        padding: 2px 6px;
+        box-sizing: border-box;
+    }
+    
+    /* 수정된 셀 표시 */
+    #excel-container td.modified {
+        background: #e8f5e9 !important;
+        position: relative;
+    }
+    
+    #excel-container td.modified::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 0;
+        width: 0;
+        height: 0;
+        border-top: 8px solid #4caf50;
+        border-left: 8px solid transparent;
+    }
+    
+    /* 상태 바 */
+    #status-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 8px 16px;
+        background: #f5f5f5;
+        border-top: 1px solid #ddd;
+        font-size: 0.85rem;
+        color: #666;
+    }
+    
+    /* 저장 버튼 깜빡임 */
+    .btn-save-active {
+        animation: pulse 1.5s infinite;
+    }
+    
+    @keyframes pulse {
+        0% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0.7); }
+        50% { box-shadow: 0 0 0 8px rgba(76, 175, 80, 0); }
+        100% { box-shadow: 0 0 0 0 rgba(76, 175, 80, 0); }
     }
 </style>
-<div class="card" style="margin-bottom: 20px;">
-    <div class="card-header" style="background: #217346; color: white; display: flex; justify-content: space-between; align-items: center; padding: 20px;">
+
+<!-- 툴바 -->
+<div class="card" style="margin-bottom: 0; border-radius: 8px 8px 0 0;">
+    <div class="card-header" style="background: #217346; color: white; display: flex; justify-content: space-between; align-items: center; padding: 16px 20px;">
         <div>
-            <h2 id="doc-title-header" style="font-size: 1.3rem; margin: 0;">📊 엑셀 문서</h2>
-            <p id="doc-info" style="margin: 4px 0 0 0; opacity: 0.9; font-size: 0.9rem;"></p>
+            <h2 id="doc-title-header" style="font-size: 1.3rem; margin: 0;">엑셀 문서</h2>
+            <p id="doc-info" style="margin: 4px 0 0 0; opacity: 0.9; font-size: 0.85rem;"></p>
         </div>
-        <div style="display: flex; gap: 12px;">
+        <div style="display: flex; gap: 10px; align-items: center;">
+            <span id="edit-status" style="font-size: 0.85rem; opacity: 0.9;"></span>
+            <button id="btn-save" class="btn" onclick="saveChanges()" style="background: #4caf50; color: white; border: none; display: none; font-weight: 600;">
+                💾 저장
+            </button>
             <button class="btn btn-secondary" onclick="window.print()" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);">
                 🖨️ 인쇄
             </button>
             <a id="download-link" href="#" download class="btn btn-secondary" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);">
-                📥 원본 다운로드
+                📥 다운로드
             </a>
             <a href="/documents/" class="btn btn-secondary" style="background: rgba(255,255,255,0.2); border: 1px solid rgba(255,255,255,0.5);">
                 📋 목록
@@ -85,12 +154,18 @@
 </div>
 
 <!-- 엑셀 파일 렌더링 영역 -->
-<div class="card" style="padding: 0; overflow: hidden;">
+<div class="card" style="padding: 0; overflow: hidden; border-radius: 0; margin-bottom: 0;">
     <div id="loading" style="text-align: center; padding: 100px; color: #666;">
         <div style="font-size: 3rem; margin-bottom: 16px;">📊</div>
         <p style="font-size: 1.2rem; font-weight: 600;">엑셀 파일 로딩 중...</p>
     </div>
     <div id="excel-container" style="display: none;"></div>
+</div>
+
+<!-- 상태 바 -->
+<div id="status-bar" style="border-radius: 0 0 8px 8px;">
+    <span id="cell-info">셀을 클릭하면 직접 수정할 수 있습니다</span>
+    <span id="change-count"></span>
 </div>
 {% endblock %}
 
@@ -99,10 +174,12 @@
     const documentId = window.location.pathname.split('/').filter(Boolean)[2];
     let currentDoc = null;
     let workbook = null;
+    let currentSheet = null;
+    let modifiedCells = {};  // { "행-열": { row, col, value, originalValue } }
+    let editingCell = null;
     
     async function loadExcelFile() {
         try {
-            // 1. 문서 정보 가져오기
             const response = await apiRequest(`/inventory/excel-documents/${documentId}/items/`);
             
             if (!response || !response.ok) {
@@ -113,21 +190,16 @@
             const data = await response.json();
             currentDoc = data.document;
             
-            // 제목 및 정보 업데이트
             document.getElementById('doc-title').textContent = currentDoc.title;
-            document.getElementById('doc-title-header').textContent = '📊 ' + currentDoc.title;
-            document.getElementById('doc-info').textContent = `${currentDoc.doc_type_display} • ${currentDoc.file_name}`;
+            document.getElementById('doc-title-header').textContent = currentDoc.title;
+            document.getElementById('doc-info').textContent = `${currentDoc.doc_type_display} | ${currentDoc.file_name} | 셀을 더블클릭하여 편집`;
             document.title = currentDoc.title + ' - HPE System';
             
-            // 다운로드 링크 설정
             const downloadLink = document.getElementById('download-link');
             downloadLink.href = `/media/${currentDoc.file_path}`;
             downloadLink.download = currentDoc.file_name;
             
-            // 2. 실제 엑셀 파일 로드
             const fileUrl = `/media/${currentDoc.file_path}`;
-            console.log('엑셀 파일 로드 중:', fileUrl);
-            
             const fileResponse = await fetch(fileUrl);
             if (!fileResponse.ok) {
                 throw new Error('엑셀 파일을 다운로드할 수 없습니다.');
@@ -135,15 +207,14 @@
             
             const arrayBuffer = await fileResponse.arrayBuffer();
             
-            // 3. SheetJS로 엑셀 파일 파싱
             workbook = XLSX.read(arrayBuffer, {
                 type: 'array',
                 cellStyles: true,
                 cellDates: true
             });
             
-            // 4. 첫 번째 시트 렌더링
-            renderExcelSheet(workbook, workbook.SheetNames[0]);
+            currentSheet = workbook.SheetNames[0];
+            renderEditableSheet(workbook, currentSheet);
             
         } catch (error) {
             console.error('Failed to load excel file:', error);
@@ -151,24 +222,235 @@
         }
     }
     
-    function renderExcelSheet(wb, sheetName) {
+    function renderEditableSheet(wb, sheetName) {
         const sheet = wb.Sheets[sheetName];
-        
-        // HTML 테이블로 변환
-        const htmlTable = XLSX.utils.sheet_to_html(sheet, {
-            id: 'excel-table',
-            editable: false
-        });
-        
-        // 컨테이너에 삽입
         const container = document.getElementById('excel-container');
-        container.innerHTML = htmlTable;
         
-        // 로딩 숨기고 컨테이너 표시
+        // 시트 범위 가져오기
+        const range = XLSX.utils.decode_range(sheet['!ref'] || 'A1');
+        
+        let html = '<table id="excel-table">';
+        
+        // 헤더 행 (열 번호)
+        html += '<thead><tr><th style="min-width:40px; background:#c0c0c0 !important;">#</th>';
+        for (let col = range.s.c; col <= range.e.c; col++) {
+            const colLetter = XLSX.utils.encode_col(col);
+            html += `<th style="min-width:80px;">${colLetter}</th>`;
+        }
+        html += '</tr></thead>';
+        
+        // 데이터 행
+        html += '<tbody>';
+        for (let row = range.s.r; row <= range.e.r; row++) {
+            html += `<tr>`;
+            html += `<td style="text-align:center; background:#f0f0f0 !important; font-weight:600; cursor:default; min-width:40px;">${row + 1}</td>`;
+            
+            for (let col = range.s.c; col <= range.e.c; col++) {
+                const cellAddr = XLSX.utils.encode_cell({ r: row, c: col });
+                const cell = sheet[cellAddr];
+                let value = '';
+                let displayValue = '';
+                
+                if (cell) {
+                    if (cell.t === 'n') {
+                        value = cell.v;
+                        displayValue = cell.w || String(cell.v);
+                    } else if (cell.t === 'd') {
+                        value = cell.w || '';
+                        displayValue = value;
+                    } else {
+                        value = cell.v || '';
+                        displayValue = cell.w || String(cell.v || '');
+                    }
+                }
+                
+                html += `<td data-row="${row}" data-col="${col}" data-addr="${cellAddr}" data-original="${encodeURIComponent(String(value))}" ondblclick="startEdit(this)" title="셀 ${cellAddr} - 더블클릭으로 편집">${displayValue}</td>`;
+            }
+            html += '</tr>';
+        }
+        html += '</tbody></table>';
+        
+        container.innerHTML = html;
         document.getElementById('loading').style.display = 'none';
         container.style.display = 'block';
         
-        console.log('✅ 엑셀 시트 렌더링 완료:', sheetName);
+        console.log('✅ 편집 가능한 엑셀 시트 렌더링 완료:', sheetName);
+    }
+    
+    // 셀 편집 시작
+    function startEdit(td) {
+        if (editingCell) {
+            finishEdit(editingCell);
+        }
+        
+        editingCell = td;
+        const currentValue = td.textContent;
+        const addr = td.dataset.addr;
+        
+        td.classList.add('editing');
+        td.innerHTML = `<input type="text" value="${currentValue}" onblur="finishEdit(this.parentElement)" onkeydown="handleEditKey(event, this)">`;
+        
+        const input = td.querySelector('input');
+        input.focus();
+        input.select();
+        
+        document.getElementById('cell-info').textContent = `편집 중: ${addr} | 값: ${currentValue}`;
+    }
+    
+    // 셀 편집 완료
+    function finishEdit(td) {
+        if (!td || !td.classList.contains('editing')) return;
+        
+        const input = td.querySelector('input');
+        if (!input) return;
+        
+        const newValue = input.value;
+        const originalValue = decodeURIComponent(td.dataset.original);
+        const row = parseInt(td.dataset.row);
+        const col = parseInt(td.dataset.col);
+        const addr = td.dataset.addr;
+        
+        td.classList.remove('editing');
+        td.textContent = newValue;
+        
+        // 값이 변경되었는지 확인
+        if (String(newValue) !== String(originalValue)) {
+            td.classList.add('modified');
+            modifiedCells[`${row}-${col}`] = {
+                row: row,
+                col: col,
+                addr: addr,
+                value: newValue,
+                originalValue: originalValue
+            };
+        } else {
+            td.classList.remove('modified');
+            delete modifiedCells[`${row}-${col}`];
+        }
+        
+        editingCell = null;
+        updateChangeCount();
+        
+        document.getElementById('cell-info').textContent = 
+            Object.keys(modifiedCells).length > 0 
+                ? `수정된 셀: ${Object.keys(modifiedCells).length}개 | 💾 저장 버튼을 눌러 반영하세요` 
+                : '셀을 더블클릭하면 직접 수정할 수 있습니다';
+    }
+    
+    // 키보드 이벤트
+    function handleEditKey(event, input) {
+        if (event.key === 'Enter') {
+            event.preventDefault();
+            finishEdit(input.parentElement);
+            
+            // 아래 셀로 이동
+            const td = input.parentElement;
+            const row = parseInt(td.dataset.row);
+            const col = parseInt(td.dataset.col);
+            const nextTd = document.querySelector(`td[data-row="${row + 1}"][data-col="${col}"]`);
+            if (nextTd) {
+                startEdit(nextTd);
+            }
+        } else if (event.key === 'Escape') {
+            event.preventDefault();
+            const td = input.parentElement;
+            const originalValue = decodeURIComponent(td.dataset.original);
+            td.classList.remove('editing');
+            td.textContent = originalValue;
+            editingCell = null;
+        } else if (event.key === 'Tab') {
+            event.preventDefault();
+            finishEdit(input.parentElement);
+            
+            // 오른쪽 셀로 이동
+            const td = input.parentElement;
+            const row = parseInt(td.dataset.row);
+            const col = parseInt(td.dataset.col);
+            const nextTd = document.querySelector(`td[data-row="${row}"][data-col="${col + 1}"]`);
+            if (nextTd) {
+                startEdit(nextTd);
+            }
+        }
+    }
+    
+    // 변경 카운트 업데이트
+    function updateChangeCount() {
+        const count = Object.keys(modifiedCells).length;
+        const countEl = document.getElementById('change-count');
+        const saveBtn = document.getElementById('btn-save');
+        
+        if (count > 0) {
+            countEl.textContent = `${count}개 셀 수정됨`;
+            countEl.style.color = '#4caf50';
+            countEl.style.fontWeight = '600';
+            saveBtn.style.display = 'inline-flex';
+            saveBtn.classList.add('btn-save-active');
+        } else {
+            countEl.textContent = '';
+            saveBtn.style.display = 'none';
+            saveBtn.classList.remove('btn-save-active');
+        }
+    }
+    
+    // 변경사항 저장
+    async function saveChanges() {
+        const count = Object.keys(modifiedCells).length;
+        if (count === 0) {
+            alert('수정된 셀이 없습니다.');
+            return;
+        }
+        
+        if (!confirm(`${count}개의 셀을 수정합니다. 저장하시겠습니까?`)) {
+            return;
+        }
+        
+        const saveBtn = document.getElementById('btn-save');
+        saveBtn.textContent = '⏳ 저장 중...';
+        saveBtn.disabled = true;
+        
+        try {
+            // 수정된 셀 데이터를 서버로 전송
+            const cellUpdates = Object.values(modifiedCells).map(cell => ({
+                row: cell.row + 1,  // openpyxl은 1-based
+                col: cell.col + 1,  // openpyxl은 1-based
+                value: cell.value
+            }));
+            
+            const response = await apiRequest(`/inventory/excel-documents/${documentId}/update_cells/`, {
+                method: 'POST',
+                body: JSON.stringify({
+                    sheet_name: currentSheet,
+                    cells: cellUpdates
+                })
+            });
+            
+            if (response && response.ok) {
+                const result = await response.json();
+                
+                // 수정 상태 초기화
+                document.querySelectorAll('td.modified').forEach(td => {
+                    td.classList.remove('modified');
+                    // 새 original 값으로 업데이트
+                    td.dataset.original = encodeURIComponent(td.textContent);
+                });
+                modifiedCells = {};
+                updateChangeCount();
+                
+                document.getElementById('cell-info').textContent = `✅ ${count}개 셀 저장 완료!`;
+                document.getElementById('edit-status').textContent = `마지막 저장: ${new Date().toLocaleTimeString()}`;
+                
+                alert(`✅ ${count}개 셀이 엑셀 파일에 저장되었습니다.`);
+            } else {
+                const error = await response.json();
+                alert('저장 실패: ' + (error.error || JSON.stringify(error)));
+            }
+        } catch (error) {
+            console.error('Save failed:', error);
+            alert('저장 중 오류가 발생했습니다: ' + error.message);
+        } finally {
+            saveBtn.textContent = '💾 저장';
+            saveBtn.disabled = false;
+        }
     }
     
     function showError(message) {
@@ -181,22 +463,26 @@
         `;
     }
     
-    // XLSX 라이브러리가 로드될 때까지 대기 (최대 5초)
+    // 페이지 떠나기 전 경고
+    window.addEventListener('beforeunload', function(e) {
+        if (Object.keys(modifiedCells).length > 0) {
+            e.preventDefault();
+            e.returnValue = '저장하지 않은 변경사항이 있습니다.';
+            return e.returnValue;
+        }
+    });
+    
+    // XLSX 라이브러리 대기
     let xlsxWaitCount = 0;
     function waitForXLSX() {
         if (typeof XLSX !== 'undefined') {
-            console.log('✅ 로컬 XLSX 라이브러리 로드 완료');
+            console.log('✅ XLSX 라이브러리 로드 완료');
             loadExcelFile();
         } else {
             xlsxWaitCount++;
-            if (xlsxWaitCount > 50) { // 5초 초과
-                console.error('❌ 로컬 XLSX 라이브러리 로드 실패');
-                console.error('경로 확인: /static/js/xlsx.full.min.js');
-                showError('엑셀 라이브러리를 로드할 수 없습니다. 서버를 재시작하거나 페이지를 새로고침하세요.');
+            if (xlsxWaitCount > 50) {
+                showError('엑셀 라이브러리를 로드할 수 없습니다.');
                 return;
-            }
-            if (xlsxWaitCount % 10 === 0) { // 1초마다 로그
-                console.log('⏳ 로컬 XLSX 라이브러리 로딩 중... (' + (xlsxWaitCount/10) + '초)');
             }
             setTimeout(waitForXLSX, 100);
         }
@@ -209,28 +495,13 @@
 
 <style>
 @media print {
-    .sidebar, .header, .btn, button, .breadcrumb {
+    .sidebar, .header, .btn, button, .breadcrumb, #status-bar {
         display: none !important;
     }
-    
-    .main-wrapper {
-        margin-left: 0 !important;
-        padding: 0 !important;
-    }
-    
-    #excel-container {
-        border: none !important;
-        height: auto !important;
-    }
-    
-    #excel-container table {
-        page-break-inside: auto;
-    }
-    
-    #excel-container tr {
-        page-break-inside: avoid;
-        page-break-after: auto;
-    }
+    .main-wrapper { margin-left: 0 !important; padding: 0 !important; }
+    #excel-container { border: none !important; height: auto !important; }
+    #excel-container table { page-break-inside: auto; }
+    #excel-container tr { page-break-inside: avoid; }
 }
 </style>
 {% endblock %}

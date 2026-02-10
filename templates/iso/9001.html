@@ -34,25 +34,28 @@
         </div>
     </div>
     
-    <!-- PDF 뷰어 (오른쪽) -->
+    <!-- 문서 뷰어 (오른쪽) -->
     <div class="card" style="height: 100%; padding: 0; overflow: hidden; display: flex; flex-direction: column;">
         <div style="padding: 20px; border-bottom: 1px solid var(--border); display: flex; justify-content: space-between; align-items: center;">
             <div>
                 <h3 id="selected-doc-title" style="margin: 0; font-size: 1.1rem; font-weight: 600;">문서를 선택하세요</h3>
                 <p id="selected-doc-number" style="margin: 4px 0 0 0; color: var(--text-muted); font-size: 0.9rem;"></p>
             </div>
-            <button id="btn-download-pdf" class="btn btn-primary" style="display: none;" onclick="downloadSelectedPDF()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
-                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                    <polyline points="7 10 12 15 17 10"></polyline>
-                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                </svg>
-                PDF 다운로드
-            </button>
+            <div id="doc-actions" style="display: none; gap: 8px;">
+                <button id="btn-download-pdf" class="btn btn-primary" style="display: none;" onclick="downloadSelectedPDF()">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                        <polyline points="7 10 12 15 17 10"></polyline>
+                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                    </svg>
+                    PDF 다운로드
+                </button>
+                <a id="btn-detail" href="#" class="btn btn-secondary">상세보기</a>
+            </div>
         </div>
         
-        <div id="pdf-viewer" style="flex: 1; overflow: hidden; display: flex; align-items: center; justify-content: center; background: #f5f5f5;">
-            <div style="text-align: center; color: var(--text-muted);">
+        <div id="doc-viewer" style="flex: 1; overflow: auto; padding: 24px; background: #f9f9f9;">
+            <div style="text-align: center; color: var(--text-muted); padding: 60px 0;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64" style="margin: 0 auto 16px; opacity: 0.3;">
                     <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
                     <polyline points="14 2 14 8 20 8"></polyline>
@@ -60,7 +63,7 @@
                     <line x1="16" y1="17" x2="8" y2="17"></line>
                     <polyline points="10 9 9 9 8 9"></polyline>
                 </svg>
-                <p style="font-size: 1.1rem;">왼쪽 목록에서 문서를 선택하여<br/>PDF를 확인하세요</p>
+                <p style="font-size: 1.1rem;">왼쪽 목록에서 문서를 선택하세요</p>
             </div>
         </div>
     </div>
@@ -241,47 +244,137 @@
         // 문서 정보 표시
         document.getElementById('selected-doc-title').textContent = doc.title;
         document.getElementById('selected-doc-number').textContent = `${doc.document_number} | ${getStatusText(doc.status)}`;
-        document.getElementById('btn-download-pdf').style.display = 'flex';
         
-        // PDF 로드
-        await loadPDF(documentId);
+        // 액션 버튼 표시
+        const actionsDiv = document.getElementById('doc-actions');
+        actionsDiv.style.display = 'flex';
+        
+        // 승인 완료된 문서만 PDF 다운로드 가능
+        const pdfBtn = document.getElementById('btn-download-pdf');
+        pdfBtn.style.display = doc.status === 'approved' ? 'flex' : 'none';
+        
+        // 상세보기 링크
+        document.getElementById('btn-detail').href = `/documents/${documentId}/`;
+        
+        // 웹 미리보기 로드
+        await loadDocumentPreview(documentId);
     }
     
-    // PDF 로드
-    async function loadPDF(documentId) {
-        const viewer = document.getElementById('pdf-viewer');
-        viewer.innerHTML = '<div style="text-align: center; padding: 40px;"><div class="spinner"></div><p style="margin-top: 16px; color: var(--text-muted);">PDF 로딩 중...</p></div>';
+    // 웹 미리보기 로드
+    async function loadDocumentPreview(documentId) {
+        const viewer = document.getElementById('doc-viewer');
+        viewer.innerHTML = '<div style="text-align: center; padding: 40px;"><p style="color: var(--text-muted);">문서 로딩 중...</p></div>';
         
         try {
-            const response = await apiRequest(`/documents/items/${documentId}/download_pdf/`);
+            const response = await apiRequest(`/documents/items/${documentId}/`);
             if (response && response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
+                const doc = await response.json();
                 
-                // iframe으로 PDF 표시
-                viewer.innerHTML = `<iframe src="${url}" style="width: 100%; height: 100%; border: none;"></iframe>`;
-            } else {
-                viewer.innerHTML = `
-                    <div style="text-align: center; color: var(--text-muted);">
-                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" width="64" height="64" style="margin: 0 auto 16px; opacity: 0.3;">
-                            <circle cx="12" cy="12" r="10"></circle>
-                            <line x1="12" y1="8" x2="12" y2="12"></line>
-                            <line x1="12" y1="16" x2="12.01" y2="16"></line>
-                        </svg>
-                        <p style="font-size: 1.1rem;">PDF 생성 실패</p>
-                        <p style="font-size: 0.9rem;">문서가 아직 승인되지 않았거나<br/>PDF 생성 중 오류가 발생했습니다.</p>
-                    </div>
+                let contentHtml = '';
+                
+                // 문서 헤더
+                contentHtml += `
+                    <div style="background: white; border: 1px solid #ddd; border-radius: 8px; padding: 32px; max-width: 800px; margin: 0 auto;">
+                        <div style="text-align: center; border-bottom: 2px solid #333; padding-bottom: 20px; margin-bottom: 24px;">
+                            <h2 style="margin: 0 0 8px; font-size: 1.5rem;">${doc.title}</h2>
+                            <p style="margin: 0; color: #666;">${doc.document_number} | Rev.${doc.revision}</p>
+                            <span class="status-badge ${getStatusClass(doc.status)}" style="margin-top: 8px; display: inline-block;">${getStatusText(doc.status)}</span>
+                        </div>
                 `;
+                
+                // 문서 정보
+                contentHtml += `
+                    <table style="width: 100%; border-collapse: collapse; margin-bottom: 24px; font-size: 0.9rem;">
+                        <tr>
+                            <td style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; font-weight: 600; width: 120px;">카테고리</td>
+                            <td style="padding: 8px 12px; border: 1px solid #ddd;">${doc.category_detail?.name || '-'}</td>
+                            <td style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; font-weight: 600; width: 120px;">작성자</td>
+                            <td style="padding: 8px 12px; border: 1px solid #ddd;">${doc.created_by_name || '-'}</td>
+                        </tr>
+                        <tr>
+                            <td style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; font-weight: 600;">작성일</td>
+                            <td style="padding: 8px 12px; border: 1px solid #ddd;">${new Date(doc.created_at).toLocaleDateString('ko-KR')}</td>
+                            <td style="padding: 8px 12px; background: #f5f5f5; border: 1px solid #ddd; font-weight: 600;">상태</td>
+                            <td style="padding: 8px 12px; border: 1px solid #ddd;">${getStatusText(doc.status)}</td>
+                        </tr>
+                    </table>
+                `;
+                
+                // 문서 내용
+                if (doc.content_data && Object.keys(doc.content_data).length > 0) {
+                    contentHtml += '<h4 style="margin: 24px 0 12px; border-bottom: 1px solid #ddd; padding-bottom: 8px;">문서 내용</h4>';
+                    
+                    const labels = {
+                        'occurrence_date': '발생 일시', 'nonconformity_content': '부적합 내용',
+                        'cause_analysis': '원인 분석', 'corrective_action': '시정 조치 계획',
+                        'preventive_action': '예방 조치', 'target_date': '목표 완료일',
+                        'remarks': '비고', 'audit_date': '내부심사 시행일',
+                        'auditor': '심사원', 'department': '심사대상 부서'
+                    };
+                    
+                    for (const [key, value] of Object.entries(doc.content_data)) {
+                        if (!value) continue;
+                        const label = labels[key] || key;
+                        contentHtml += `
+                            <div style="margin-bottom: 16px;">
+                                <div style="font-size: 0.85rem; font-weight: 600; color: #555; margin-bottom: 4px;">${label}</div>
+                                <div style="padding: 10px 14px; background: #f9f9f9; border: 1px solid #eee; border-radius: 6px; white-space: pre-wrap;">${value}</div>
+                            </div>
+                        `;
+                    }
+                } else {
+                    contentHtml += '<p style="color: #999; text-align: center; padding: 20px;">문서 내용이 없습니다.</p>';
+                }
+                
+                // 승인 정보
+                if (doc.status === 'approved') {
+                    contentHtml += `
+                        <div style="margin-top: 24px; padding-top: 16px; border-top: 2px solid #333;">
+                            <table style="width: 100%; border-collapse: collapse; font-size: 0.9rem;">
+                                <tr>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #ddd; background: #f5f5f5; font-weight: 600; width: 33%;">작성</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #ddd; background: #f5f5f5; font-weight: 600; width: 33%;">검토</td>
+                                    <td style="padding: 8px; text-align: center; border: 1px solid #ddd; background: #f5f5f5; font-weight: 600; width: 33%;">승인</td>
+                                </tr>
+                                <tr>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #ddd;">${doc.created_by_name || '-'}</td>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #ddd;">${doc.reviewed_by_name || '-'}</td>
+                                    <td style="padding: 12px; text-align: center; border: 1px solid #ddd;">${doc.approved_by_name || '-'}</td>
+                                </tr>
+                            </table>
+                        </div>
+                    `;
+                }
+                
+                // 미승인 안내
+                if (doc.status !== 'approved') {
+                    contentHtml += `
+                        <div style="margin-top: 24px; padding: 16px; background: #fff3cd; border: 1px solid #ffc107; border-radius: 8px; text-align: center;">
+                            <p style="margin: 0; color: #856404; font-size: 0.9rem;">승인 완료 후 PDF 다운로드가 가능합니다.</p>
+                        </div>
+                    `;
+                }
+                
+                contentHtml += '</div>';
+                viewer.innerHTML = contentHtml;
+            } else {
+                viewer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">문서를 불러올 수 없습니다.</div>';
             }
         } catch (error) {
-            console.error('Failed to load PDF:', error);
-            viewer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">PDF 로딩 실패</div>';
+            console.error('Failed to load document:', error);
+            viewer.innerHTML = '<div style="text-align: center; padding: 40px; color: var(--text-muted);">문서 로딩 실패</div>';
         }
     }
     
-    // PDF 다운로드
+    // PDF 다운로드 (승인된 문서만)
     async function downloadSelectedPDF() {
         if (!selectedDocumentId) return;
+        
+        const doc = documents.find(d => d.id === selectedDocumentId);
+        if (doc && doc.status !== 'approved') {
+            alert('승인 완료된 문서만 PDF 다운로드가 가능합니다.');
+            return;
+        }
         
         try {
             const response = await apiRequest(`/documents/items/${selectedDocumentId}/download_pdf/`);
@@ -289,7 +382,6 @@
                 const blob = await response.blob();
                 const url = window.URL.createObjectURL(blob);
                 
-                const doc = documents.find(d => d.id === selectedDocumentId);
                 const filename = doc ? `${doc.document_number}.pdf` : 'document.pdf';
                 
                 const a = document.createElement('a');
@@ -299,6 +391,8 @@
                 a.click();
                 window.URL.revokeObjectURL(url);
                 document.body.removeChild(a);
+            } else {
+                alert('PDF 다운로드에 실패했습니다.');
             }
         } catch (error) {
             console.error('Failed to download PDF:', error);

@@ -52,6 +52,92 @@ class ExcelMasterDocumentViewSet(viewsets.ReadOnlyModelViewSet):
             'items': items
         })
     
+    @action(detail=True, methods=['post'])
+    def update_cells(self, request, pk=None):
+        """웹에서 직접 수정한 셀 데이터를 엑셀 파일에 반영"""
+        document = self.get_object()
+        
+        sheet_name = request.data.get('sheet_name')
+        cells = request.data.get('cells', [])
+        
+        if not cells:
+            return Response({'error': '수정할 셀이 없습니다.'}, status=status.HTTP_400_BAD_REQUEST)
+        
+        try:
+            import openpyxl
+            
+            file_path = document.get_file_path()
+            if not file_path.exists():
+                return Response({'error': '엑셀 파일을 찾을 수 없습니다.'}, status=status.HTTP_404_NOT_FOUND)
+            
+            # 엑셀 파일 열기
+            wb = openpyxl.load_workbook(file_path)
+            
+            # 시트 선택
+            if sheet_name and sheet_name in wb.sheetnames:
+                ws = wb[sheet_name]
+            else:
+                ws = wb.active
+            
+            updated_count = 0
+            previous_values = {}
+            new_values = {}
+            
+            for cell_data in cells:
+                row = cell_data.get('row')
+                col = cell_data.get('col')
+                value = cell_data.get('value', '')
+                
+                if row is None or col is None:
+                    continue
+                
+                cell = ws.cell(row=row, column=col)
+                cell_addr = f"{openpyxl.utils.get_column_letter(col)}{row}"
+                
+                # 이전 값 저장
+                previous_values[cell_addr] = str(cell.value) if cell.value is not None else ''
+                
+                # 숫자 변환 시도
+                try:
+                    if value == '':
+                        cell.value = None
+                    elif '.' in str(value):
+                        cell.value = float(value)
+                    else:
+                        cell.value = int(value)
+                except (ValueError, TypeError):
+                    cell.value = value
+                
+                new_values[cell_addr] = str(value)
+                updated_count += 1
+            
+            # 저장
+            wb.save(file_path)
+            wb.close()
+            
+            # 로그 기록
+            ExcelUpdateLog.objects.create(
+                document=document,
+                barcode=f'CELL_EDIT_{updated_count}',
+                action='cell_edit',
+                updates=new_values,
+                previous_values=previous_values,
+                created_by=request.user
+            )
+            
+            return Response({
+                'message': f'{updated_count}개 셀이 저장되었습니다.',
+                'updated_count': updated_count,
+                'cells': new_values
+            })
+            
+        except Exception as e:
+            import traceback
+            traceback.print_exc()
+            return Response({
+                'error': f'엑셀 파일 저장 실패: {str(e)}'
+            }, status=status.HTTP_500_INTERNAL_SERVER_ERROR)
+    
     @action(detail=False, methods=['post'])
     def scan_barcode(self, request):
         """

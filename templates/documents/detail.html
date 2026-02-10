@@ -76,16 +76,6 @@
         const canReview = doc.can_review;
         const canApprove = doc.can_approve;
         
-        // 엑셀 파일이 있으면 다운로드 버튼 표시
-        if (doc.excel_file) {
-            setTimeout(() => {
-                const excelBtn = document.getElementById('btn-download-excel');
-                if (excelBtn) {
-                    excelBtn.style.display = 'block';
-                }
-            }, 100);
-        }
-        
         document.getElementById('document-content').innerHTML = `
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
                 <!-- 문서 내용 -->
@@ -176,28 +166,31 @@
                                     최종 반려
                                 </button>
                             ` : ''}
-                            <button class="btn btn-primary" style="width: 100%; margin-bottom: 8px;" onclick="previewPDF()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
-                                    <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"></path>
-                                    <circle cx="12" cy="12" r="3"></circle>
-                                </svg>
-                                PDF 미리보기
-                            </button>
-                            <button class="btn btn-secondary" style="width: 100%;" onclick="downloadPDF()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
-                                    <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
-                                    <polyline points="7 10 12 15 17 10"></polyline>
-                                    <line x1="12" y1="15" x2="12" y2="3"></line>
-                                </svg>
-                                PDF 다운로드
-                            </button>
-                            <button id="btn-download-excel" class="btn btn-success" style="width: 100%; display: none;" onclick="downloadExcel()">
-                                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
-                                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
-                                    <polyline points="14 2 14 8 20 8"></polyline>
-                                </svg>
-                                엑셀 다운로드
-                            </button>
+                            ${doc.status === 'approved' ? `
+                                <button class="btn btn-primary" style="width: 100%;" onclick="downloadPDF()">
+                                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
+                                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+                                        <polyline points="7 10 12 15 17 10"></polyline>
+                                        <line x1="12" y1="15" x2="12" y2="3"></line>
+                                    </svg>
+                                    PDF 다운로드
+                                </button>
+                                ${doc.excel_file ? `
+                                    <button class="btn btn-success" style="width: 100%;" onclick="downloadExcel()">
+                                        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18" style="margin-right: 8px;">
+                                            <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"></path>
+                                            <polyline points="14 2 14 8 20 8"></polyline>
+                                        </svg>
+                                        엑셀 다운로드
+                                    </button>
+                                ` : ''}
+                            ` : `
+                                <div style="padding: 12px; background: var(--primary); border: 1px solid var(--border); border-radius: 8px; text-align: center;">
+                                    <p style="color: var(--text-muted); font-size: 0.85rem; margin: 0;">
+                                        📄 승인 완료 후 PDF 다운로드가 가능합니다.
+                                    </p>
+                                </div>
+                            `}
                         </div>
                     </div>
                     
@@ -465,42 +458,6 @@
             }
         } catch (error) {
             alert('오류 발생');
-        }
-    }
-    
-    async function previewPDF() {
-        try {
-            const response = await apiRequest(`/documents/items/${documentId}/download_pdf/`);
-            if (response && response.ok) {
-                const blob = await response.blob();
-                const url = window.URL.createObjectURL(blob);
-                
-                // 새 탭에서 PDF 열기
-                const newWindow = window.open(url, '_blank');
-                
-                if (!newWindow) {
-                    alert('팝업 차단이 활성화되어 있습니다. 팝업을 허용해주세요.');
-                    // 팝업이 차단된 경우 다운로드로 대체
-                    const a = document.createElement('a');
-                    a.href = url;
-                    a.download = `${currentDocument.document_number}.pdf`;
-                    document.body.appendChild(a);
-                    a.click();
-                    window.URL.revokeObjectURL(url);
-                    document.body.removeChild(a);
-                }
-                
-                // URL은 새 탭이 닫힐 때 자동으로 정리됨
-                // 하지만 메모리 관리를 위해 일정 시간 후 해제
-                setTimeout(() => {
-                    window.URL.revokeObjectURL(url);
-                }, 60000); // 1분 후
-            } else {
-                alert('PDF 생성에 실패했습니다.');
-            }
-        } catch (error) {
-            console.error('Failed to preview PDF:', error);
-            alert('PDF 미리보기 중 오류가 발생했습니다.');
         }
     }
     
