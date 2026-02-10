@@ -630,6 +630,14 @@
                 sheet[addr] = { t: 's', v: val, w: val };
             }
         }
+        function setDateCell(addr) {
+            const now = new Date();
+            const yyyy = now.getFullYear();
+            const mm = String(now.getMonth() + 1).padStart(2, '0');
+            const dd = String(now.getDate()).padStart(2, '0');
+            const dateStr = `${yyyy}-${mm}-${dd}`;
+            sheet[addr] = { t: 's', v: dateStr, w: dateStr };
+        }
         
         const name = (templateName || '').trim();
         
@@ -637,6 +645,7 @@
             // 내부심사 체크리스트
             setCell('K3', currentUserName);   // 작성자
             setCell('N6', currentUserName);   // 심사관
+            setDateCell('G6');                // 내부심사 시행일
             for (let r = 9; r <= 35; r++) {
                 setCell('B' + r, currentUserName); // 심사내용 담당자
             }
@@ -644,10 +653,11 @@
             // 부적합품 관리대장
             setCell('Z4', currentUserDept);   // 부서명 우측 셀
             setCell('AO4', currentUserName);  // 작성자 우측 셀
+        } else if (name.includes('업무분장표')) {
+            // 업무분장표
+            setCell('J4', currentUserName);   // 작성자 우측 셀
+            setDateCell('J3');                // 작성일자
         }
-        
-        // 공통: 작성자 관련 셀 (다른 템플릿에서도 사용 가능)
-        // 필요시 여기에 추가
     }
     
     // SheetJS 색상을 CSS 색상으로 변환

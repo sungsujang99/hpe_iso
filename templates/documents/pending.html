@@ -10,6 +10,144 @@
 <span>승인 대기</span>
 {% endblock %}
 
+{% block extra_css %}
+<style>
+/* 미리보기 모달 */
+.preview-overlay {
+    display: none;
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0,0,0,0.5);
+    z-index: 1000;
+    justify-content: center;
+    align-items: flex-start;
+    padding: 40px 24px;
+    overflow-y: auto;
+}
+.preview-overlay.active { display: flex; }
+.preview-modal {
+    background: var(--card);
+    border-radius: 12px;
+    width: 100%;
+    max-width: 1100px;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+    animation: slideUp 0.2s ease;
+}
+@keyframes slideUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.preview-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20px 24px;
+    border-bottom: 1px solid var(--border);
+}
+.preview-header h3 { margin: 0; }
+.preview-close {
+    background: none; border: none; font-size: 1.5rem; cursor: pointer;
+    color: var(--text-muted); padding: 4px 8px; border-radius: 4px;
+}
+.preview-close:hover { background: var(--primary); }
+.preview-info {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 12px;
+    padding: 16px 24px;
+    background: var(--primary);
+    border-bottom: 1px solid var(--border);
+}
+.preview-info-item {
+    font-size: 0.85rem;
+}
+.preview-info-item .label { color: var(--text-muted); margin-bottom: 2px; }
+.preview-info-item .value { font-weight: 600; }
+.preview-body {
+    padding: 24px;
+    max-height: 55vh;
+    overflow: auto;
+}
+.preview-body table {
+    border-collapse: collapse;
+    width: 100%;
+    font-size: 0.82rem;
+    background: white;
+    color: #222;
+}
+.preview-body th {
+    background: #f0f0f0;
+    border: 1px solid #ccc;
+    padding: 3px 6px;
+    font-weight: 600;
+    text-align: center;
+    color: #333;
+    position: sticky;
+    top: 0;
+    z-index: 2;
+    font-size: 0.72rem;
+}
+.preview-body td {
+    border: 1px solid #ddd;
+    padding: 3px 6px;
+    min-width: 40px;
+    max-width: 250px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: #222;
+}
+.preview-body .row-header {
+    background: #f8f8f8;
+    text-align: center;
+    font-weight: 600;
+    color: #666;
+    min-width: 35px;
+    max-width: 35px;
+    font-size: 0.72rem;
+}
+.preview-actions {
+    display: flex;
+    gap: 12px;
+    padding: 20px 24px;
+    border-top: 1px solid var(--border);
+    justify-content: flex-end;
+    align-items: center;
+}
+.preview-actions .comment-input {
+    flex: 1;
+    padding: 10px 14px;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    background: var(--primary);
+    color: var(--text);
+    font-size: 0.9rem;
+}
+.content-preview-text {
+    background: var(--primary);
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 20px;
+}
+.content-preview-text .field-row {
+    display: flex;
+    padding: 8px 0;
+    border-bottom: 1px solid var(--border);
+}
+.content-preview-text .field-row:last-child { border-bottom: none; }
+.content-preview-text .field-label {
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    min-width: 140px;
+    font-weight: 500;
+}
+.content-preview-text .field-value {
+    flex: 1;
+    white-space: pre-wrap;
+}
+</style>
+{% endblock %}
+
 {% block content %}
 <!-- 탭 -->
 <div style="display: flex; gap: 12px; margin-bottom: 24px;">
@@ -76,10 +214,266 @@
         </table>
     </div>
 </div>
+
+<!-- 미리보기 모달 -->
+<div class="preview-overlay" id="preview-overlay" onclick="if(event.target===this)closePreview()">
+    <div class="preview-modal">
+        <div class="preview-header">
+            <div>
+                <h3 id="preview-title">문서 미리보기</h3>
+                <p style="color: var(--text-muted); font-size: 0.85rem; margin-top: 4px;" id="preview-docnum"></p>
+            </div>
+            <button class="preview-close" onclick="closePreview()">&times;</button>
+        </div>
+        <div class="preview-info">
+            <div class="preview-info-item">
+                <div class="label">카테고리</div>
+                <div class="value" id="preview-category">-</div>
+            </div>
+            <div class="preview-info-item">
+                <div class="label">작성자</div>
+                <div class="value" id="preview-author">-</div>
+            </div>
+            <div class="preview-info-item">
+                <div class="label">제출일</div>
+                <div class="value" id="preview-date">-</div>
+            </div>
+            <div class="preview-info-item">
+                <div class="label">상태</div>
+                <div class="value" id="preview-status">-</div>
+            </div>
+        </div>
+        <div class="preview-body" id="preview-body">
+            <div style="text-align: center; padding: 48px; color: var(--text-muted);">
+                로딩 중...
+            </div>
+        </div>
+        <div class="preview-actions" id="preview-actions">
+            <input type="text" class="comment-input" id="preview-comment" placeholder="코멘트 (선택사항)">
+        </div>
+    </div>
+</div>
 {% endblock %}
 
 {% block extra_js %}
+<script src="/static/js/xlsx.full.min.js"></script>
 <script>
+    let currentPreviewDocId = null;
+    let currentPreviewMode = null; // 'review' or 'approval'
+    
+    // ===== 색상/스타일 헬퍼 =====
+    function xlsxColorToCSS(color) {
+        if (!color) return null;
+        if (color.rgb) {
+            const rgb = color.rgb.length === 8 ? color.rgb.substring(2) : color.rgb;
+            return '#' + rgb;
+        }
+        if (color.theme !== undefined) {
+            const tc = ['#000000','#FFFFFF','#44546A','#4472C4','#ED7D31','#A5A5A5','#FFC000','#5B9BD5','#70AD47','#264478','#9B57A0','#636363'];
+            let base = tc[color.theme] || '#000000';
+            if (color.tint) base = applyTint(base, color.tint);
+            return base;
+        }
+        if (color.indexed !== undefined) {
+            const ic = ['#000000','#FFFFFF','#FF0000','#00FF00','#0000FF','#FFFF00','#FF00FF','#00FFFF','#000000','#FFFFFF','#FF0000','#00FF00','#0000FF','#FFFF00','#FF00FF','#00FFFF','#800000','#008000','#000080','#808000','#800080','#008080','#C0C0C0','#808080','#9999FF','#993366','#FFFFCC','#CCFFFF','#660066','#FF8080','#0066CC','#CCCCFF','#000080','#FF00FF','#FFFF00','#00FFFF','#800080','#800000','#008080','#0000FF','#00CCFF','#CCFFFF','#CCFFCC','#FFFF99','#99CCFF','#FF99CC','#CC99FF','#FFCC99','#3366FF','#33CCCC','#99CC00','#FFCC00','#FF9900','#FF6600','#666699','#969696','#003366','#339966','#003300','#333300','#993300','#993366','#333399','#333333'];
+            return ic[color.indexed] || null;
+        }
+        return null;
+    }
+    function applyTint(hex, tint) {
+        let r = parseInt(hex.substring(1,3),16), g = parseInt(hex.substring(3,5),16), b = parseInt(hex.substring(5,7),16);
+        if (tint > 0) { r=Math.round(r+(255-r)*tint); g=Math.round(g+(255-g)*tint); b=Math.round(b+(255-b)*tint); }
+        else { r=Math.round(r*(1+tint)); g=Math.round(g*(1+tint)); b=Math.round(b*(1+tint)); }
+        return '#'+[r,g,b].map(x=>Math.min(255,Math.max(0,x)).toString(16).padStart(2,'0')).join('');
+    }
+    function getCellStyle(cell) {
+        if (!cell || !cell.s) return '';
+        const s = cell.s; let styles = [];
+        if (s.fgColor) { const bg=xlsxColorToCSS(s.fgColor); if(bg&&bg!=='#000000')styles.push('background-color:'+bg); }
+        if (s.bgColor&&!styles.length) { const bg=xlsxColorToCSS(s.bgColor); if(bg&&bg!=='#000000')styles.push('background-color:'+bg); }
+        if (s.patternType==='solid'&&s.fgColor) { const bg=xlsxColorToCSS(s.fgColor); if(bg){styles=styles.filter(st=>!st.startsWith('background-color'));styles.push('background-color:'+bg);} }
+        if (s.color) { const fc=xlsxColorToCSS(s.color); if(fc)styles.push('color:'+fc); }
+        if (s.bold) styles.push('font-weight:bold');
+        if (s.italic) styles.push('font-style:italic');
+        if (s.sz) styles.push('font-size:'+Math.max(s.sz*0.75,9)+'px');
+        if (s.alignment) {
+            if(s.alignment.horizontal){const m={center:'center',right:'right',left:'left'};if(m[s.alignment.horizontal])styles.push('text-align:'+m[s.alignment.horizontal]);}
+            if(s.alignment.vertical){const m={center:'middle',top:'top',bottom:'bottom'};if(m[s.alignment.vertical])styles.push('vertical-align:'+m[s.alignment.vertical]);}
+            if(s.alignment.wrapText)styles.push('white-space:pre-wrap');
+        }
+        return styles.join(';');
+    }
+    
+    // ===== 엑셀 미리보기 렌더링 =====
+    async function renderExcelPreview(fileUrl, container) {
+        try {
+            const resp = await fetch(fileUrl);
+            if (!resp.ok) throw new Error('파일 로드 실패');
+            const ab = await resp.arrayBuffer();
+            const wb = XLSX.read(ab, { type:'array', cellStyles:true, cellNF:true });
+            const sheet = wb.Sheets[wb.SheetNames[0]];
+            const range = XLSX.utils.decode_range(sheet['!ref']||'A1');
+            const merges = sheet['!merges']||[];
+            const cols = sheet['!cols']||[];
+            const rows = sheet['!rows']||[];
+            
+            const mergeMap = {};
+            merges.forEach(m => {
+                for (let r=m.s.r;r<=m.e.r;r++) for (let c=m.s.c;c<=m.e.c;c++) {
+                    if (r===m.s.r&&c===m.s.c) mergeMap[r+'_'+c]={rowspan:m.e.r-m.s.r+1,colspan:m.e.c-m.s.c+1,isOrigin:true};
+                    else mergeMap[r+'_'+c]={skip:true};
+                }
+            });
+            
+            let html='<table><tr><th style="min-width:35px;"></th>';
+            for (let c=range.s.c;c<=range.e.c;c++){
+                const ci=cols[c]; const w=ci&&ci.wpx?ci.wpx+'px':ci&&ci.wch?(ci.wch*7)+'px':'auto';
+                html+='<th style="width:'+w+'">'+XLSX.utils.encode_col(c)+'</th>';
+            }
+            html+='</tr>';
+            
+            for (let r=range.s.r;r<=range.e.r;r++){
+                const ri=rows[r]; const rh=ri&&ri.hpx?'height:'+ri.hpx+'px;':'';
+                html+='<tr style="'+rh+'"><td class="row-header">'+(r+1)+'</td>';
+                for (let c=range.s.c;c<=range.e.c;c++){
+                    const k=r+'_'+c,m=mergeMap[k];
+                    if(m&&m.skip)continue;
+                    const addr=XLSX.utils.encode_cell({r,c}),cell=sheet[addr];
+                    const val=cell?(cell.w||String(cell.v||'')):'';
+                    const cs=getCellStyle(cell);
+                    let attrs=cs?' style="'+cs+'"':'';
+                    if(m&&m.isOrigin){if(m.rowspan>1)attrs+=' rowspan="'+m.rowspan+'"';if(m.colspan>1)attrs+=' colspan="'+m.colspan+'"';}
+                    html+='<td'+attrs+'>'+val+'</td>';
+                }
+                html+='</tr>';
+            }
+            html+='</table>';
+            container.innerHTML = html;
+        } catch(e) {
+            console.error('Excel preview error:', e);
+            container.innerHTML = '<div style="text-align:center;padding:24px;color:#d93025;">엑셀 파일을 불러올 수 없습니다.</div>';
+        }
+    }
+    
+    // ===== 텍스트 내용 미리보기 =====
+    function renderContentPreview(contentData) {
+        if (!contentData || Object.keys(contentData).length === 0) {
+            return '<div style="text-align:center;padding:24px;color:var(--text-muted);">내용이 없습니다.</div>';
+        }
+        const labels = {
+            'occurrence_date':'발생 일시','nonconformity_content':'부적합 내용','cause_analysis':'원인 분석',
+            'corrective_action':'시정 조치 계획','preventive_action':'예방 조치','target_date':'목표 완료일','remarks':'비고'
+        };
+        let html = '<div class="content-preview-text">';
+        for (const [key, value] of Object.entries(contentData)) {
+            if (!value || key.startsWith('_')) continue;
+            const label = labels[key] || key;
+            html += `<div class="field-row"><div class="field-label">${label}</div><div class="field-value">${value}</div></div>`;
+        }
+        html += '</div>';
+        return html;
+    }
+    
+    // ===== 모달 열기 =====
+    async function openPreview(docId, mode) {
+        currentPreviewDocId = docId;
+        currentPreviewMode = mode;
+        
+        const overlay = document.getElementById('preview-overlay');
+        const body = document.getElementById('preview-body');
+        const actions = document.getElementById('preview-actions');
+        
+        body.innerHTML = '<div style="text-align:center;padding:48px;color:var(--text-muted);">문서 로딩 중...</div>';
+        overlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        
+        try {
+            const resp = await apiRequest(`/documents/items/${docId}/`);
+            if (!resp || !resp.ok) throw new Error('문서 로드 실패');
+            const doc = await resp.json();
+            
+            // 헤더 정보 채우기
+            document.getElementById('preview-title').textContent = doc.title;
+            document.getElementById('preview-docnum').textContent = doc.document_number;
+            document.getElementById('preview-category').textContent = doc.category_detail?.name || '-';
+            document.getElementById('preview-author').textContent = doc.created_by_name || '-';
+            document.getElementById('preview-date').textContent = formatDate(doc.submitted_at || doc.created_at);
+            document.getElementById('preview-status').innerHTML = mode === 'review' ? 
+                '<span style="color:var(--warning);">검토 대기</span>' : 
+                '<span style="color:var(--info);">승인 대기</span>';
+            
+            // 본문: 엑셀 or 텍스트
+            if (doc.excel_file) {
+                body.innerHTML = '<div style="text-align:center;padding:24px;color:var(--text-muted);">엑셀 미리보기 로딩 중...</div>';
+                await renderExcelPreview(doc.excel_file, body);
+            } else {
+                body.innerHTML = renderContentPreview(doc.content_data);
+            }
+            
+            // 하단 버튼
+            const commentHtml = '<input type="text" class="comment-input" id="preview-comment" placeholder="코멘트 (선택사항)">';
+            if (mode === 'review') {
+                actions.innerHTML = `
+                    ${commentHtml}
+                    <button class="btn btn-danger" onclick="handleAction('reject')">검토 반려</button>
+                    <button class="btn btn-success" onclick="handleAction('approve')">검토 승인</button>
+                `;
+            } else {
+                actions.innerHTML = `
+                    ${commentHtml}
+                    <button class="btn btn-danger" onclick="handleAction('reject')">최종 반려</button>
+                    <button class="btn btn-success" onclick="handleAction('approve')">최종 승인</button>
+                `;
+            }
+        } catch(e) {
+            console.error('Preview load error:', e);
+            body.innerHTML = '<div style="text-align:center;padding:24px;color:#d93025;">문서를 불러올 수 없습니다.</div>';
+        }
+    }
+    
+    function closePreview() {
+        document.getElementById('preview-overlay').classList.remove('active');
+        document.body.style.overflow = '';
+        currentPreviewDocId = null;
+        currentPreviewMode = null;
+    }
+    
+    // ===== 검토/승인 처리 =====
+    async function handleAction(action) {
+        if (!currentPreviewDocId || !currentPreviewMode) return;
+        
+        const actionLabel = currentPreviewMode === 'review' 
+            ? (action === 'approve' ? '검토 승인' : '검토 반려')
+            : (action === 'approve' ? '최종 승인' : '최종 반려');
+        
+        if (!confirm(`${actionLabel}하시겠습니까?`)) return;
+        
+        const comment = document.getElementById('preview-comment')?.value || '';
+        const endpoint = currentPreviewMode === 'review' 
+            ? `/documents/items/${currentPreviewDocId}/review/`
+            : `/documents/items/${currentPreviewDocId}/approve/`;
+        
+        try {
+            const resp = await apiRequest(endpoint, {
+                method: 'POST',
+                body: JSON.stringify({ action, comment })
+            });
+            
+            if (resp && resp.ok) {
+                alert(`${actionLabel} 완료되었습니다.`);
+                closePreview();
+                loadPendingDocuments();
+            } else {
+                const err = await resp.json().catch(() => ({}));
+                alert(`처리 실패: ${err.detail || err.error || '서버 오류'}`);
+            }
+        } catch(e) {
+            console.error('Action error:', e);
+            alert('처리 중 오류가 발생했습니다.');
+        }
+    }
+    
+    // ===== 탭 =====
     function showTab(tab) {
         document.getElementById('review-section').style.display = tab === 'review' ? 'block' : 'none';
         document.getElementById('approval-section').style.display = tab === 'approval' ? 'block' : 'none';
@@ -87,35 +481,34 @@
         document.getElementById('tab-approval').className = tab === 'approval' ? 'btn btn-primary' : 'btn btn-secondary';
     }
     
+    // ===== 데이터 로드 =====
     async function loadPendingDocuments() {
-        // 검토 대기
         try {
             const reviewResponse = await apiRequest('/documents/pending-review/');
             if (reviewResponse && reviewResponse.ok) {
                 const docs = await reviewResponse.json();
                 const list = Array.isArray(docs) ? docs : (docs.results || []);
                 document.getElementById('review-count').textContent = list.length;
-                renderTable('review-table', list);
+                renderTable('review-table', list, 'review');
             }
         } catch (error) {
             console.error('Failed to load review pending:', error);
         }
         
-        // 승인 대기
         try {
             const approvalResponse = await apiRequest('/documents/pending-approval/');
             if (approvalResponse && approvalResponse.ok) {
                 const docs = await approvalResponse.json();
                 const list = Array.isArray(docs) ? docs : (docs.results || []);
                 document.getElementById('approval-count').textContent = list.length;
-                renderApprovalTable('approval-table', list);
+                renderTable('approval-table', list, 'approval');
             }
         } catch (error) {
             console.error('Failed to load approval pending:', error);
         }
     }
     
-    function renderTable(tableId, docs) {
+    function renderTable(tableId, docs, mode) {
         const tbody = document.getElementById(tableId);
         
         if (docs.length === 0) {
@@ -129,41 +522,20 @@
             return;
         }
         
-        tbody.innerHTML = docs.map(doc => `
-            <tr>
-                <td><a href="/documents/${doc.id}/" style="color: var(--accent); font-weight: 600;">${doc.document_number}</a></td>
-                <td>${doc.title}</td>
-                <td>${doc.created_by_name || '-'}</td>
-                <td>${formatDate(doc.submitted_at || doc.created_at)}</td>
-                <td>
-                    <a href="/documents/${doc.id}/" class="btn btn-primary btn-sm">검토하기</a>
-                </td>
-            </tr>
-        `).join('');
-    }
-    
-    function renderApprovalTable(tableId, docs) {
-        const tbody = document.getElementById(tableId);
-        
-        if (docs.length === 0) {
-            tbody.innerHTML = `
-                <tr>
-                    <td colspan="5" style="text-align: center; padding: 48px; color: var(--text-muted);">
-                        대기 중인 문서가 없습니다.
-                    </td>
-                </tr>
-            `;
-            return;
-        }
+        const isApproval = mode === 'approval';
+        const btnClass = isApproval ? 'btn-success' : 'btn-primary';
+        const btnLabel = isApproval ? '승인하기' : '검토하기';
         
         tbody.innerHTML = docs.map(doc => `
             <tr>
                 <td><a href="/documents/${doc.id}/" style="color: var(--accent); font-weight: 600;">${doc.document_number}</a></td>
                 <td>${doc.title}</td>
                 <td>${doc.created_by_name || '-'}</td>
-                <td>${doc.reviewed_by_name || '-'}</td>
+                <td>${isApproval ? (doc.reviewed_by_name || '-') : formatDate(doc.submitted_at || doc.created_at)}</td>
                 <td>
-                    <a href="/documents/${doc.id}/" class="btn btn-success btn-sm">승인하기</a>
+                    <button class="btn ${btnClass} btn-sm" onclick="openPreview('${doc.id}', '${mode}')">
+                        ${btnLabel}
+                    </button>
                 </td>
             </tr>
         `).join('');
@@ -173,6 +545,11 @@
         if (!dateString) return '-';
         return new Date(dateString).toLocaleDateString('ko-KR');
     }
+    
+    // ESC 키로 모달 닫기
+    document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') closePreview();
+    });
     
     document.addEventListener('DOMContentLoaded', loadPendingDocuments);
 </script>

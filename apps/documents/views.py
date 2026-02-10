@@ -172,19 +172,25 @@ class DocumentViewSet(viewsets.ModelViewSet):
                         
                         # 템플릿별 자동 입력
                         try:
+                            from datetime import date
                             user = self.request.user
                             user_name = user.get_full_name() or user.username
                             user_dept = user.department.name if user.department else ''
                             template_name = document.template.name if document.template else ''
+                            today = date.today()
                             
                             if '내부심사' in template_name and '체크리스트' in template_name:
                                 ws['K3'] = user_name
                                 ws['N6'] = user_name
+                                ws['G6'] = today       # 내부심사 시행일
                                 for r in range(9, 36):
                                     ws.cell(row=r, column=2).value = user_name
                             elif '부적합품' in template_name and '관리대장' in template_name:
                                 ws['Z4'] = user_dept   # 부서명
                                 ws['AO4'] = user_name  # 작성자
+                            elif '업무분장표' in template_name:
+                                ws['J4'] = user_name   # 작성자
+                                ws['J3'] = today       # 작성일자
                         except Exception:
                             pass
                         
