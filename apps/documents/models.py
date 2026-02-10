@@ -170,6 +170,15 @@ class Document(models.Model):
         null=True,
     )
     
+    # 직접 작성한 엑셀 파일 업로드
+    excel_file = models.FileField(
+        _('엑셀 파일'),
+        upload_to='documents/excel/%Y/%m/',
+        blank=True,
+        null=True,
+        help_text='직접 작성한 엑셀 문서 업로드'
+    )
+    
     class Meta:
         verbose_name = _('문서')
         verbose_name_plural = _('문서')

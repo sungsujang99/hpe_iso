@@ -36,6 +36,23 @@
                 </select>
             </div>
             
+            <!-- 엑셀 파일 업로드 -->
+            <div class="form-group">
+                <label class="form-label">엑셀 문서 직접 업로드 (선택사항)</label>
+                <div style="display: flex; align-items: center; gap: 12px;">
+                    <input type="file" id="excel-file" accept=".xlsx,.xls" class="form-control" style="flex: 1;">
+                    <button type="button" class="btn btn-secondary" onclick="clearExcelFile()" style="white-space: nowrap;">
+                        파일 제거
+                    </button>
+                </div>
+                <small style="color: var(--text-muted); display: block; margin-top: 8px;">
+                    💡 템플릿 대신 직접 작성한 엑셀 파일을 업로드할 수 있습니다. (.xlsx, .xls 형식)
+                </small>
+                <div id="excel-file-info" style="margin-top: 8px; display: none; padding: 8px; background: var(--primary); border: 1px solid var(--border); border-radius: 4px;">
+                    <strong>선택된 파일:</strong> <span id="excel-filename"></span> (<span id="excel-filesize"></span>)
+                </div>
+            </div>
+            
             <!-- 문서 정보 (읽기 전용) -->
             <div class="card" style="background: var(--primary); border: 1px solid var(--border); margin-bottom: 24px;">
                 <div class="card-header">
@@ -107,6 +124,27 @@
 <script>
     let categories = [];
     let templates = [];
+    
+    // 엑셀 파일 처리
+    function clearExcelFile() {
+        document.getElementById('excel-file').value = '';
+        document.getElementById('excel-file-info').style.display = 'none';
+    }
+    
+    document.getElementById('excel-file').addEventListener('change', function(e) {
+        const file = e.target.files[0];
+        if (file) {
+            const fileSizeKB = (file.size / 1024).toFixed(2);
+            const fileSizeMB = (file.size / 1024 / 1024).toFixed(2);
+            const sizeStr = fileSizeKB > 1024 ? `${fileSizeMB} MB` : `${fileSizeKB} KB`;
+            
+            document.getElementById('excel-filename').textContent = file.name;
+            document.getElementById('excel-filesize').textContent = sizeStr;
+            document.getElementById('excel-file-info').style.display = 'block';
+        } else {
+            document.getElementById('excel-file-info').style.display = 'none';
+        }
+    });
     
     async function loadCategories() {
         try {
@@ -234,31 +272,42 @@
     async function saveDocument(submit = false) {
         const category = document.getElementById('category').value;
         const template = document.getElementById('template').value;
+        const excelFileInput = document.getElementById('excel-file');
         
         if (!category) {
             alert('카테고리를 선택해주세요.');
             return;
         }
         
-        const body = {
-            category: parseInt(category),
-            content_data: getContentData()
-        };
+        // FormData 사용 (엑셀 파일 업로드를 위해)
+        const formData = new FormData();
+        formData.append('category', parseInt(category));
+        formData.append('content_data', JSON.stringify(getContentData()));
         
         // 제목은 선택사항 (없으면 서버에서 자동 생성)
         const titlePreview = document.getElementById('document-title-preview').textContent;
         if (titlePreview && titlePreview !== '카테고리 선택 시 자동 생성') {
-            body.title = titlePreview;
+            formData.append('title', titlePreview);
         }
         
         if (template) {
-            body.template = parseInt(template);
+            formData.append('template', parseInt(template));
+        }
+        
+        // 엑셀 파일 추가
+        if (excelFileInput.files.length > 0) {
+            formData.append('excel_file', excelFileInput.files[0]);
         }
         
         try {
-            const response = await apiRequest('/documents/items/', {
+            // FormData 사용 시 Content-Type 헤더를 설정하지 않음 (브라우저가 자동으로 설정)
+            const token = localStorage.getItem('access_token');
+            const response = await fetch('/api/v1/documents/items/', {
                 method: 'POST',
-                body: JSON.stringify(body)
+                headers: {
+                    'Authorization': `Bearer ${token}`
+                },
+                body: formData
             });
             
             if (response && response.ok) {

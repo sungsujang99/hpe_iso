@@ -78,7 +78,7 @@ class DocumentListSerializer(serializers.ModelSerializer):
             'id', 'document_number', 'category', 'category_code',
             'title', 'revision', 'status', 'status_display',
             'created_by', 'created_by_name', 'created_at',
-            'is_locked', 'can_edit'
+            'is_locked', 'can_edit', 'excel_file'
         ]
 
 
@@ -108,7 +108,7 @@ class DocumentDetailSerializer(serializers.ModelSerializer):
             'approved_by', 'approved_by_name',
             'created_at', 'updated_at', 'submitted_at',
             'reviewed_at', 'approved_at',
-            'pdf_file', 'can_edit', 'can_submit', 'can_review', 'can_approve',
+            'pdf_file', 'excel_file', 'can_edit', 'can_submit', 'can_review', 'can_approve',
             'comments', 'history', 'attachments'
         ]
 
