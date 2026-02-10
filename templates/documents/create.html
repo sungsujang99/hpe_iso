@@ -657,6 +657,11 @@
             // 업무분장표
             setCell('J4', currentUserName);   // 작성자 우측 셀
             setDateCell('J3');                // 작성일자
+        } else if (name.includes('AS') && name.includes('관리대장')) {
+            // AS 관리대장
+            setCell('AP6', currentUserName);  // 담당직원
+            setCell('AD6', currentUserDept);  // 팀명
+            setDateCell('F6');                // 월별 날짜
         }
     }
     

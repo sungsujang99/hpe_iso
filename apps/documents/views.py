@@ -191,6 +191,10 @@ class DocumentViewSet(viewsets.ModelViewSet):
                             elif '업무분장표' in template_name:
                                 ws['J4'] = user_name   # 작성자
                                 ws['J3'] = today       # 작성일자
+                            elif 'AS' in template_name and '관리대장' in template_name:
+                                ws['AP6'] = user_name  # 담당직원
+                                ws['AD6'] = user_dept  # 팀명
+                                ws['F6'] = today       # 월별 날짜
                         except Exception:
                             pass
                         
