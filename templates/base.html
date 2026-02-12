@@ -882,6 +882,9 @@
             return localStorage.getItem('access_token');
         }
         
+        let _isRefreshing = false;
+        let _refreshPromise = null;
+        
         async function apiRequest(endpoint, options = {}) {
             const token = getToken();
             const headers = {
@@ -893,13 +896,25 @@
                 headers['Authorization'] = `Bearer ${token}`;
             }
             
-            const response = await fetch(`${API_BASE}${endpoint}`, {
+            let response = await fetch(`${API_BASE}${endpoint}`, {
                 ...options,
                 headers,
             });
             
-            if (response.status === 401 || response.status === 403) {
-                // 인증 실패 시 토큰 제거하고 로그인 페이지로 이동
+            // 401: 토큰 만료 → refresh 시도
+            if (response.status === 401) {
+                const newToken = await refreshAccessToken();
+                if (newToken) {
+                    // 새 토큰으로 원래 요청 재시도
+                    headers['Authorization'] = `Bearer ${newToken}`;
+                    response = await fetch(`${API_BASE}${endpoint}`, {
+                        ...options,
+                        headers,
+                    });
+                    return response;
+                }
+                
+                // refresh도 실패하면 로그아웃
                 localStorage.removeItem('access_token');
                 localStorage.removeItem('refresh_token');
                 localStorage.removeItem('user');
@@ -907,7 +922,45 @@
                 return;
             }
             
+            // 403: 권한 없음 - 로그아웃하지 않고 응답 그대로 반환
             return response;
+        }
+        
+        async function refreshAccessToken() {
+            // 이미 refresh 진행 중이면 기존 Promise 재사용 (중복 요청 방지)
+            if (_isRefreshing) return _refreshPromise;
+            
+            const refreshToken = localStorage.getItem('refresh_token');
+            if (!refreshToken) return null;
+            
+            _isRefreshing = true;
+            _refreshPromise = (async () => {
+                try {
+                    const resp = await fetch(`${API_BASE}/auth/token/refresh/`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify({ refresh: refreshToken })
+                    });
+                    
+                    if (resp.ok) {
+                        const data = await resp.json();
+                        localStorage.setItem('access_token', data.access);
+                        if (data.refresh) {
+                            localStorage.setItem('refresh_token', data.refresh);
+                        }
+                        return data.access;
+                    }
+                    return null;
+                } catch (e) {
+                    console.error('Token refresh failed:', e);
+                    return null;
+                } finally {
+                    _isRefreshing = false;
+                    _refreshPromise = null;
+                }
+            })();
+            
+            return _refreshPromise;
         }
         
         async function loadUserInfo() {

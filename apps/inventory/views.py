@@ -19,7 +19,8 @@ from .models import (
 from .serializers import (
     WarehouseSerializer, LocationSerializer, ItemCategorySerializer,
     InventoryItemListSerializer, InventoryItemDetailSerializer,
-    InventoryItemCreateSerializer, StockTransactionSerializer,
+    InventoryItemCreateSerializer, InventoryItemUpdateSerializer,
+    StockTransactionSerializer,
     StockInSerializer, StockOutSerializer, StockTransferSerializer,
     StockAdjustSerializer, BarcodeScanSerializer, StockAlertSerializer,
     InventoryCountSerializer, InventoryCountItemSerializer,
@@ -86,6 +87,8 @@ class InventoryItemViewSet(viewsets.ModelViewSet):
             return InventoryItemCreateSerializer
         elif self.action == 'retrieve':
             return InventoryItemDetailSerializer
+        elif self.action in ('update', 'partial_update'):
+            return InventoryItemUpdateSerializer
         return InventoryItemListSerializer
     
     def get_queryset(self):

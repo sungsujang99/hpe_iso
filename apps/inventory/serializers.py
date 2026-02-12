@@ -95,6 +95,25 @@ class InventoryItemDetailSerializer(serializers.ModelSerializer):
         ]
 
 
+class InventoryItemUpdateSerializer(serializers.ModelSerializer):
+    """품목 수정 시리얼라이저"""
+    
+    class Meta:
+        model = InventoryItem
+        fields = [
+            'name', 'serial_number', 'manufacturer',
+            'inspection_required', 'inspection_due_date',
+            'description', 'unit', 'safety_stock', 'is_active'
+        ]
+        extra_kwargs = {
+            'name': {'required': False},
+            'serial_number': {'required': False},
+            'manufacturer': {'required': False, 'allow_blank': True},
+            'description': {'required': False, 'allow_blank': True},
+            'inspection_due_date': {'required': False, 'allow_null': True},
+        }
+
+
 class InventoryItemCreateSerializer(serializers.ModelSerializer):
     """품목 생성 시리얼라이저 - 필수 필드만"""
     

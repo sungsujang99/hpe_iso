@@ -44,7 +44,7 @@
                    style="font-size: 1.1rem; padding: 16px 20px; text-align: center; letter-spacing: 2px;">
             <div style="text-align: center; margin-top: 8px;">
                 <span style="color: var(--text-muted); font-size: 0.8rem;">
-                    💡 바코드 스캐너 사용 시 자동으로 검색됩니다
+                    💡 바코드 스캐너 또는 직접 입력 후 1초 대기 (Enter 즉시 검색)
                 </span>
             </div>
         </div>
@@ -118,8 +118,8 @@
         // 타이머 초기화
         clearTimeout(barcodeInputTimer);
         
-        // 바코드 스캐너는 보통 매우 빠르게 입력됨 (100ms 이내)
-        // 마지막 입력 후 200ms 동안 추가 입력이 없으면 검색 실행
+        // 마지막 입력 후 1초 동안 추가 입력이 없으면 검색 실행
+        // (직접 타이핑도 가능하도록 충분한 대기 시간)
         barcodeInputTimer = setTimeout(() => {
             const code = input.value.trim();
             if (code && code.length >= 3) { // 최소 3자 이상
@@ -130,7 +130,7 @@
                     input.focus();
                 }, 500);
             }
-        }, 200);
+        }, 1000);
     }
     
     // 새 품목 추가 모달 표시

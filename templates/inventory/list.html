@@ -114,9 +114,11 @@
                 <td>${item.inspection_required ? '<span class="badge badge-warning">필요</span>' : '<span class="badge badge-gray">불필요</span>'}</td>
                 <td>${item.inspection_due_date ? new Date(item.inspection_due_date).toLocaleDateString('ko-KR') : '-'}</td>
                 <td>
-                    <div style="display: flex; gap: 8px;">
+                    <div style="display: flex; gap: 6px; flex-wrap: wrap;">
                         <button class="btn btn-success btn-sm" onclick="stockIn('${item.id}')">입고</button>
                         <button class="btn btn-warning btn-sm" onclick="stockOut('${item.id}')">출고</button>
+                        <button class="btn btn-primary btn-sm" onclick="editItem('${item.id}')">수정</button>
+                        <button class="btn btn-danger btn-sm" onclick="deleteItem('${item.id}', '${(item.name||'').replace(/'/g, "\\'")}')">삭제</button>
                     </div>
                 </td>
             </tr>
@@ -189,6 +191,112 @@
         } catch (error) {
             alert('오류 발생');
         }
+    }
+    
+    async function editItem(itemId) {
+        const item = allItems.find(i => i.id == itemId);
+        if (!item) return;
+        
+        const modal = document.createElement('div');
+        modal.id = 'edit-modal';
+        modal.style.cssText = 'position:fixed;top:0;left:0;right:0;bottom:0;background:rgba(0,0,0,0.7);z-index:2000;display:flex;align-items:center;justify-content:center;padding:20px;';
+        modal.innerHTML = `
+            <div class="card" style="max-width:500px;width:100%;max-height:90vh;overflow-y:auto;">
+                <div class="card-header">
+                    <h3 class="card-title">품목 수정</h3>
+                    <button class="btn btn-secondary btn-sm" onclick="document.getElementById('edit-modal').remove()" style="padding:8px 12px;">✕</button>
+                </div>
+                <form id="edit-form">
+                    <div class="form-group">
+                        <label class="form-label">관리번호(바코드)</label>
+                        <input type="text" class="form-input" value="${item.barcode||item.item_code||''}" readonly style="background:#333;">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">품목명 *</label>
+                        <input type="text" class="form-input" id="edit-name" value="${item.name||''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">시리얼번호 *</label>
+                        <input type="text" class="form-input" id="edit-serial" value="${item.serial_number||''}" required>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">제작사</label>
+                        <input type="text" class="form-input" id="edit-manufacturer" value="${item.manufacturer||''}">
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">점검여부</label>
+                        <label style="display:flex;align-items:center;gap:8px;cursor:pointer;">
+                            <input type="checkbox" id="edit-inspection" ${item.inspection_required?'checked':''} style="width:20px;height:20px;">
+                            <span>점검 필요</span>
+                        </label>
+                    </div>
+                    <div class="form-group">
+                        <label class="form-label">점검예정일자</label>
+                        <input type="date" class="form-input" id="edit-inspection-date" value="${item.inspection_due_date||''}">
+                    </div>
+                    <div style="display:flex;gap:12px;margin-top:24px;">
+                        <button type="submit" class="btn btn-primary" style="flex:1;">저장</button>
+                        <button type="button" class="btn btn-secondary" onclick="document.getElementById('edit-modal').remove()" style="flex:1;">취소</button>
+                    </div>
+                </form>
+            </div>
+        `;
+        document.body.appendChild(modal);
+        document.getElementById('edit-name').focus();
+        
+        document.getElementById('edit-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            try {
+                const resp = await apiRequest('/inventory/items/' + itemId + '/', {
+                    method: 'PATCH',
+                    body: JSON.stringify({
+                        name: document.getElementById('edit-name').value.trim(),
+                        serial_number: document.getElementById('edit-serial').value.trim(),
+                        manufacturer: document.getElementById('edit-manufacturer').value.trim(),
+                        inspection_required: document.getElementById('edit-inspection').checked,
+                        inspection_due_date: document.getElementById('edit-inspection-date').value || null
+                    })
+                });
+                if (resp && resp.ok) {
+                    document.getElementById('edit-modal').remove();
+                    loadItems();
+                    showToast('수정되었습니다.', 'success');
+                } else {
+                    const err = await resp.json().catch(() => ({}));
+                    alert('수정 실패: ' + JSON.stringify(err));
+                }
+            } catch(e) {
+                alert('수정 중 오류가 발생했습니다.');
+            }
+        });
+    }
+    
+    async function deleteItem(itemId, itemName) {
+        if (!confirm(itemName + ' 품목을 정말 삭제하시겠습니까?\n\n이 작업은 되돌릴 수 없습니다.')) return;
+        
+        try {
+            const resp = await apiRequest('/inventory/items/' + itemId + '/', {
+                method: 'DELETE'
+            });
+            if (resp && (resp.ok || resp.status === 204)) {
+                loadItems();
+                showToast(itemName + ' 삭제 완료', 'success');
+            } else {
+                const err = await resp.json().catch(() => ({}));
+                alert('삭제 실패: ' + (err.detail || JSON.stringify(err)));
+            }
+        } catch(e) {
+            alert('삭제 중 오류가 발생했습니다.');
+        }
+    }
+    
+    function showToast(msg, type) {
+        const toast = document.createElement('div');
+        const bg = type === 'success' ? 'var(--success)' : 'var(--danger)';
+        toast.style.cssText = 'position:fixed;top:20px;right:20px;background:' + bg + ';color:white;padding:16px 24px;border-radius:12px;box-shadow:0 4px 12px rgba(0,0,0,0.3);z-index:3000;font-weight:600;';
+        toast.textContent = msg;
+        document.body.appendChild(toast);
+        setTimeout(() => toast.remove(), 2500);
     }
     
     document.getElementById('search-input').addEventListener('input', filterItems);
