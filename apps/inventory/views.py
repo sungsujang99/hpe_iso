@@ -91,6 +91,14 @@ class InventoryItemViewSet(viewsets.ModelViewSet):
             return InventoryItemUpdateSerializer
         return InventoryItemListSerializer
     
+    def perform_destroy(self, instance):
+        """품목 삭제 - 거래 이력이 있으면 관련 이력도 함께 삭제"""
+        from .models import StockTransaction, InventoryCountItem
+        # 관련 거래 이력 삭제 (PROTECT 관계)
+        StockTransaction.objects.filter(item=instance).delete()
+        InventoryCountItem.objects.filter(item=instance).delete()
+        instance.delete()
+    
     def get_queryset(self):
         queryset = super().get_queryset()
         
