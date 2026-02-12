@@ -628,7 +628,7 @@
             const resp = await apiRequest('/auth/users/me/');
             if (resp && resp.ok) {
                 const user = await resp.json();
-                currentUserName = user.full_name || ((user.last_name || '') + (user.first_name || '')) || user.username || '';
+                currentUserName = user.full_name || ((user.last_name || '') + (user.first_name || '')).trim() || user.username || '';
                 currentUserDept = user.department_name || '';
                 console.log('User loaded:', currentUserName, '/ Dept:', currentUserDept);
             } else {

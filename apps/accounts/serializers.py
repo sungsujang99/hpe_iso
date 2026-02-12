@@ -30,7 +30,10 @@ class UserSerializer(serializers.ModelSerializer):
     
     full_name = serializers.CharField(source='get_full_name', read_only=True)
     display_role = serializers.CharField(read_only=True)
-    department_name = serializers.CharField(source='department.name', read_only=True)
+    department_name = serializers.SerializerMethodField()
+    
+    def get_department_name(self, obj):
+        return obj.department.name if obj.department else ''
     
     class Meta:
         model = User

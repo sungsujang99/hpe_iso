@@ -202,15 +202,30 @@ class DocumentViewSet(viewsets.ModelViewSet):
                                             c.value = value
                                             return
                                 
+                                def fill_right_or_below(row, col, value):
+                                    """작성/검토/승인: 우측 빈칸 먼저 확인, 없으면 하단 빈칸에 입력"""
+                                    right = ws.cell(row=row, column=col + 1)
+                                    below = ws.cell(row=row + 1, column=col)
+                                    if col + 1 <= 50 and not right.value:
+                                        right.value = value
+                                    elif row + 1 <= 20 and not below.value:
+                                        below.value = value
+                                
                                 for row in range(1, 21):
                                     for col in range(1, 46):
                                         cell = ws.cell(row=row, column=col)
                                         val = str(cell.value or '').strip()
                                         if val in ('', 'PAGE'):
                                             continue
-                                        below_cell = ws.cell(row=row + 1, column=col)
-                                        # 오른쪽 1~5열 이내 첫 빈 셀에 값 채우기 (관리부서|관리담당이 AM열 등에 있는 경우)
-                                        if '작성자' in val or val == '작성':
+                                        # 작성/검토/승인: 우측 빈칸 먼저, 없으면 하단
+                                        if val == '작성':
+                                            fill_right_or_below(row, col, user_name)
+                                        elif val == '검토':
+                                            fill_right_or_below(row, col, reviewer_name)
+                                        elif val == '승인':
+                                            fill_right_or_below(row, col, approver_name)
+                                        # 작성자, 관리부서 등: 오른쪽 여러 열 검색
+                                        elif '작성자' in val:
                                             fill_right(row, col, user_name)
                                         elif '작성일' in val or '작성일자' in val:
                                             fill_right(row, col, today)
@@ -218,13 +233,6 @@ class DocumentViewSet(viewsets.ModelViewSet):
                                             fill_right(row, col, user_dept)
                                         elif '관리담당' in val or '담당직원' in val:
                                             fill_right(row, col, user_name)
-                                        elif val == '검토':
-                                            fill_right(row, col, reviewer_name)
-                                        elif val == '승인':
-                                            fill_right(row, col, approver_name)
-                                        # 작성/검토/승인: 아래 셀에 이름 오는 레이아웃 (AQ2 아래 AQ4 등)
-                                        if row <= 19 and val in ('작성', '검토', '승인') and not below_cell.value:
-                                            below_cell.value = user_name if val == '작성' else (reviewer_name if val == '검토' else approver_name)
                                 
                                 # 템플릿별 추가 자동 입력
                                 if '내부심사' in template_name and '체크리스트' in template_name:
@@ -243,8 +251,8 @@ class DocumentViewSet(viewsets.ModelViewSet):
                                     ws['AP6'] = user_name  # 담당직원
                                     ws['AD6'] = user_dept  # 팀명
                                     ws['F6'] = today       # 월별 날짜
-                            except Exception:
-                                pass
+                            except Exception as e:
+                                print(f"⚠️  엑셀 공통 자동입력 실패: {e}")
                             
                             wb.save(tmp.name)
                             
