@@ -8,7 +8,10 @@ DEBUG = True
 
 SECRET_KEY = 'django-insecure-dev-key-change-this-in-production'
 
-ALLOWED_HOSTS = ['localhost', '127.0.0.1', '0.0.0.0']
+ALLOWED_HOSTS = ['*']
+
+# HTTP 환경에서 COOP 헤더 경고 방지
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
 
 # Database - SQLite for development
 DATABASES = {
