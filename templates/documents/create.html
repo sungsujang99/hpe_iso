@@ -442,13 +442,9 @@
         }
         
         try {
-            // FormData 사용 시 Content-Type 헤더를 설정하지 않음 (브라우저가 자동으로 설정)
-            const token = localStorage.getItem('access_token');
-            const response = await fetch('/api/v1/documents/items/', {
+            // FormData 사용 - apiRequest가 자동으로 Content-Type 생략 및 토큰 refresh 처리
+            const response = await apiRequest('/documents/items/', {
                 method: 'POST',
-                headers: {
-                    'Authorization': `Bearer ${token}`
-                },
                 body: formData
             });
             

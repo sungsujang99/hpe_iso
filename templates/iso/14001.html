@@ -141,31 +141,7 @@
     let documents = [];
     let selectedDocumentId = null;
     
-    // API 요청 헬퍼
-    async function apiRequest(url, options = {}) {
-        const token = localStorage.getItem('access_token');
-        if (!token) {
-            window.location.href = '/login/';
-            return null;
-        }
-        
-        const response = await fetch(`/api/v1${url}`, {
-            ...options,
-            headers: {
-                ...options.headers,
-                'Authorization': `Bearer ${token}`,
-                'Content-Type': 'application/json',
-            },
-        });
-        
-        if (response.status === 401) {
-            localStorage.removeItem('access_token');
-            window.location.href = '/login/';
-            return null;
-        }
-        
-        return response;
-    }
+    // base.html의 apiRequest 사용 (토큰 자동 refresh 포함)
     
     // 상태 텍스트 변환
     function getStatusText(status) {

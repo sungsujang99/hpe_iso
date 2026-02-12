@@ -68,14 +68,22 @@ class Command(BaseCommand):
         if renamed:
             self.stdout.write(f'  HP-QR → HP-QM: {renamed}개 이름 변경')
 
-        # 관련 문서도 이동
+        # 관련 문서도 이동 + 문서번호 치환
         try:
             from apps.documents.models import Document
             doc_moved = Document.objects.filter(category=qr).update(category=qm)
             if doc_moved:
-                self.stdout.write(f'  HP-QR → HP-QM: {doc_moved}개 문서 이동')
-        except Exception:
-            pass
+                self.stdout.write(f'  HP-QR → HP-QM: {doc_moved}개 문서 카테고리 이동')
+            # 문서번호에서 HP-QR → HP-QM 치환
+            doc_renamed = 0
+            for doc in Document.objects.filter(document_number__contains='HP-QR'):
+                doc.document_number = doc.document_number.replace('HP-QR', 'HP-QM')
+                doc.save(update_fields=['document_number'])
+                doc_renamed += 1
+            if doc_renamed:
+                self.stdout.write(f'  HP-QR → HP-QM: {doc_renamed}개 문서번호 변경')
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f'  문서 이동 오류: {e}'))
 
         # HP-QR 카테고리 삭제
         try:
