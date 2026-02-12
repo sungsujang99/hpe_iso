@@ -33,6 +33,9 @@ class ISOStandardDocTemplate(SimpleDocTemplate):
         self.doc_number = document.document_number if document else ''
         self.doc_title = document.title if document else ''
         self.category_name = document.category.name if document and document.category else ''
+        self.writer_name = document.created_by.get_full_name() if document and document.created_by else ''
+        self.reviewer_name = document.reviewed_by.get_full_name() if document and document.reviewed_by else ''
+        self.approver_name = document.approved_by.get_full_name() if document and document.approved_by else ''
     
     def handle_pageBegin(self):
         """각 페이지 시작 시 호출"""
@@ -61,27 +64,29 @@ class ISOStandardDocTemplate(SimpleDocTemplate):
         table_width = A4[0] - 40*mm  # 좌우 여백 각 20mm
         col_widths = [table_width * 0.35, table_width * 0.25, table_width * 0.15, table_width * 0.25]
         
-        # 헤더 테이블 데이터 (4행 x 4열)
+        # 헤더 테이블 데이터 (5행 x 4열)
         # 행 1: 회사명(영문) | 문서종류 | 문서번호 텍스트 | 문서번호
         # 행 2: 회사명(한글) | (공백) | 제.개정일자 텍스트 | 제.개정일자
         # 행 3: (공백) | 문서제목 | 개정번호 텍스트 | 개정번호
-        # 행 4: (공백) | (공백) | 페이지 텍스트 | 페이지번호
+        # 행 4: 작성|작성자 | 검토|검토자 | 승인|승인자
+        # 행 5: (공백) | (공백) | 페이지 텍스트 | 페이지번호
         
         revision_date = self.document.approved_at.strftime('%Y.%m.%d') if self.document.approved_at else self.document.created_at.strftime('%Y.%m.%d')
         
         x_start = 20*mm
         row_height = 6*mm
+        num_rows = 5
         
         # 그리드 그리기
         canvas.setLineWidth(0.5)
         # 세로선
         for i, w in enumerate([0] + col_widths):
             x = x_start + sum(col_widths[:i]) if i > 0 else x_start
-            canvas.line(x, y_position, x, y_position - 4 * row_height)
-        canvas.line(x_start + sum(col_widths), y_position, x_start + sum(col_widths), y_position - 4 * row_height)
+            canvas.line(x, y_position, x, y_position - num_rows * row_height)
+        canvas.line(x_start + sum(col_widths), y_position, x_start + sum(col_widths), y_position - num_rows * row_height)
         
         # 가로선
-        for i in range(5):
+        for i in range(num_rows + 1):
             y = y_position - i * row_height
             canvas.line(x_start, y, x_start + sum(col_widths), y)
         
@@ -104,10 +109,18 @@ class ISOStandardDocTemplate(SimpleDocTemplate):
         canvas.drawCentredString(x_start + col_widths[0] + col_widths[1] + col_widths[2]/2, y_position - 3*row_height + 2, '개정번호')
         canvas.drawCentredString(x_start + col_widths[0] + col_widths[1] + col_widths[2] + col_widths[3]/2, y_position - 3*row_height + 2, str(self.document.revision))
         
-        # 행 4
-        canvas.drawCentredString(x_start + col_widths[0] + col_widths[1] + col_widths[2]/2, y_position - 4*row_height + 2, '페이지')
-        # 총 페이지 수는 빌드 후에 알 수 있으므로 일단 현재 페이지만 표시
-        canvas.drawCentredString(x_start + col_widths[0] + col_widths[1] + col_widths[2] + col_widths[3]/2, y_position - 4*row_height + 2, f'{page_num}')
+        # 행 4: 작성(작성자) | 검토(검토자) | 승인(승인자)
+        c1 = x_start + col_widths[0]/2
+        c2 = x_start + col_widths[0] + col_widths[1]/2
+        c3 = x_start + col_widths[0] + col_widths[1] + col_widths[2]/2
+        c4 = x_start + col_widths[0] + col_widths[1] + col_widths[2] + col_widths[3]/2
+        canvas.drawCentredString(c1, y_position - 4*row_height + 2, f'작성 {self.writer_name[:8]}')
+        canvas.drawCentredString(c2, y_position - 4*row_height + 2, f'검토 {self.reviewer_name[:8]}')
+        canvas.drawCentredString(c3, y_position - 4*row_height + 2, f'승인 {self.approver_name[:8]}')
+        
+        # 행 5
+        canvas.drawCentredString(x_start + col_widths[0] + col_widths[1] + col_widths[2]/2, y_position - 5*row_height + 2, '페이지')
+        canvas.drawCentredString(x_start + col_widths[0] + col_widths[1] + col_widths[2] + col_widths[3]/2, y_position - 5*row_height + 2, f'{page_num}')
         
         # 푸터 (하단) - 문서번호 | 회사명 | 용지크기
         canvas.setFont(self.korean_font, 8)
@@ -256,6 +269,10 @@ class PDFGenerator:
         story.extend(self._create_control_checkbox(document))
         story.append(Spacer(1, 5 * mm))
         
+        # 공통: 작성자 정보 및 작성/검토/승인 테이블 (상단)
+        story.append(self._create_author_and_signature_header(document))
+        story.append(Spacer(1, 8 * mm))
+        
         # 개정이력 테이블
         story.append(self._create_revision_history_table(document))
         story.append(Spacer(1, 8 * mm))
@@ -290,6 +307,56 @@ class PDFGenerator:
         elements.append(control_para)
         
         return elements
+    
+    def _create_author_and_signature_header(self, document):
+        """공통: 작성자(이름/일자/부서) 및 작성/검토/승인 테이블 (상단)"""
+        writer_name = document.created_by.get_full_name() if document.created_by else ''
+        writer_dept = document.created_by.department.name if document.created_by and document.created_by.department else ''
+        writer_date = document.created_at.strftime('%Y.%m.%d') if document.created_at else ''
+        
+        reviewer_name = document.reviewed_by.get_full_name() if document.reviewed_by else ''
+        approver_name = document.approved_by.get_full_name() if document.approved_by else ''
+        
+        table_width = A4[0] - 40*mm
+        col_widths = [table_width * 0.15, table_width * 0.27, table_width * 0.15, table_width * 0.27, table_width * 0.15, table_width * 0.27]
+        
+        table_data = [
+            [
+                Paragraph('<b>작성자</b>', self.styles['TableHeaderKorean']),
+                Paragraph(writer_name, self.styles['TableBodyKorean']),
+                Paragraph('<b>작성일자</b>', self.styles['TableHeaderKorean']),
+                Paragraph(writer_date, self.styles['TableBodyKorean']),
+                Paragraph('<b>부서</b>', self.styles['TableHeaderKorean']),
+                Paragraph(writer_dept, self.styles['TableBodyKorean']),
+            ],
+            [
+                Paragraph('<b>작성</b>', self.styles['TableHeaderKorean']),
+                Paragraph(writer_name, self.styles['TableBodyKorean']),
+                Paragraph('<b>검토</b>', self.styles['TableHeaderKorean']),
+                Paragraph(reviewer_name, self.styles['TableBodyKorean']),
+                Paragraph('<b>승인</b>', self.styles['TableHeaderKorean']),
+                Paragraph(approver_name, self.styles['TableBodyKorean']),
+            ],
+        ]
+        
+        table = Table(table_data, colWidths=col_widths, rowHeights=[8*mm, 8*mm])
+        table.setStyle(TableStyle([
+            ('FONTNAME', (0, 0), (-1, -1), self.korean_font),
+            ('FONTSIZE', (0, 0), (-1, -1), 9),
+            ('BACKGROUND', (0, 0), (-1, 0), colors.lightgrey),
+            ('BACKGROUND', (0, 1), (0, 1), colors.lightgrey),
+            ('BACKGROUND', (2, 1), (2, 1), colors.lightgrey),
+            ('BACKGROUND', (4, 1), (4, 1), colors.lightgrey),
+            ('GRID', (0, 0), (-1, -1), 0.5, colors.black),
+            ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+            ('VALIGN', (0, 0), (-1, -1), 'MIDDLE'),
+            ('TOPPADDING', (0, 0), (-1, -1), 4),
+            ('BOTTOMPADDING', (0, 0), (-1, -1), 4),
+            ('LEFTPADDING', (0, 0), (-1, -1), 3),
+            ('RIGHTPADDING', (0, 0), (-1, -1), 3),
+        ]))
+        
+        return table
     
     def _create_revision_history_table(self, document):
         """개정이력 테이블 (ISO 표준 형식)"""

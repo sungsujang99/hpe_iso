@@ -97,6 +97,8 @@ class DocumentDetailSerializer(serializers.ModelSerializer):
     history = DocumentHistorySerializer(many=True, read_only=True)
     attachments = DocumentAttachmentSerializer(many=True, read_only=True)
     
+    can_delete = serializers.SerializerMethodField()
+    
     class Meta:
         model = Document
         fields = [
@@ -109,8 +111,13 @@ class DocumentDetailSerializer(serializers.ModelSerializer):
             'created_at', 'updated_at', 'submitted_at',
             'reviewed_at', 'approved_at',
             'pdf_file', 'excel_file', 'can_edit', 'can_submit', 'can_review', 'can_approve',
-            'comments', 'history', 'attachments'
+            'can_delete', 'comments', 'history', 'attachments'
         ]
+    
+    def get_can_delete(self, obj):
+        """시스템 관리자(admin)만 문서 삭제 가능"""
+        request = self.context.get('request')
+        return request and request.user and request.user.is_admin
 
 
 class DocumentCreateSerializer(serializers.ModelSerializer):

@@ -119,6 +119,7 @@
         const canSubmit = doc.can_submit;
         const canReview = doc.can_review;
         const canApprove = doc.can_approve;
+        const canDelete = doc.can_delete || false;
         
         document.getElementById('document-content').innerHTML = `
             <div style="display: grid; grid-template-columns: 2fr 1fr; gap: 24px;">
@@ -228,6 +229,11 @@
                                     </p>
                                 </div>
                             `}
+                            ${canDelete ? `
+                                <button class="btn btn-danger" style="width: 100%; margin-top: 16px; border-color: var(--danger);" onclick="deleteDocument()">
+                                    문서 삭제
+                                </button>
+                            ` : ''}
                         </div>
                     </div>
                     
@@ -640,6 +646,28 @@
             }
         } catch (error) {
             alert('오류 발생');
+        }
+    }
+    
+    async function deleteDocument() {
+        const docNum = currentDocument?.document_number || documentId;
+        if (!confirm(`문서 "${docNum}"를 정말 삭제하시겠습니까?\n\n이 작업은 되돌릌 수 없습니다.`)) return;
+        
+        try {
+            const response = await apiRequest(`/documents/items/${documentId}/`, {
+                method: 'DELETE'
+            });
+            
+            if (response && response.ok) {
+                alert('문서가 삭제되었습니다.');
+                window.location.href = '/documents/';
+            } else {
+                const err = await response?.json().catch(() => ({}));
+                alert('삭제 실패: ' + (err.detail || err.error || '권한이 없습니다.'));
+            }
+        } catch (error) {
+            console.error('Delete error:', error);
+            alert('삭제 중 오류가 발생했습니다.');
         }
     }
     

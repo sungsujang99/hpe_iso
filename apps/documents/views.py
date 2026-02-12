@@ -81,6 +81,12 @@ class DocumentViewSet(viewsets.ModelViewSet):
     )
     permission_classes = [IsAuthenticated]
     
+    def get_permissions(self):
+        """삭제(destroy)는 관리자만 허용"""
+        if self.action == 'destroy':
+            return [IsAuthenticated(), IsAdminRole()]
+        return [IsAuthenticated()]
+    
     def get_serializer_class(self):
         if self.action == 'create':
             return DocumentCreateSerializer
@@ -176,7 +182,7 @@ class DocumentViewSet(viewsets.ModelViewSet):
                                 except Exception:
                                     pass
                             
-                            # 템플릿별 자동 입력
+                            # 공통: 모든 엑셀 템플릿에 작성자, 작성일자, 부서, 작성/검토/승인
                             try:
                                 from datetime import date
                                 user = self.request.user
@@ -184,7 +190,30 @@ class DocumentViewSet(viewsets.ModelViewSet):
                                 user_dept = user.department.name if user.department else ''
                                 template_name = document.template.name if document.template else ''
                                 today = date.today()
+                                reviewer_name = document.reviewed_by.get_full_name() if document.reviewed_by else ''
+                                approver_name = document.approved_by.get_full_name() if document.approved_by else ''
                                 
+                                # 셀 라벨 검색 후 값 채우기 (첫 15행, 30열 범위)
+                                for row in range(1, 16):
+                                    for col in range(1, 31):
+                                        cell = ws.cell(row=row, column=col)
+                                        val = str(cell.value or '').strip()
+                                        # 오른쪽 셀에 값 채우기 (라벨 셀인 경우)
+                                        right_cell = ws.cell(row=row, column=col + 1)
+                                        if '작성자' in val and not right_cell.value:
+                                            right_cell.value = user_name
+                                        elif ('작성일' in val or '작성일자' in val) and not right_cell.value:
+                                            right_cell.value = today
+                                        elif '부서' in val and not right_cell.value:
+                                            right_cell.value = user_dept
+                                        elif val == '작성' and not right_cell.value:
+                                            right_cell.value = user_name
+                                        elif val == '검토' and not right_cell.value:
+                                            right_cell.value = reviewer_name
+                                        elif val == '승인' and not right_cell.value:
+                                            right_cell.value = approver_name
+                                
+                                # 템플릿별 추가 자동 입력
                                 if '내부심사' in template_name and '체크리스트' in template_name:
                                     ws['K3'] = user_name
                                     ws['N6'] = user_name
