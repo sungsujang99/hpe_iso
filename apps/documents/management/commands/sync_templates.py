@@ -21,6 +21,9 @@ class Command(BaseCommand):
         self.stdout.write('템플릿 동기화 시작')
         self.stdout.write('=' * 60)
 
+        # 0) HP-QR → HP-QM 마이그레이션 (기존 서버 데이터 정리)
+        self._migrate_qr_to_qm()
+
         # 1) 카테고리 시드
         self._seed_categories()
 
@@ -40,6 +43,46 @@ class Command(BaseCommand):
         self.stdout.write('=' * 60)
         self.stdout.write(self.style.SUCCESS(f'동기화 완료! 총 템플릿: {total}개'))
         self.stdout.write('=' * 60)
+
+    def _migrate_qr_to_qm(self):
+        """HP-QR 카테고리를 HP-QM으로 통합 (서버 호환용)"""
+        qr = DocumentCategory.objects.filter(code='HP-QR').first()
+        if not qr:
+            self.stdout.write('  HP-QR 없음 (이미 마이그레이션됨)')
+            return
+
+        qm, _ = DocumentCategory.objects.get_or_create(
+            code='HP-QM', defaults={'name': '품질경영 매뉴얼', 'prefix': 'HP-QM-'}
+        )
+
+        # 템플릿 이동
+        moved = DocumentTemplate.objects.filter(category=qr).update(category=qm)
+        self.stdout.write(f'  HP-QR → HP-QM: {moved}개 템플릿 이동')
+
+        # 템플릿 이름에서 HP-QR → HP-QM 치환
+        renamed = 0
+        for t in DocumentTemplate.objects.filter(name__contains='HP-QR'):
+            t.name = t.name.replace('HP-QR', 'HP-QM')
+            t.save()
+            renamed += 1
+        if renamed:
+            self.stdout.write(f'  HP-QR → HP-QM: {renamed}개 이름 변경')
+
+        # 관련 문서도 이동
+        try:
+            from apps.documents.models import Document
+            doc_moved = Document.objects.filter(category=qr).update(category=qm)
+            if doc_moved:
+                self.stdout.write(f'  HP-QR → HP-QM: {doc_moved}개 문서 이동')
+        except Exception:
+            pass
+
+        # HP-QR 카테고리 삭제
+        try:
+            qr.delete()
+            self.stdout.write(self.style.SUCCESS('  HP-QR 카테고리 삭제 완료'))
+        except Exception as e:
+            self.stdout.write(self.style.WARNING(f'  HP-QR 삭제 실패: {e}'))
 
     def _seed_categories(self):
         categories = [
