@@ -193,25 +193,32 @@ class DocumentViewSet(viewsets.ModelViewSet):
                                 reviewer_name = document.reviewed_by.get_full_name() if document.reviewed_by else ''
                                 approver_name = document.approved_by.get_full_name() if document.approved_by else ''
                                 
-                                # 셀 라벨 검색 후 값 채우기 (첫 15행, 30열 범위)
-                                for row in range(1, 16):
-                                    for col in range(1, 31):
+                                # 셀 라벨 검색 후 값 채우기 (첫 20행, 45열 - AJ~AR 등 포함)
+                                for row in range(1, 21):
+                                    for col in range(1, 46):
                                         cell = ws.cell(row=row, column=col)
                                         val = str(cell.value or '').strip()
-                                        # 오른쪽 셀에 값 채우기 (라벨 셀인 경우)
+                                        if val in ('', 'PAGE'):
+                                            continue
                                         right_cell = ws.cell(row=row, column=col + 1)
-                                        if '작성자' in val and not right_cell.value:
-                                            right_cell.value = user_name
-                                        elif ('작성일' in val or '작성일자' in val) and not right_cell.value:
-                                            right_cell.value = today
-                                        elif '부서' in val and not right_cell.value:
-                                            right_cell.value = user_dept
-                                        elif val == '작성' and not right_cell.value:
-                                            right_cell.value = user_name
-                                        elif val == '검토' and not right_cell.value:
-                                            right_cell.value = reviewer_name
-                                        elif val == '승인' and not right_cell.value:
-                                            right_cell.value = approver_name
+                                        below_cell = ws.cell(row=row + 1, column=col)
+                                        # 오른쪽 셀에 값 채우기
+                                        if not right_cell.value:
+                                            if '작성자' in val or val == '작성':
+                                                right_cell.value = user_name
+                                            elif '작성일' in val or '작성일자' in val:
+                                                right_cell.value = today
+                                            elif '부서' in val or '관리부서' in val:
+                                                right_cell.value = user_dept
+                                            elif '관리담당' in val or '담당직원' in val:
+                                                right_cell.value = user_name
+                                            elif val == '검토':
+                                                right_cell.value = reviewer_name
+                                            elif val == '승인':
+                                                right_cell.value = approver_name
+                                        # 작성/검토/승인: 아래 셀에 이름 오는 레이아웃 (예: AQ열)
+                                        if row <= 19 and val in ('작성', '검토', '승인') and not below_cell.value:
+                                            below_cell.value = user_name if val == '작성' else (reviewer_name if val == '검토' else approver_name)
                                 
                                 # 템플릿별 추가 자동 입력
                                 if '내부심사' in template_name and '체크리스트' in template_name:
