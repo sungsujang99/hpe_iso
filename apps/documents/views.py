@@ -193,30 +193,36 @@ class DocumentViewSet(viewsets.ModelViewSet):
                                 reviewer_name = document.reviewed_by.get_full_name() if document.reviewed_by else ''
                                 approver_name = document.approved_by.get_full_name() if document.approved_by else ''
                                 
-                                # 셀 라벨 검색 후 값 채우기 (첫 20행, 45열 - AJ~AR 등 포함)
+                                # 셀 라벨 검색 후 값 채우기 (첫 20행, 45열 - AI~AQ 등 포함)
+                                def fill_right(row, col, value, max_offset=6):
+                                    """라벨 오른쪽 첫 빈 셀에 값 채우기 (열 간격 있는 경우 대응)"""
+                                    for offset in range(1, max_offset):
+                                        c = ws.cell(row=row, column=col + offset)
+                                        if c.column <= 50 and not c.value:
+                                            c.value = value
+                                            return
+                                
                                 for row in range(1, 21):
                                     for col in range(1, 46):
                                         cell = ws.cell(row=row, column=col)
                                         val = str(cell.value or '').strip()
                                         if val in ('', 'PAGE'):
                                             continue
-                                        right_cell = ws.cell(row=row, column=col + 1)
                                         below_cell = ws.cell(row=row + 1, column=col)
-                                        # 오른쪽 셀에 값 채우기
-                                        if not right_cell.value:
-                                            if '작성자' in val or val == '작성':
-                                                right_cell.value = user_name
-                                            elif '작성일' in val or '작성일자' in val:
-                                                right_cell.value = today
-                                            elif '부서' in val or '관리부서' in val:
-                                                right_cell.value = user_dept
-                                            elif '관리담당' in val or '담당직원' in val:
-                                                right_cell.value = user_name
-                                            elif val == '검토':
-                                                right_cell.value = reviewer_name
-                                            elif val == '승인':
-                                                right_cell.value = approver_name
-                                        # 작성/검토/승인: 아래 셀에 이름 오는 레이아웃 (예: AQ열)
+                                        # 오른쪽 1~5열 이내 첫 빈 셀에 값 채우기 (관리부서|관리담당이 AM열 등에 있는 경우)
+                                        if '작성자' in val or val == '작성':
+                                            fill_right(row, col, user_name)
+                                        elif '작성일' in val or '작성일자' in val:
+                                            fill_right(row, col, today)
+                                        elif '부서' in val or '관리부서' in val:
+                                            fill_right(row, col, user_dept)
+                                        elif '관리담당' in val or '담당직원' in val:
+                                            fill_right(row, col, user_name)
+                                        elif val == '검토':
+                                            fill_right(row, col, reviewer_name)
+                                        elif val == '승인':
+                                            fill_right(row, col, approver_name)
+                                        # 작성/검토/승인: 아래 셀에 이름 오는 레이아웃 (AQ2 아래 AQ4 등)
                                         if row <= 19 and val in ('작성', '검토', '승인') and not below_cell.value:
                                             below_cell.value = user_name if val == '작성' else (reviewer_name if val == '검토' else approver_name)
                                 

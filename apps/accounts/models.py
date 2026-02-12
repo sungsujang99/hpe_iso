@@ -124,11 +124,19 @@ class User(AbstractUser):
         return f"{self.get_full_name()} ({self.email})"
     
     def get_full_name(self):
-        """성명 반환 (한국식: 성 + 이름)"""
-        return f"{self.last_name}{self.first_name}".strip() or self.email
+        """성명 반환 (한국식: 성 + 이름). 항상 성까지 포함."""
+        # last_name + first_name 우선
+        name = f"{self.last_name or ''}{self.first_name or ''}".strip()
+        if name:
+            return name
+        # last_name 없이 first_name만 있으면 first_name 사용 (전체 이름이 first_name에 저장된 경우)
+        if self.first_name:
+            return self.first_name
+        return self.email or self.username or ''
     
     def get_short_name(self):
-        return self.first_name or self.email.split('@')[0]
+        """이름만 (성 제외) - get_full_name을 사용하면 성까지 포함됨"""
+        return self.first_name or self.email.split('@')[0] if self.email else self.username or ''
     
     @property
     def is_admin(self):
