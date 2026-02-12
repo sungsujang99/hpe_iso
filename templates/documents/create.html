@@ -449,7 +449,14 @@
             });
             
             if (response && response.ok) {
-                const doc = await response.json();
+                let doc;
+                try {
+                    doc = await response.json();
+                } catch (e) {
+                    console.error('Response parse error:', e);
+                    alert('저장은 되었으나 응답 처리 중 오류가 발생했습니다.');
+                    return;
+                }
                 
                 if (submit) {
                     // 승인 요청
@@ -469,12 +476,24 @@
                 
                 window.location.href = `/documents/${doc.id}/`;
             } else {
-                const error = await response.json();
-                alert('저장 실패: ' + JSON.stringify(error));
+                let errMsg = `저장 실패 (${response.status})`;
+                try {
+                    const ct = response.headers.get('Content-Type') || '';
+                    if (ct.includes('application/json')) {
+                        const error = await response.json();
+                        errMsg = error.detail || error.error || error.message || JSON.stringify(error);
+                    } else {
+                        const text = await response.text();
+                        if (text && text.length < 200 && !text.startsWith('<')) errMsg = text;
+                    }
+                } catch (e) {
+                    console.error('Error response parse:', e);
+                }
+                alert(errMsg);
             }
         } catch (error) {
             console.error('Failed to save document:', error);
-            alert('저장 중 오류가 발생했습니다.');
+            alert('저장 중 오류가 발생했습니다. ' + (error.message || ''));
         }
     }
     

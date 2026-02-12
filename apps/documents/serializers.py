@@ -118,11 +118,23 @@ class DocumentCreateSerializer(serializers.ModelSerializer):
     
     # title은 선택사항으로 변경 (없으면 자동 생성)
     title = serializers.CharField(required=False, allow_blank=True)
+    excel_file = serializers.FileField(required=False, allow_null=True)
+    content_data = serializers.JSONField(required=False, default=dict)
     
     class Meta:
         model = Document
-        fields = ['id', 'category', 'template', 'title', 'content_data', 'document_number', 'status']
+        fields = ['id', 'category', 'template', 'title', 'content_data', 'excel_file', 'document_number', 'status']
         read_only_fields = ['id', 'document_number', 'status']
+    
+    def validate_content_data(self, value):
+        """FormData에서 문자열로 오면 파싱"""
+        if isinstance(value, str):
+            import json
+            try:
+                return json.loads(value) if value.strip() else {}
+            except json.JSONDecodeError:
+                return {}
+        return value or {}
     
     def create(self, validated_data):
         # 문서번호 자동 생성

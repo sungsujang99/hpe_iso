@@ -249,7 +249,7 @@
             </div>
         </div>
         <div class="preview-actions" id="preview-actions">
-            <input type="text" class="comment-input" id="preview-comment" placeholder="코멘트 (선택사항)">
+            <input type="text" class="comment-input" id="preview-comment" placeholder="반려 시 사유 입력 (반려 시 필수)">
         </div>
     </div>
 </div>
@@ -411,7 +411,7 @@
             }
             
             // 하단 버튼
-            const commentHtml = '<input type="text" class="comment-input" id="preview-comment" placeholder="코멘트 (선택사항)">';
+            const commentHtml = '<input type="text" class="comment-input" id="preview-comment" placeholder="반려 시 사유 입력 (반려 시 필수)">';
             if (mode === 'review') {
                 actions.innerHTML = `
                     ${commentHtml}
@@ -448,7 +448,12 @@
         
         if (!confirm(`${actionLabel}하시겠습니까?`)) return;
         
-        const comment = document.getElementById('preview-comment')?.value || '';
+        const comment = document.getElementById('preview-comment')?.value?.trim() || '';
+        if (action === 'reject' && !comment) {
+            alert('반려 시 사유를 입력해주세요.');
+            return;
+        }
+        
         const endpoint = currentPreviewMode === 'review' 
             ? `/documents/items/${currentPreviewDocId}/review/`
             : `/documents/items/${currentPreviewDocId}/approve/`;
@@ -465,7 +470,9 @@
                 loadPendingDocuments();
             } else {
                 const err = await resp.json().catch(() => ({}));
-                alert(`처리 실패: ${err.detail || err.error || '서버 오류'}`);
+                let msg = err.detail || err.error;
+                if (!msg && err.comment) msg = Array.isArray(err.comment) ? err.comment[0] : err.comment;
+                alert(`처리 실패: ${msg || '서버 오류'}`);
             }
         } catch(e) {
             console.error('Action error:', e);

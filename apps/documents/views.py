@@ -139,78 +139,84 @@ class DocumentViewSet(viewsets.ModelViewSet):
                     from django.conf import settings
                     from django.core.files import File
                     
-                    # 템플릿 파일 복사
-                    template_path = Path(settings.MEDIA_ROOT) / str(document.template.template_file)
-                    
-                    with tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False) as tmp:
-                        shutil.copy2(template_path, tmp.name)
-                        
-                        # openpyxl로 셀 수정
-                        wb = openpyxl.load_workbook(tmp.name)
-                        sheet_name = document.content_data.get('_sheet_name', wb.sheetnames[0])
-                        ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.active
-                        
-                        # 사용자 편집 셀 반영
-                        for cell_data in document.content_data['_excel_cells']:
-                            row = cell_data['row'] + 1  # 0-indexed -> 1-indexed
-                            col = cell_data['col'] + 1
-                            value = cell_data['value']
+                    # 템플릿 파일 경로 (FileField.path 또는 MEDIA_ROOT 조합)
+                    tf = document.template.template_file
+                    if hasattr(tf, 'path') and tf.path:
+                        template_path = Path(tf.path)
+                    else:
+                        template_path = Path(settings.MEDIA_ROOT) / str(tf)
+                    if not template_path.exists():
+                        print(f"⚠️  템플릿 파일 없음 (건너뜀): {template_path}")
+                    else:
+                        with tempfile.NamedTemporaryFile(suffix='.xlsx', delete=False) as tmp:
+                            shutil.copy2(template_path, tmp.name)
                             
-                            try:
-                                cell = ws.cell(row=row, column=col)
-                                # 숫자 변환 시도
+                            # openpyxl로 셀 수정
+                            wb = openpyxl.load_workbook(tmp.name)
+                            sheet_name = document.content_data.get('_sheet_name', wb.sheetnames[0])
+                            ws = wb[sheet_name] if sheet_name in wb.sheetnames else wb.active
+                            
+                            # 사용자 편집 셀 반영
+                            for cell_data in document.content_data['_excel_cells']:
+                                row = cell_data['row'] + 1  # 0-indexed -> 1-indexed
+                                col = cell_data['col'] + 1
+                                value = cell_data['value']
+                                
                                 try:
-                                    value = int(value)
-                                except (ValueError, TypeError):
+                                    cell = ws.cell(row=row, column=col)
+                                    # 숫자 변환 시도
                                     try:
-                                        value = float(value)
+                                        value = int(value)
                                     except (ValueError, TypeError):
-                                        pass
-                                cell.value = value
+                                        try:
+                                            value = float(value)
+                                        except (ValueError, TypeError):
+                                            pass
+                                    cell.value = value
+                                except Exception:
+                                    pass
+                            
+                            # 템플릿별 자동 입력
+                            try:
+                                from datetime import date
+                                user = self.request.user
+                                user_name = user.get_full_name() or user.username
+                                user_dept = user.department.name if user.department else ''
+                                template_name = document.template.name if document.template else ''
+                                today = date.today()
+                                
+                                if '내부심사' in template_name and '체크리스트' in template_name:
+                                    ws['K3'] = user_name
+                                    ws['N6'] = user_name
+                                    ws['G6'] = today       # 내부심사 시행일
+                                    for r in range(9, 36):
+                                        ws.cell(row=r, column=2).value = user_name
+                                elif '부적합품' in template_name and '관리대장' in template_name:
+                                    ws['Z4'] = user_dept   # 부서명
+                                    ws['AO4'] = user_name  # 작성자
+                                elif '업무분장표' in template_name:
+                                    ws['J4'] = user_name   # 작성자
+                                    ws['J3'] = today       # 작성일자
+                                elif 'AS' in template_name and '관리대장' in template_name:
+                                    ws['AP6'] = user_name  # 담당직원
+                                    ws['AD6'] = user_dept  # 팀명
+                                    ws['F6'] = today       # 월별 날짜
                             except Exception:
                                 pass
-                        
-                        # 템플릿별 자동 입력
-                        try:
-                            from datetime import date
-                            user = self.request.user
-                            user_name = user.get_full_name() or user.username
-                            user_dept = user.department.name if user.department else ''
-                            template_name = document.template.name if document.template else ''
-                            today = date.today()
                             
-                            if '내부심사' in template_name and '체크리스트' in template_name:
-                                ws['K3'] = user_name
-                                ws['N6'] = user_name
-                                ws['G6'] = today       # 내부심사 시행일
-                                for r in range(9, 36):
-                                    ws.cell(row=r, column=2).value = user_name
-                            elif '부적합품' in template_name and '관리대장' in template_name:
-                                ws['Z4'] = user_dept   # 부서명
-                                ws['AO4'] = user_name  # 작성자
-                            elif '업무분장표' in template_name:
-                                ws['J4'] = user_name   # 작성자
-                                ws['J3'] = today       # 작성일자
-                            elif 'AS' in template_name and '관리대장' in template_name:
-                                ws['AP6'] = user_name  # 담당직원
-                                ws['AD6'] = user_dept  # 팀명
-                                ws['F6'] = today       # 월별 날짜
-                        except Exception:
-                            pass
+                            wb.save(tmp.name)
+                            
+                            # 저장
+                            filename = f'{document.document_number}.xlsx'
+                            with open(tmp.name, 'rb') as f:
+                                document.excel_file.save(filename, File(f), save=True)
                         
-                        wb.save(tmp.name)
+                        # content_data에서 임시 데이터 정리
+                        clean_data = {k: v for k, v in document.content_data.items() if not k.startswith('_')}
+                        document.content_data = clean_data
+                        document.save(update_fields=['content_data'])
                         
-                        # 저장
-                        filename = f'{document.document_number}.xlsx'
-                        with open(tmp.name, 'rb') as f:
-                            document.excel_file.save(filename, File(f), save=True)
-                    
-                    # content_data에서 임시 데이터 정리
-                    clean_data = {k: v for k, v in document.content_data.items() if not k.startswith('_')}
-                    document.content_data = clean_data
-                    document.save(update_fields=['content_data'])
-                    
-                    print(f"✅ 엑셀 파일 생성 (셀 편집): {filename}")
+                        print(f"✅ 엑셀 파일 생성 (셀 편집): {filename}")
                 except Exception as e:
                     print(f"⚠️  엑셀 파일 생성 실패: {str(e)}")
             else:

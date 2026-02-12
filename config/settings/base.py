@@ -106,6 +106,9 @@ DOCUMENT_STORAGE_PATH = MEDIA_ROOT / 'documents'
 # Default primary key field type
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
+# HTTP 환경에서 COOP 헤더 경고 방지 (localhost/HTTPS 외 접속 시)
+SECURE_CROSS_ORIGIN_OPENER_POLICY = None
+
 # REST Framework Configuration
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
