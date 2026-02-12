@@ -122,17 +122,21 @@ class Command(BaseCommand):
             cat = cat_map.get(cc)
             if not cat:
                 continue
-            _, is_new = DocumentTemplate.objects.get_or_create(
-                category=cat, name=item['name'],
-                defaults={
-                    'description': item.get('description', ''),
-                    'fields_schema': item.get('fields_schema', {}),
-                    'template_file': item.get('template_file', ''),
-                    'is_active': item.get('is_active', True),
-                    'version': item.get('version', '1.0'),
-                }
-            )
-            if is_new:
+            # 중복 처리: 같은 이름이 여러 개면 첫 번째만 유지
+            existing = DocumentTemplate.objects.filter(category=cat, name=item['name'])
+            if existing.count() > 1:
+                # 중복 제거 (첫 번째만 남기고 삭제)
+                keep = existing.first()
+                existing.exclude(pk=keep.pk).delete()
+            if not existing.exists():
+                DocumentTemplate.objects.create(
+                    category=cat, name=item['name'],
+                    description=item.get('description', ''),
+                    fields_schema=item.get('fields_schema', {}),
+                    template_file=item.get('template_file', ''),
+                    is_active=item.get('is_active', True),
+                    version=item.get('version', '1.0'),
+                )
                 created += 1
         self.stdout.write(f'  fixture 템플릿: {created}개 신규')
 
@@ -140,16 +144,18 @@ class Command(BaseCommand):
         """엑셀 파일을 템플릿으로 등록 (이미 있으면 파일만 갱신)"""
         if not filepath.exists():
             return False
-        t, _ = DocumentTemplate.objects.get_or_create(
-            name=name,
-            defaults={
-                'category': category,
-                'description': description or name,
-                'is_active': True,
-                'version': '1.0',
-                'fields_schema': {},
-            }
-        )
+        # 중복 처리
+        existing = DocumentTemplate.objects.filter(name=name)
+        if existing.count() > 1:
+            keep = existing.first()
+            existing.exclude(pk=keep.pk).delete()
+        t = existing.first()
+        if not t:
+            t = DocumentTemplate.objects.create(
+                name=name, category=category,
+                description=description or name,
+                is_active=True, version='1.0', fields_schema={},
+            )
         # 파일이 없으면 저장
         if not t.template_file:
             with open(filepath, 'rb') as f:
